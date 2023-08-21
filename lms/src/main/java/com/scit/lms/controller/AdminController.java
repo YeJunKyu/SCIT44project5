@@ -33,5 +33,5 @@ public class AdminController {
 	@Value("${user.board.group}")
 	int pagePerGroup;
 	
-	
+
 }
