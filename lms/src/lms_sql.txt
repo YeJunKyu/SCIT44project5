@@ -1,0 +1,12 @@
+create table member(
+    memberid        varchar2(20)    primary key,
+    memberpw        varchar2(20)    not null,
+    membername      varchar2(20)    not null,
+    birthday        date            default sysdate,
+    phone           varchar2(13)    not null,
+    gender          varchar2(5)     not null,
+    address         varchar2(200)   not null,
+    note            varchar2(1000),
+    role            varchar2(20)    default 'ROLE_USER',
+    available       number          default 0 check (available in (0, 1))
+);
