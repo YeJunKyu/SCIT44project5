@@ -7,6 +7,6 @@ create table member(
     gender          varchar2(5)     not null,
     address         varchar2(200)   not null,
     note            varchar2(1000),
-    role            varchar2(20)    default 'ROLE_USER',
+    role            varchar2(20),
     available       number          default 0 check (available in (0, 1))
 );
