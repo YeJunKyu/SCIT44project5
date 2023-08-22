@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" th:href="@{/css/join.css}">
+  <script>
+    
+  </script>
+</head>
+<body>
+<div class="container">
+<h1 style="text-align: center;">로그인</h1>
+  <form th:action="@{/member/login}" method="post" >
+  <table>
+    <tr>
+      <th>ID</th>
+      <td>
+        <input type="text" id="id" name="memberid"  required>
+      </td>
+    </tr>
+    <tr>
+      <th>비밀번호</th>
+      <td>
+        <input type="password" id="password" name="memberpw">
+      </td>
+    </tr>
+    
+    <tr>
+      <td colspan="2" style="text-align: center;">
+        <input type="submit" value="로그인">
+      </td>
+    </tr>
+  </table>
+  </form>
+ 
+ 
+  <div th:if="${param.error}" style="color:red;">
+  	<p>ID 또는 비밀번호가 틀렸습니다.</p>
+  </div>
+  	
+  
+  <div th:if="${param.error}">
+  	<script>
+  		alert("에러");
+  	</script>
+  </div>
+  
+  
+ </div>
+</body>
+</html>

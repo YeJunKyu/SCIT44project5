@@ -1,15 +1,15 @@
 
---회원테이블
+--회원 테이블
 create table lms_member(
-    memberid        varchar2(20)    primary key,
+    memberid        varchar2(100)    primary key,
     memberpw        varchar2(100)   not null,
-    membername      varchar2(20)    not null,
+    membername      varchar2(100)    not null,
     birthday        date            not null,
-    phone           varchar2(13)    not null,
+    phone           varchar2(100)    not null,
     gender          varchar2(50)    not null,
     email           varchar2(200)   not null,
     address         varchar2(200)   not null,
     note            varchar2(1000),
-    rolename        varchar2(20)    check (rolename in('teacher','student','admin')),
-    enabled         number          default 0 check (enabled in (0, 1))
+    rolename        varchar2(100)   default 'ROLE_USER' check (rolename in('ROLE_USER','ROLE_teacher','ROLE_student','ROLE_admin')),
+    enabled         number          default 1 check (enabled in (0, 1))
 );
