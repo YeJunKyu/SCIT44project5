@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    function insertMember(){
+        let id = $("#id").val();
+        let pw = $("#pw").val();
+        let pwCheck = $("#pwCheck").val();
+        let name = $("#name").val();
+        let birth = $("#birth").val();
+        let gender = $("#gender option:selected").val();
+        let email = $("#email").val();
+        let phone = $("#phone").val();
+        let address = $("#address").val() + $("#detailAddress").val();
+
+        alert(id);
+        $.ajax({
+            url:'join',
+            data: {memberid: id
+                , memberpw: pw
+                , membername: name
+                , birthday: birth
+                , phone: phone
+                , gender: gender
+                , address: address
+                , note : ""
+                , role : ""
+                , available : ""},
+            dataType: 'json',
+            type:'post',
+            success:function(result){
+                console.log("result : " + result);
+                console.log("result : " + JSON.stringify(result));
+                 alert(result);
+            },
+            error:function(){
+            alert("에러");
+            }
+        });
+    }
+
+    function cancel(){
+        return "/";
+    }
+    </script>
+</head>
+<body>
+    <h1>SCIT</h1>
+
+    <!--<form th:action="@{/}" onsubmit="insertMember()">-->
+        <table>
+            <tr>
+                <td>아이디</td>
+                <td><input type="text" id="id"></td>
+                <td><input type="button" onclick="idCheck" value="아이디 중복확인"></td>
+            </tr>
+            <tr>
+                <td>비밀번호</td>
+                <td><input type="password" id="pw"></td>
+            </tr>
+            <tr>
+                <td>비밀번호 확인</td>
+                <td><input type="password" id="pwCheck"></td>
+            </tr>
+            <tr>
+                <td>이름</td>
+                <td><input type="text" id="name"></td>
+            </tr>
+            <tr>
+                <td>생년월일</td>
+                <td><input type="text" placeholder="ex)19930617" id="birth"></td>
+            </tr>
+            <tr>
+                <td>성별</td>
+                <td>
+                    <select id="gender">
+                        <option value="male">남자</option>
+                        <option value="female">여자</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>이메일</td>
+                <td><input type="text" id="email"></td>
+            </tr>
+            <tr>
+                <td>전화번호</td>
+                <td><input type="text" id="phone"></td>
+            </tr>
+            <tr>
+                <td>주소</td>
+                <td><input type="text"></td>
+                <td><input type="button" value="주소 검색" id="address"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td colspan="2"><input type="text" id="detailAddress"></td>
+            </tr>
+        </table>
+        <input type="button" onclick="insertMember()" value="회원가입">
+        <input type="button" value="취소" onclick="cancel()">
+   <!-- </form>-->
+</body>
+</html>
