@@ -10,6 +10,7 @@
     <p sec:authorize="isAuthenticated()">
         <span th:text="${#authentication.name}"></span>님 로그인중
     </p>
+    <a th:href="@{/member/logout}">로그아웃</a>
 
 </body>
 </html>

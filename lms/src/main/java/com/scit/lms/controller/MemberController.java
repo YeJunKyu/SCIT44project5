@@ -58,6 +58,10 @@ public class MemberController {
         return "memberView/idcheck";
     }
 
+    @GetMapping("login")
+    public String login() {
+        return "memberView/login";
+    }
 
 
 }
