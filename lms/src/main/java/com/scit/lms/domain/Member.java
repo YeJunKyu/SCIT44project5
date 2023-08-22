@@ -19,7 +19,7 @@ public class Member implements UserDetails {
     String email;
     String address;
     String note;
-    String role;
+    String rolename;
     boolean enabled;
 
 
@@ -30,26 +30,26 @@ public class Member implements UserDetails {
 
     @Override
     public String getPassword() {
-        return null;
+        return this.memberpw;
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return this.memberid;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 }

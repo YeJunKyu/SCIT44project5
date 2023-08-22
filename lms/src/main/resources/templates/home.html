@@ -10,9 +10,9 @@
 
 	<h1>SCIT MASTER</h1>
 
-	<form th:action="@{/member/login}">
-		<div>ID<input type="text"></div>
-		<div>PW<input type="password"></div>
+	<form th:action="@{/member/login}" method="post">
+		<div>ID<input type="text" id="id" name="memberid"  required></div>
+		<div>PW<input type="password" id="password" name="memberpw" required></div>
 		<input type="submit" value="로그인">
 
 	</form>
