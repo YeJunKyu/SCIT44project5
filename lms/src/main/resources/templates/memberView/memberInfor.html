@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>회원정보</title>
+<script th:src="@{/js/jquery-3.6.0.js}"></script>
+<script>
+$(document).ready(function(){
+    let birth = $("#ageValue").val();                               // 50번째 줄 히든에 user.birthday 를 밸류로 가져옴
+
+    let birthForm = birth.substring(0,10);                          //생년월일에 시간까지 떠서 자름
+    let birthday = document.getElementById('birthday');             // 47번째줄 아이디 가져와서
+    birthday.innerHTML = birthForm;                                 // birthForm을 안에넣어줌
+
+    let date = new Date();                                          //현재시간을 담음
+    let ageCalculate = date.getFullYear() - birth.substring(0,4);   //현재시간의 년도 - 회원생년월일의 년도부분
+
+    let age = document.getElementById('age');                       // 49번째줄 아이디를 가져와서
+    age.innerHTML = ageCalculate;                                   // 그안에 ageCalculate 넣음
+
+    let genderValue = $("#genderValue").val();                      //41번째 줄 히든의 밸류값을 가져옴
+    let gender = document.getElementById('gender');                 // 40번째줄 아이디를 가져와서
+    if(genderValue == "male"){                                      //male이면 남성 이외는 여성
+        gender.innerHTML = "남성";
+    }else{
+        gender.innerHTML = "여성";
+    }
+});
+
+function goBack(){
+    history.back();
+}
+</script>
+</head>
+<body>
+<h1>[회원정보]</h1>
+
+<form>
+    <table>
+        <tr>
+            <td>이름</td>
+            <td th:text="${user.membername}"></td>
+            <td>성별</td>
+            <td id="gender"></td>
+            <input type="hidden" id="genderValue" th:value="${user.gender}">
+        </tr>
+        <tr>
+            <td>생년월일</td>
+<!-- 1993-06-17 00:00:00 처럼 뒤에 시간이 나와서 substring 으로 잘라서가져옴
+    <td th:text="${user.birthday}"></td> -->
+            <td id="birthday"></td>
+            <td>나이</td>
+            <td id="age"></td>
+            <input type="hidden" id="ageValue" th:value="${user.birthday}">
+        </tr>
+        <tr>
+            <td>전화</td>
+            <td th:text="${user.phone}"></td>
+            <td>이메일</td>
+            <td th:text="${user.email}"></td>
+        </tr>
+        <tr>
+            <td >주소</td>
+            <td th:text="${user.address}"></td>
+        </tr>
+    </table>
+</form>
+<input type="button" value="수정"><input type="button" value="탈퇴"><br>
+<input type="button" value="목록으로" onclick="goBack()">
+</body>
+</html>

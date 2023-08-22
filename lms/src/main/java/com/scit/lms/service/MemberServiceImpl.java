@@ -38,4 +38,11 @@ public class MemberServiceImpl implements MemberService {
 	public boolean idcheck(String searchid) {
 		return dao.selectOne(searchid) == null;
 	}
+
+	//회원정보 불러오기
+	@Override
+	public Member memberInfor(String userid){
+		Member member = dao.memberInfor(userid);
+		return member;
+	}
 }

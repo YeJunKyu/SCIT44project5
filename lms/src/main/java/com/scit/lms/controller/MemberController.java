@@ -65,5 +65,17 @@ public class MemberController {
         return "memberView/login";
 
     }
+    //회원정보 불러오기
+    @GetMapping("information")
+    public String information(@AuthenticationPrincipal UserDetails user, Model model){
+        //로그인한 아이디로 회원정보 검색
+        Member member = service.memberInfor(user.getUsername());
+
+
+        //검색결과 모델에 저장
+        model.addAttribute("user", member);
+        log.debug("{}", member);
+        return "memberView/memberInfor";
+    }
 
 }

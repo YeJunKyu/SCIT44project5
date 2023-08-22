@@ -34,6 +34,9 @@
     </select>
 
 
-
+<!--회원정보 불러오기-->
+    <select id="memberInfor" parameterType="String" resultType="Member">
+        select * from lms_member where memberid = #{memberid}
+    </select>
 
 </mapper>
