@@ -3,7 +3,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.scit.lms.dao.MemberDAO">
-<insert id="join" parameterType="com.scit.lms.domain.Member">
+<insert id="join" parameterType="Member">
     insert into lms_member(
         memberid
         , memberpw
@@ -11,10 +11,9 @@
         , birthday
         , phone
         , gender
+        , email
         , address
-        , note
-        , role
-        , available)
+        )
     values(
         #{memberid}
         , #{memberpw}
@@ -22,13 +21,17 @@
         , #{birthday}
         , #{phone}
         , #{gender}
+        , #{email}
         , #{address}
-        , #{note}
-        , #{role}
-        , #{available})
+        )
 </insert>
 
-
+    <!-- 	1명 회원정보 조회  -->
+    <select id="selectOne"
+            parameterType="string"
+            resultType="Member">
+        select * from lms_member where memberid = #{memberid}
+    </select>
 
 
 

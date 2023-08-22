@@ -1,46 +1,63 @@
 package com.scit.lms.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import lombok.extern.slf4j.Slf4j;
 import com.scit.lms.domain.Member;
 import com.scit.lms.service.MemberService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
+//회원정보 관련 콘트롤러
 
 @Slf4j
 @Controller
 @RequestMapping("member")
 public class MemberController {
+
     @Autowired
     MemberService service;
-    //회원가입폼으로이동
+
+    //회원가입 폼으로 이동
     @GetMapping("join")
-    public String join(){
-        return "join";
+    public String join() {
+
+        return "memberView/join";
     }
-    //회원가입 데이터 전달
+
+
+    //회원가입 처리
     @PostMapping("join")
-    @ResponseBody
-    public Map<String, Object> join(Member member){
-        Map<String, Object> resultMap = new HashMap<>();
-        System.out.println("member : " + member);
-
-
+    public String join(Member member) {
+        log.debug("회원1:{}",member);
         int n = service.join(member);
-
-        if(n == 1 ){
-            resultMap.put("msg","가입 완료");
-        } else {
-            resultMap.put("msg","가입 실패");
-        }
-
-        return resultMap;
+        log.debug("회원2:{}",member);
+        return "redirect:/";
     }
-    @GetMapping("login")
-    public String main(){
-        return "main";
+
+    //id중복확인 폼
+    @GetMapping("idcheck")
+    public String idcheck() {
+        return "memberView/idcheck";
     }
+
+    //id중복 확인 처리
+    @PostMapping("idcheck")
+    public String idcheck(String searchid, Model model) {
+        log.debug("중복체크1:{}",searchid);
+        boolean result = service.idcheck(searchid);
+        log.debug("중복체크2:{}",searchid);
+        model.addAttribute("searchid",searchid);
+        model.addAttribute("result",result);
+
+        return "memberView/idcheck";
+    }
+
+
+
 }
