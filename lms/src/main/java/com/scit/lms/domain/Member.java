@@ -1,12 +1,10 @@
 package com.scit.lms.domain;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Data
-@Getter
-@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Member {
     String memberid;
     String memberpw;
