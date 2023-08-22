@@ -34,9 +34,9 @@ public class MemberController {
     //회원가입 처리
     @PostMapping("join")
     public String join(Member member) {
-        log.debug("회원1:{}",member);
+        log.debug("회원1:{}", member);
         int n = service.join(member);
-        log.debug("회원2:{}",member);
+        log.debug("회원2:{}", member);
         return "redirect:/";
     }
 
@@ -49,20 +49,21 @@ public class MemberController {
     //id중복 확인 처리
     @PostMapping("idcheck")
     public String idcheck(String searchid, Model model) {
-        log.debug("중복체크1:{}",searchid);
+        log.debug("중복체크1:{}", searchid);
         boolean result = service.idcheck(searchid);
-        log.debug("중복체크2:{}",searchid);
-        model.addAttribute("searchid",searchid);
-        model.addAttribute("result",result);
+        log.debug("중복체크2:{}", searchid);
+        model.addAttribute("searchid", searchid);
+        model.addAttribute("result", result);
 
         return "memberView/idcheck";
     }
 
+
     //로그인 폼으로 이동
     @GetMapping("login")
-    public String loginForm() {
-        return "memberView/loginForm";
-    }
+    public String login() {
+        return "memberView/login";
 
+    }
 
 }

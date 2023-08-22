@@ -4,24 +4,63 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-
+	<script th:src="@{/js/jquery-3.6.0.js}"></script>
 </head>
 <body>
 
 	<h1>SCIT MASTER</h1>
 
+
 	<p sec:authorize="isAuthenticated()">
 		<span th:text="${#authentication.name}"></span>님 로그인중
 	</p>
-	<p sec:authorize="!isAuthenticated()">
-		<a th:href="@{/member/login}">로그인</a>
-	</p>
+	<div sec:authorize="!isAuthenticated()">
+		<form th:action="@{/member/login}" method="post" >
+			<table>
+				<tr>
+					<th>ID</th>
+					<td>
+						<input type="text" id="id" name="memberid"  required>
+					</td>
+				</tr>
+				<tr>
+					<th>비밀번호</th>
+					<td>
+						<input type="password" id="password" name="memberpw">
+					</td>
+				</tr>
+
+				<tr>
+					<td colspan="2" style="text-align: center;">
+						<input type="submit" value="로그인">
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+
+
+
+	<div th:if="${param.error}" style="color:red;">
+		<p>ID 또는 비밀번호가 틀렸습니다.</p>
+	</div>
+
+
+	<div th:if="${param.error}">
+		<script>
+			alert("에러");
+		</script>
+	</div>
+
+
+
 	<p sec:authorize="!isAuthenticated()">
 		<a th:href="@{/member/join}">회원가입</a>
 	</p>
 	<p sec:authorize="isAuthenticated()">
 		<a th:href="@{/member/logout}">로그아웃</a>
 	</p>
+
 
 
 
