@@ -4,7 +4,7 @@
 
 <mapper namespace="com.scit.lms.dao.MemberDAO">
 <insert id="join" parameterType="com.scit.lms.domain.Member">
-    insert into member(
+    insert into lms_member(
         memberid
         , memberpw
         , membername
