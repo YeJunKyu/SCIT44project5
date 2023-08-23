@@ -13,7 +13,7 @@
         <tr>
             <td>ID</td>
             <td>
-                <input type="text" id="memberid" readonly="readonly" th:value="${user.memberid}" >
+                <input type="text" id="memberid" readonly th:value="${user.memberid}" required>
                 <span id="idLengthMessage" ></span>
             </td>
         </tr>
@@ -21,40 +21,40 @@
         <tr>
             <td rowspan="2">비밀번호</td>
             <td>
-                <input type="password" name="memberpw" id="memberpw" placeholder="비밀번호 입력">
+                <input type="password" id="memberpw" placeholder="비밀번호 입력" required>
             </td>
 
             <td><span id="pwcheck"></span></td>
         </tr>
 
         <tr>
-            <td><input type="password" name="memberpw2" id="memberpw2" placeholder="비밀번호 다시 입력" ></td>
+            <td><input type="password" id="memberpwCheck" placeholder="비밀번호 다시 입력" required></td>
         </tr>
 
 
         <tr>
             <td>이름</td>
-            <td><input type="text" name="membername" id="membername" placeholder="이름입력" th:value="${user.membername}"></td>
+            <td><input type="text" id="membername" th:value="${user.membername}" readonly></td>
         </tr>
         <tr>
             <td>성별</td>
-            <td><input type="text" name="membername" id="membername" placeholder="이름입력" th:value="${user.membername}"></td>
+            <td><input type="text" id="gender" th:value="${user.gender}" readonly></td>
         </tr>
         <tr>
             <td>생년월일</td>
-            <td><input type="text" name="memberbirth" id="memberbirth" placeholder="" th:value="${user.membername}"></td>
+            <td><input type="text" id="birthday" th:value="${user.birthday}" readonly></td>
         </tr>
         <tr>
             <td>이메일</td>
-            <td><input type="text" name="email" id="email" placeholder="이메일 입력" th:value="${user.email}"></td>
+            <td><input type="text" id="email" th:value="${user.email}"></td>
         </tr>
         <tr>
             <td>전화번호</td>
-            <td><input type="text" name="phone" id="phone" placeholder="전화번호 입력"  th:value="${user.phone}"></td>
+            <td><input type="text" id="phone"  th:value="${user.phone}"></td>
         </tr>
         <tr>
             <td>주소</td>
-            <td colspan="2"><input type="text" name="address" id="address" placeholder="주소 입력" th:value="${user.address}"></td>
+            <td colspan="2"><input type="text" id="address" th:value="${user.address}"></td>
         </tr>
         <tr>
             <td><input type="submit" value="수정"></td>

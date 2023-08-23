@@ -25,7 +25,13 @@ $(document).ready(function(){
     }else{
         gender.innerHTML = "여성";
     }
+
+    //document.getElementById('gender').innerHTML = "남성";
 });
+
+function goUpdate(){
+    location.href = 'updateForm.html';
+}
 
 function goBack(){
     history.back();
@@ -65,7 +71,7 @@ function goBack(){
         </tr>
     </table>
 </form>
-<input type="button" value="수정"><input type="button" value="탈퇴"><br>
+<input type="button" value="수정" onclick="goUpdate()"><input type="button" value="탈퇴"><br>
 <input type="button" value="목록으로" onclick="goBack()">
 </body>
 </html>

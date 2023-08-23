@@ -78,4 +78,10 @@ public class MemberController {
         return "memberView/memberInfor";
     }
 
+    //회원정보 수정폼으로 이동
+    @GetMapping("updateForm")
+    public String updateForm(){
+        return "memberView/updateForm";
+    }
+
 }
