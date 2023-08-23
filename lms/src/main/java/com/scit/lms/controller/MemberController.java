@@ -75,7 +75,7 @@ public class MemberController {
         //검색결과 모델에 저장
         model.addAttribute("user", member);
         log.debug("{}", member);
-        return "memberView/memberInfor";
+        return "memberView/memberInfo";
     }
 
     //회원정보 수정폼으로 이동
