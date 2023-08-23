@@ -34,6 +34,13 @@
             return true;
         }
 
+        function updateCheck(){
+            if(confirm("수정하시겠습니까")) {
+                return true;
+            }
+            return false;
+        }
+
     </script>
 </head>
 <body>
@@ -89,8 +96,8 @@
             <td colspan="2"><input type="text" id="address" name="address" th:value="${user.address}" required></td>
         </tr>
         <tr>
-            <td><input type="submit" value="수정"></td>
-            <td><input type="button" value="취소" onclick=""></td>
+            <td><input type="submit" value="수정" onclick="return updateCheck()"></td>
+            <td><a th:href="@{/member/information}">취소</a></td>
         </tr>
     </table>
 </form>

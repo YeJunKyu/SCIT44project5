@@ -99,4 +99,11 @@ public class MemberController {
         model.addAttribute("user", m);
         return "memberView/memberInfo";
     }
+
+    @GetMapping("memberDelete")
+    public String memberDelete(@AuthenticationPrincipal UserDetails user){
+        int n = service.memberDelete(user.getUsername());
+
+        return "redirect:/";
+    }
 }

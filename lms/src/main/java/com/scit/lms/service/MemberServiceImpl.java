@@ -70,4 +70,11 @@ public class MemberServiceImpl implements MemberService {
 
 		return n;
 	}
+
+	//회원탈퇴
+	@Override
+	public int memberDelete(String userid){
+		int n = dao.memberDelete(userid);
+		return n;
+	}
 }
