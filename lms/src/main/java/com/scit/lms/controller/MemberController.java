@@ -80,8 +80,23 @@ public class MemberController {
 
     //회원정보 수정폼으로 이동
     @GetMapping("updateForm")
-    public String updateForm(){
+    public String updateForm(@AuthenticationPrincipal UserDetails user, Model model){
+        Member member = service.memberInfor(user.getUsername());
+
+
+        //검색결과 모델에 저장
+        model.addAttribute("user", member);
+        log.debug("{}", member);
         return "memberView/updateForm";
     }
 
+    @PostMapping("memberUpdate")
+    public String memberUpdate(@AuthenticationPrincipal UserDetails user, Model model, Member member){
+        int n = service.memberUpdate(member);
+        log.debug("11111111{}", member);
+        Member m = service.memberInfor(user.getUsername());
+        //검색결과 모델에 저장
+        model.addAttribute("user", m);
+        return "memberView/memberInfo";
+    }
 }

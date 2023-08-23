@@ -52,4 +52,11 @@ public class Member implements UserDetails {
     public boolean isCredentialsNonExpired() {
         return true;
     }
+
+    public String getGender(){
+        return gender;
+    }
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
 }

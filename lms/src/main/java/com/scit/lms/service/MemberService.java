@@ -10,4 +10,7 @@ public interface MemberService {
 
     //회원정보 불러오기
     public Member memberInfor(String userid);
+
+    //회원정보 수정
+    public int memberUpdate(Member member);
 }

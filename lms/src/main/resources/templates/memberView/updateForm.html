@@ -3,17 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <title>회원정보수정</title>
+    <script th:src="@{/assets/js/jquery-3.6.0.js}"></script>
+    <script>
+        $(document).ready(function(){
+            let birth = $("#birthday").val();                               // 50번째 줄 히든에 user.birthday 를 밸류로 가져옴
+
+
+            let birthForm = birth.substring(0,10);                          //생년월일에 시간까지 떠서 자름
+            $("#birthday").val(birthForm);
+
+            let genderValue = $("#gender").val();                      //41번째 줄 히든의 밸류값을 가져옴
+            let gender = document.getElementById('gender');                 // 40번째줄 아이디를 가져와서
+            if(genderValue == "male"){                                      //male이면 남성 이외는 여성
+                $("#gender").val("남성");
+            }else{
+                $("#gender").val("여성");
+            }
+
+        });
+
+        function passwordCheck(){
+            var pw = document.getElementById('memberpw').value;
+            var pwC = document.getElementById('memberpwCheck').value;
+
+            if(pw != pwC){
+                alert('비밀번호가 일치하지 않습니다.');
+                return false;
+            }
+
+            return true;
+        }
+
+    </script>
 </head>
 <body>
 <h1>[회원정보 수정]</h1>
 
-<form  th:action="@{/member/updateForm}" method="post">
+<form  th:action="@{/member/memberUpdate}" method="post" onsubmit="return passwordCheck()">
 
     <table>
         <tr>
             <td>ID</td>
             <td>
-                <input type="text" id="memberid" readonly th:value="${user.memberid}" required>
+                <input type="text" id="memberid" name="memberid" readonly th:value="${user.memberid}" required>
                 <span id="idLengthMessage" ></span>
             </td>
         </tr>
@@ -21,46 +53,46 @@
         <tr>
             <td rowspan="2">비밀번호</td>
             <td>
-                <input type="password" id="memberpw" placeholder="비밀번호 입력" required>
+                <input type="password" id="memberpw" name="memberpw" placeholder="비밀번호 입력">
             </td>
 
             <td><span id="pwcheck"></span></td>
         </tr>
 
         <tr>
-            <td><input type="password" id="memberpwCheck" placeholder="비밀번호 다시 입력" required></td>
+            <td><input type="password" id="memberpwCheck" placeholder="비밀번호 다시 입력"></td>
         </tr>
 
 
         <tr>
             <td>이름</td>
-            <td><input type="text" id="membername" th:value="${user.membername}" readonly></td>
+            <td><input type="text" id="membername" name="membername" th:value="${user.membername}" readonly></td>
         </tr>
         <tr>
             <td>성별</td>
-            <td><input type="text" id="gender" th:value="${user.gender}" readonly></td>
+            <td><input type="text" id="gender" name="gender" th:value="${user.gender}" readonly></td>
         </tr>
         <tr>
             <td>생년월일</td>
-            <td><input type="text" id="birthday" th:value="${user.birthday}" readonly></td>
+            <td><input type="text" id="birthday" name="birthday" th:value="${user.birthday}" readonly></td>
         </tr>
         <tr>
             <td>이메일</td>
-            <td><input type="text" id="email" th:value="${user.email}"></td>
+            <td><input type="text" id="email" name="email" th:value="${user.email}" required></td>
         </tr>
         <tr>
             <td>전화번호</td>
-            <td><input type="text" id="phone"  th:value="${user.phone}"></td>
+            <td><input type="text" id="phone" name="phone" th:value="${user.phone}" required></td>
         </tr>
         <tr>
             <td>주소</td>
-            <td colspan="2"><input type="text" id="address" th:value="${user.address}"></td>
+            <td colspan="2"><input type="text" id="address" name="address" th:value="${user.address}" required></td>
         </tr>
         <tr>
             <td><input type="submit" value="수정"></td>
+            <td><input type="button" value="취소" onclick=""></td>
         </tr>
     </table>
-
 </form>
 </body>
 </html>

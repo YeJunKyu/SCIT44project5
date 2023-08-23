@@ -39,4 +39,21 @@
         select * from lms_member where memberid = #{memberid}
     </select>
 
+<!--  회원정보 수정  -->
+    <update id="memberUpdate" parameterType="Member">
+        update lms_member
+        set
+        membername = #{membername}
+        <if test="memberpw != null and memberpw != '' ">
+            , memberpw = #{memberpw}
+        </if>
+        , gender = #{gender}
+        , birthday = #{birthday}
+        , email = #{email}
+        , phone = #{phone}
+        , address = #{address}
+
+        where
+        memberid = #{memberid}
+    </update>
 </mapper>
