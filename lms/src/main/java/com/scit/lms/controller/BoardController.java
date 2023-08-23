@@ -10,9 +10,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("board")
 public class BoardController {
 
+    // 메인 화면
     @GetMapping("main")
     public String main(){
 
         return "boardView/main";
     }
+
+    // 공지 폼 이동
+    @GetMapping("notice")
+    public String notice(){
+        return "boardView/notice";
+    }
+
 }
