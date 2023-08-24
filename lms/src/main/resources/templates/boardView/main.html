@@ -444,8 +444,9 @@
                                     <img src="assets/images/faces/1.jpg" alt="Face 1">
                                 </div>
                                 <div class="ms-3 name" sec:authorize="isAuthenticated()">
-                                    <h5 class="font-bold" th:text="${#authentication.name}"></h5>
+                                    <a th:href="@{/member/information}"><h5 class="font-bold" th:text="${#authentication.name}"></h5></a>
                                     <h6 class="text-muted mb-0">@johnducky</h6>
+                                    <h6 class="text-muted mb-0"><a th:href="@{/member/logout}">로그아웃</a></h6>
                                 </div>
                             </div>
                         </div>
