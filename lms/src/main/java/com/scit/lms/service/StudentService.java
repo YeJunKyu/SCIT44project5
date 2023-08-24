@@ -1,2 +1,4 @@
-package com.scit.lms.service;public interface StudentService {
+package com.scit.lms.service;
+
+public interface StudentService {
 }
