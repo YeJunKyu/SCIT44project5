@@ -2,6 +2,7 @@ package com.scit.lms.controller;
 
 import java.util.ArrayList;
 
+import com.scit.lms.domain.Member;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -34,7 +35,12 @@ public class AdminController {
 	int pagePerGroup;
 
 	@GetMapping("authentication")
-	public String authentication(){
+	public String authentication(Model model){
+		log.debug("인증멤버1:{}","확인");
+		ArrayList<Member> list = service.selectAll();
+
+		log.debug("인증멤버2:{}",list);
+		model.addAttribute("list",list);
 
 		return "adminView/authentication";
 	}

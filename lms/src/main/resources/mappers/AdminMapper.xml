@@ -4,8 +4,17 @@
 
 <mapper namespace="com.scit.lms.dao.AdminDAO">
 
+    <select id="selectAll"
+            resultType="Member">
+    select memberid,
+        membername,
+        phone,
+        gender,
+        email,
+        address
+        from lms_member
 
-
+    </select>
 
 
 

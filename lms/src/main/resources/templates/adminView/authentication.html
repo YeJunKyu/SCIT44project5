@@ -9,11 +9,11 @@
     
     <link rel="stylesheet" th:href="@{/assets/css/main/app.css}">
     <link rel="stylesheet" th:href="@{/assets/css/main/app-dark.css}">
-    <link rel="shortcut icon" href="assets/images/logo/favicon.svg" type="image/x-icon">
-    <link rel="shortcut icon" href="assets/images/logo/favicon.png" type="image/png">
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.svg}" type="image/x-icon">
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png">
     
-<link rel="stylesheet" href="assets/extensions/simple-datatables/style.css">
-<link rel="stylesheet" href="assets/css/pages/simple-datatables.css">
+<link rel="stylesheet" th:href="@{/assets/extensions/simple-datatables/style.css}">
+<link rel="stylesheet" th:href="@{/assets/css/pages/simple-datatables.css}">
 
 </head>
 
@@ -24,7 +24,7 @@
     <div class="sidebar-header position-relative">
         <div class="d-flex justify-content-between align-items-center">
             <div class="logo">
-                <a href="index.html"><img src="assets/images/logo/logo.svg" alt="Logo" srcset=""></a>
+                <a href="index.html"><img th:src="@{/assets/images/logo/logo.svg}" alt="Logo" srcset=""></a>
             </div>
             <div class="theme-toggle d-flex gap-2  align-items-center mt-2">
                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--system-uicons" width="20" height="20" preserveAspectRatio="xMidYMid meet" viewBox="0 0 21 21"><g fill="none" fill-rule="evenodd" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 14.5c2.219 0 4-1.763 4-3.982a4.003 4.003 0 0 0-4-4.018c-2.219 0-4 1.781-4 4c0 2.219 1.781 4 4 4zM4.136 4.136L5.55 5.55m9.9 9.9l1.414 1.414M1.5 10.5h2m14 0h2M4.135 16.863L5.55 15.45m9.899-9.9l1.414-1.415M10.5 19.5v-2m0-14v-2" opacity=".3"></path><g transform="translate(-210 -1)"><path d="M220.5 2.5v2m6.5.5l-1.5 1.5"></path><circle cx="220.5" cy="11.5" r="4"></circle><path d="m214 5l1.5 1.5m5 14v-2m6.5-.5l-1.5-1.5M214 18l1.5-1.5m-4-5h2m14 0h2"></path></g></g></svg>
@@ -468,21 +468,31 @@
                 <table class="table table-striped" id="table1">
                     <thead>
                         <tr>
-                            <th>기수</th>
+                            <th>아이디</th>
                             <th>이름</th>
+                            <th>성별</th>
                             <th>주소</th>
                             <th>전화번호</th>
                             <th>이메일</th>
+                            <th>인증</th>
+                            <th>직책선택</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Graiden</td>
-                            <td>vehicula.aliquet@semconsequat.co.uk</td>
-                            <td>076 4820 8838</td>
-                            <td>Offenburg</td>
+                    <tr th:each="list : ${list}">
+                            <td th:text="${list.memberid}"></td>
+                            <td th:text="${list.membername}"></td>
+                            <td th:if="${list.gender == 'male'}">남성</td>
+                            <td th:if="${list.gender == 'female'}">여성</td>
+                            <td th:text="${list.address}"></td>
+                            <td th:text="${list.phone}"></td>
+                            <td th:text="${list.email}"></td>
                             <td>
-                                <span class="badge bg-success">Active</span>
+                                <span class="badge bg-success">승인</span>
+                                <span class="badge bg-success">거부</span>
+                            </td>
+                            <td>
+
                             </td>
                         </tr>
 
@@ -510,8 +520,8 @@
     <script th:src="@{/assets/js/bootstrap.js}"></script>
     <script th:src="@{/assets/js/app.js}"></script>
     
-<!--<script th:src="@{/assets/extensions/simple-datatables/umd/simple-datatables.js}"></script>-->
-<!--<script th:src="@{/assets/js/pages/simple-datatables.js}"></script>-->
+<script th:src="@{/assets/extensions/simple-datatables/umd/simple-datatables.js}"></script>
+<script th:src="@{/assets/js/pages/simple-datatables.js}"></script>
 
 </body>
 
