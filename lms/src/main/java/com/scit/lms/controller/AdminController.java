@@ -33,6 +33,10 @@ public class AdminController {
 	@Value("${user.board.group}")
 	int pagePerGroup;
 
+	@GetMapping("authentication")
+	public String authentication(){
 
+		return "adminView/authentication";
+	}
 
 }
