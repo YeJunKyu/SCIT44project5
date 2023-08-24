@@ -39,7 +39,7 @@ public class WebSecurityConfig {
         .loginProcessingUrl("/member/login").permitAll()	//인증 처리를 하는 URL을 설정. 로그인 폼의 action으로 지정
         .usernameParameter("memberid")		//로그인폼의 아이디 입력란의 name
         .passwordParameter("memberpw")		//로그인폼의 비밀번호 입력란의 name
-        .defaultSuccessUrl("/board/main", true)
+        .defaultSuccessUrl("/main", true)
         .and()
         .logout()
         .logoutUrl("/member/logout")		//로그아웃 처리 URL
