@@ -56,10 +56,4 @@
         where
         memberid = #{memberid}
     </update>
-
-<!--  회원탈퇴  -->
-    <delete id="memberDelete" parameterType="String">
-        delete from lms_member
-        where memberid = #{memberid}
-    </delete>
 </mapper>

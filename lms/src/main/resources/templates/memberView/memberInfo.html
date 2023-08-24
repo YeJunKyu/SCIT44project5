@@ -31,11 +31,8 @@ $(document).ready(function(){
 
 
 
-function deleteCheck(){
-    if(!confirm("삭제하시겠습니까")){
-        return false;
-    }
-    return true;
+function goBack(){
+    history.back();
 }
 </script>
 </head>
@@ -72,8 +69,7 @@ function deleteCheck(){
         </tr>
     </table>
 </form>
-<a th:href="@{/member/updateForm}">수정</a>
-<a th:href="@{/member/memberDelete}" onclick="return deleteCheck()">탈퇴</a><br>
-<a th:href="@{/board/main}">목록으로</a>
+<a th:href="@{/member/updateForm}">수정</a><input type="button" value="탈퇴"><br>
+<input type="button" value="목록으로" onclick="goBack()">
 </body>
 </html>
