@@ -43,11 +43,13 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public Member memberInfor(String userid){
 		Member member = dao.memberInfor(userid);
-		if(member.getGender() == "male"){
-			member.setGender("남성");
-		}else {
-			member.setGender("여성");
-		}
+
+//		log.debug("&&&&&&&&&&&&{}",member.getGender());
+//		if(member.getGender() == "male"){
+//			member.setGender("남성");
+//		}else {
+//			member.setGender("여성");
+//		}
 		return member;
 	}
 

@@ -36,7 +36,20 @@
 
 <!--회원정보 불러오기-->
     <select id="memberInfor" parameterType="String" resultType="Member">
-        select * from lms_member where memberid = #{memberid}
+        select
+            membername
+
+            , birthday
+            , phone
+            , email
+            , address
+            ,
+            CASE
+            WHEN gender = 'male' THEN '남성'
+            ELSE '여성'
+            END AS gender
+
+        from lms_member where memberid = #{memberid}
     </select>
 
 <!--  회원정보 수정  -->
