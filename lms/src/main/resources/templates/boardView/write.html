@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <title>글쓰기</title>
+    </head>
+    <body>
+        <form th:action="@{/teacher/write}" method="post">
+            <table>
+                <tr>
+                    <td>작성자</td>
+                    <td>{}</td>
+                </tr>
+                <tr>
+                    <td>제목</td>
+                    <td>
+                        <input type="text" name="title" required />
+                    </td>
+                </tr>
+                <tr>
+                    <td>내용</td>
+                    <td>
+                        <textarea name="contents" cols="30" rows="10"></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td>첨부파일</td>
+                    <td>
+                        <input type="text" name="file" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="submit" value="등록" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </body>
+</html>
