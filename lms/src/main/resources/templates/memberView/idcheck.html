@@ -41,31 +41,40 @@ function inputid(id) {
 </script>
 </head>
 <body>
-	<h1 class="auth-title">[ ID 중복 확인 ]</h1>
-	
-	<form th:action="@{/member/idcheck}" method="post" onsubmit="return idcheck()">
+<div class="row h-100">
+	<div id="auth-left">
 
-	<input type="text" name="searchid" id="searchid" th:value="${searchid}" class="form-control form-control-xl" placeholder="검색할 ID">
-	<input type="submit" value="검색" class="btn btn-primary btn-block btn-lg shadow-lg mt-5">
-	</form>
-	
-	
-	
-	<!-- 검색 후에만 출력 -->
-	<div th:if="${result != null}">
-	검색결과
-		<!-- 사용 가능한 경우 -->
-		<div th:if="${result}">
-			<p>사용 가능한 아이디입니다.</p>
-			<p><input type="button" value="id사용하기" th:id="${searchid}" onclick="inputid(this.getAttribute('id'))" class="btn btn-primary btn-block btn-lg shadow-lg mt-5"></p>
+		<h1 class="auth-title">[ ID 중복 확인 ]</h1>
+
+		<form th:action="@{/member/idcheck}" method="post" onsubmit="return idcheck()">
+
+		<span><input type="text" name="searchid" id="searchid" th:value="${searchid}" class="form-control form-control-xl" placeholder="검색할 ID"></span>
+		<span><input type="submit" value="검색" class="btn btn-primary btn-block btn-lg shadow-lg mt-5"></span>
+		</form>
+
+
+
+		<!-- 검색 후에만 출력 -->
+		<div th:if="${result != null}">
+
+			<!-- 사용 가능한 경우 -->
+			<div th:if="${result}">
+				<div class="alert alert-success">
+					<i class="bi bi-check-circle"></i>
+					사용 가능한 아이디입니다.
+				</div>
+				<input type="button" value="ID사용하기" th:id="${searchid}" onclick="inputid(this.getAttribute('id'))" class="btn btn-primary btn-block btn-lg shadow-lg mt-5">
+			</div>
+
+
+			<!-- 사용 불가능한 경우 -->
+			<div th:if="${!result}" class="alert alert-warning">
+				<i class="bi bi-exclamation-triangle"></i>
+				이미 사용 중인 아이디입니다.
+			</div>
 		</div>
-		
-		
-		<!-- 사용 불가능한 경우 -->
-		<div th:if="${!result}" class="alert alert-warning">
-			<i class="bi bi-exclamation-triangle"></i>
-			이미 사용중인 아이디입니다.
-		</div>
+
 	</div>
+</div>
 </body>
 </html>
