@@ -18,13 +18,14 @@ public class TeacherController {
     TeacherService  service;
 
 
-    // Board board = new Board("jangsh970429", "title1", "contents1", "sysdate", "file");
     // 공지 글쓰기
     @PostMapping("write")
     public String write(Board board) {
-        log.debug("제목 : {}", board.getTitle());
-        log.debug("내용 : {}", board.getContents());
+//        log.debug("제목 : {}", board.getTitle());
+//        log.debug("내용 : {}", board.getContents());
         service.write(board);
         return "redirect:/notice";
     }
+
+    // 시험문제 등록
 }
