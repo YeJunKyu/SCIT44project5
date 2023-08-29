@@ -18,23 +18,27 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 
-    $(document).ready(function(){
-     $(".approve").change(function(){
-         if($(this).prop("checked")){
-             $(this).closest("tr").find(".deny").prop("checked", false); // 거부 체크 해제
-             $(this).closest("tr").find("td:eq(7)").append('<select name="rolename"><option value="ROLE_student">학생</option><option value="ROLE_teacher">선생</option><option value="ROLE_admin">관리자</option></select>');
-         } else {
-             $(this).closest("tr").find("select").remove();
-         }
-     });
+    $(document).ready(function() {
+    $(".approve").change(function() {
+        const memberId = $(this).closest("tr").find(".hidden-member-id").val();
+        const $roleSelection = $(this).closest("tr").find(".role-selection");
 
-     $(".deny").change(function(){
-         if($(this).prop("checked")){
-             $(this).closest("tr").find(".approve").prop("checked", false); // 승인 체크 해제
-             $(this).closest("tr").find("select").remove();
-         }
-     });
- });
+        if ($(this).prop("checked")) {
+            $(this).closest("tr").find(".deny").prop("checked", false); // 거부 체크 해제
+
+            $roleSelection.show(); // 직책 선택란 표시
+        } else {
+            $roleSelection.hide(); // 직책 선택란 숨기기
+        }
+    });
+
+    $(".deny").change(function() {
+        if ($(this).prop("checked")) {
+            $(this).closest("tr").find(".approve").prop("checked", false); // 승인 체크 해제
+            $(this).closest("tr").find(".role-selection").hide(); // 직책 선택란 숨기기
+        }
+    });
+});
 
 </script>
 
@@ -84,35 +88,53 @@
                             <th>전화번호</th>
                             <th>이메일</th>
                             <th>인증</th>
-                            <th>직책선택</th>
-                            <th></th>
+                            <th>직책</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="list : ${list}">
-                            <td><input type="text" name="memberid" th:value="${list.memberid}" readonly></td>
-                            <td th:text="${list.membername}"><input type="text" name="membername" th:value="${list.membername}" readonly></td>
-                            <td th:if="${list.gender == 'male'}">
-                                <input type="hidden" name="gender" th:value="${list.gender}">남성</td>
-                            <td th:if="${list.gender == 'female'}">
-                                <input type="hidden" name="gender" th:value="${list.gender}">여성</td>
-                            <td th:text="${list.address}"><input type="text" name="address" th:value="${list.address}" readonly></td>
-                            <td th:text="${list.phone}"><input type="text" name="phone" th:value="${list.phone}" readonly></td>
-                            <td th:text="${list.email}"><input type="text" name="email" th:value="${list.email}" readonly></td>
-                            <td>
-                                <span class="badge bg-success"><input type="checkbox" value="true" class="approve">승인</span>
-                                <span class="badge bg-success"><input type="checkbox" value="false" class="deny">거부</span>
-                            </td>
-                            <td>
+                        <tr th:each="member : ${list}">
 
+                            <td><input type="hidden" name="memberid" th:value="${member.memberid}" readonly>[[${member.memberid}]]</td>
+                            <td><input type="hidden" name="membername" th:value="${member.membername}" readonly>[[${member.membername}]]</td>
+                            <td th:if="${member.gender == 'male'}">
+                                <input type="hidden" name="gender" th:value="${member.gender}">남성</td>
+                            <td th:if="${member.gender == 'female'}">
+                                <input type="hidden" name="gender" th:value="${member.gender}">여성</td>
+                            <td th:text="${member.address}"><input type="text" name="address" th:value="${member.address}" readonly></td>
+                            <td th:text="${member.phone}"><input type="text" name="phone" th:value="${member.phone}" readonly></td>
+                            <td th:text="${member.email}"><input type="text" name="email" th:value="${member.email}" readonly></td>
+                            <td>
+                                <span class="badge bg-success"><input type="checkbox" value="true" th:name="'enabled' + ${member.memberid}" class="approve">승인</span>
+                                <span class="badge bg-success"><input type="checkbox" value="false" th:name="'enabled' + ${member.memberid}" class="deny">거부</span>
+                                <select th:name="'rolename' + ${member.memberid}" class="role-selection" style="display:none">
+                                    <option value="ROLE_student">학생</option>
+                                    <option value="ROLE_teacher">선생</option>
+                                    <option value="ROLE_admin">관리자</option>
+                                </select>
                             </td>
+
+                            <td th:if="${member.rolename == 'ROLE_USER'}">
+                                일반사용자
+                            </td>
+                            <td th:if="${member.rolename == 'ROLE_admin'}">
+                                관리자
+                            </td>
+                            <td th:if="${member.rolename == 'ROLE_teacher'}">
+                                선생
+                            </td>
+                            <td th:if="${member.rolename == 'ROLE_student'}">
+                                학생
+                            </td>
+
+                        </tr>
+                        <tr>
                             <td>
                                 <input type="submit" value="저장">
                             </td>
                         </tr>
-
                         </tbody>
                     </table>
+
 
                 </form>
 

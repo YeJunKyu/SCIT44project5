@@ -27,7 +27,9 @@ public class AdminServiceImple implements AdminService {
 	}
 
 	@Override
-	public int update(Member member) {
-		return dao.update(member);
+	public void update(Member member) {
+		dao.update(member);
 	}
+
+
 }

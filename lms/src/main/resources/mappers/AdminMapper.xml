@@ -4,24 +4,32 @@
 
 <mapper namespace="com.scit.lms.dao.AdminDAO">
 
+<!--    회원조회-->
     <select id="selectAll"
             resultType="Member">
     select memberid,
         membername,
-        phone,
         gender,
+        address,
+        phone,
         email,
-        address
+        rolename
         from lms_member
 
     </select>
 
+<!--    다중수정-->
     <update id="update" parameterType="Member">
-        update lms_member
-        set rolename = #{rolename},
-        enabled = #{enabled}
-        where memberid = #{memberid}
-
+        UPDATE lms_member
+        SET
+        <if test="rolename != null">
+            rolename = #{rolename},
+        </if>
+        <if test="enabled != null">
+            enabled = #{enabled}
+        </if>
+        WHERE
+        memberid = #{memberid}
     </update>
 
 

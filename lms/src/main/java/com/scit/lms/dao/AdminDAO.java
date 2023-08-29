@@ -14,5 +14,7 @@ public interface AdminDAO {
 
     ArrayList<Member> selectAll();
 
-    int update(Member member);
+
+
+    void update(Member member);
 }
