@@ -21,6 +21,12 @@ public class BoardController {
         return "boardView/notice";
     }
 
+    // 글쓰기 폼 이동
+    @GetMapping("notice/write")
+    public String noticeWrite() {
+        return "boardView/write";
+    }
+
     // 학생 관리 페이지 이동
     @GetMapping("manage")
     public String manage() {

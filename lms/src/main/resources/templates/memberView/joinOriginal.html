@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script>
+        function idFormOpen() {
+          // ID 중복확인 버튼
+          window.open('idcheck','idwin','width=400,height=500'); // member/idcheck 경로의 새창을띄움
+
+
+        }
+
+        function check(){
+            var id = document.getElementById('id').value;
+            var password = document.getElementById('password').value;
+            var password2 = document.getElementById('password2').value;
+
+            if(id.length < 3){
+                alert('아이디는 3글자 이상이어야 합니다.');
+                return false;
+            }
+
+            if(password !== password2){
+                alert('비밀번호가 일치하지 않습니다.');
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+</head>
+<body>
+    <h1>SCIT</h1>
+
+    <form th:action="@{/member/join}" method="post" onsubmit="return check()">
+        <table>
+            <tr>
+                <td>아이디</td>
+                <td><input type="text" id="id" name="memberid" readonly required></td>
+                <td><input type="button" onclick="idFormOpen()" value="아이디 중복확인"></td>
+            </tr>
+            <tr>
+                <td>비밀번호</td>
+                <td><input type="password" id="password" name="memberpw" required></td>
+            </tr>
+            <tr>
+                <td>비밀번호 확인</td>
+                <td><input type="password" id="password2" required></td>
+            </tr>
+            <tr>
+                <td>이름</td>
+                <td><input type="text" id="name" name="membername" required></td>
+            </tr>
+            <tr>
+                <td>생년월일</td>
+                <td><input type="text" placeholder="ex)19930617" name="birthday" id="birth" required></td>
+            </tr>
+            <tr>
+                <td>성별</td>
+                <td>
+                    <select id="gender" name="gender">
+                        <option value="male">남자</option>
+                        <option value="female">여자</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>이메일</td>
+                <td><input type="text" id="email" name="email" required></td>
+            </tr>
+            <tr>
+                <td>전화번호</td>
+                <td><input type="text" id="phone" name="phone" required></td>
+            </tr>
+            <tr>
+                <td>주소</td>
+                <td><input type="text" name="address"></td>
+                <td><input type="button" value="주소 검색"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td colspan="2"><input type="text" id="detailAddress" value="상세 주소"></td>
+            </tr>
+        </table>
+        <input type="submit" value="회원가입">
+    </form>
+</body>
+</html>
