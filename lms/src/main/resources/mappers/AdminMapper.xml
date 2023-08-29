@@ -16,7 +16,13 @@
 
     </select>
 
+    <update id="update" parameterType="Member">
+        update lms_member
+        set rolename = #{rolename},
+        enabled = #{enabled}
+        where memberid = #{memberid}
 
+    </update>
 
 
 </mapper>

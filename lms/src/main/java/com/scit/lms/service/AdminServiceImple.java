@@ -25,4 +25,9 @@ public class AdminServiceImple implements AdminService {
 	public ArrayList<Member> selectAll() {
 		return dao.selectAll();
 	}
+
+	@Override
+	public int update(Member member) {
+		return dao.update(member);
+	}
 }

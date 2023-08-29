@@ -10,4 +10,5 @@ public interface AdminService {
 
     ArrayList<Member> selectAll();
 
+    int update(Member member);
 }

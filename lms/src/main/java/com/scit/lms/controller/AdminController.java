@@ -45,4 +45,11 @@ public class AdminController {
 		return "adminView/authentication";
 	}
 
+	@PostMapping("update")
+	public String update(Member member){
+		log.debug("인증수정1:{}",member);
+		int n = service.update(member);
+		log.debug("인증수정2:{}",member);
+		return "redirect:/admin/authentication";
+	}
 }
