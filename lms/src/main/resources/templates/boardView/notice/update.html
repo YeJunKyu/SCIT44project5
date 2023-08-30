@@ -21,26 +21,17 @@
         }
     </style>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script>
         function check() {
             let t = document.getElementById('noticetitle').value;
             let c = document.getElementById('noticecontents').value;
 
             if(t.length<5) {
-                Swal.fire({
-                  icon: 'error',
-                  title: '제목을 입력해주세요',
-                  text: '제목을 5자 이상 입력해주세요',
-                })
+                alert("제목을 입력하세요.");
                 return false;
             }
-            if(c.length<10) {
-                Swal.fire({
-                  icon: 'error',
-                  title: '내용을 입력해주세요',
-                  text: '내용을 10자 이상 입력해주세요',
-                })
+            if(c.length<5) {
+                alert("내용을 입력하세요.");
                 return false;
             }
         }
@@ -85,33 +76,33 @@
                 <div class="card">
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">공지 등록</h4>
+                            <h4 class="card-title">공지 수정</h4>
                         </div>
                         <div class="card-content">
                             <div class="card-body">
 
-                                <form th:action="@{/notice/write}" method="post" enctype="multipart/form-data" onsubmit="return check()" class="form form-horizontal">
+                                <form th:action="@{/notice/update}" method="post" enctype="multipart/form-data" onsubmit="return check()" class="form form-horizontal">
                                     <div class="form-body">
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <label>제목</label>
                                             </div>
                                             <div class="col-md-8 form-group">
-                                                <input name="noticetitle" id="noticetitle" class="form-control">
+                                                <input name="noticetitle" id="noticetitle" class="form-control" th:value="${notice.noticetitle}">
                                             </div>
                                             <div class="col-md-4">
                                                 <label>내용</label>
                                             </div>
                                             <div class="col-md-8 form-group">
-                                                <textarea name="noticecontents" id="noticecontents" class="form-control" rows="5"></textarea>
+                                                <textarea name="noticecontents" id="noticecontents" class="form-control" rows="5" th:text="${notice.noticecontents}"></textarea>
                                             </div>
                                             <div class="col-md-4">
                                                 <label>읽기 권한</label>
                                             </div>
                                             <div class="col-md-8 form-group">
                                                 <select name="viewauthority" class="form-select">
-                                                    <option value="0">전체</option>
-                                                    <option value="1">선생님</option>
+                                                    <option value="0" th:selected="${notice.viewauthority} == '0'">전체</option>
+                                                    <option value="1" th:selected="${notice.viewauthority} == '1'">선생님</option>
                                                 </select>
                                             </div>
                                             <div class="col-md-4">
@@ -122,9 +113,12 @@
                                                     <input type="file" name="upload" class="form-control" id="formFile">
                                                 </div>
                                             </div>
+                                            <input type="hidden" th:value="${notice.noticenum}" name="noticenum">
+                                            <input type="hidden" th:value="${notice.originalfile}" name="originalfile">
+                                            <input type="hidden" th:value="${notice.savedfile}" name="savedfile">
                                             <div class="col-sm-12 d-flex justify-content-end">
                                                 <button type="submit" class="btn btn-primary me-1 mb-1">확인</button>
-                                                <button type="reset" class="btn btn-light-secondary me-1 mb-1"><a th:href="@{/notice}">취소</a></button>
+                                                <button type="reset" class="btn btn-light-secondary me-1 mb-1"><a th:href="@{/notice/read(noticenum=${notice.noticenum})}">취소</a></button>
                                             </div>
                                         </div>
                                     </div>
@@ -139,6 +133,7 @@
 
     </section>
     <!-- Table head options end -->
+
 </div>
 
 <script th:src="@{/assets/js/bootstrap.js}"></script>
