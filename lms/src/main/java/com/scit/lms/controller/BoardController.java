@@ -1,12 +1,21 @@
 package com.scit.lms.controller;
 
+import com.scit.lms.domain.Member;
+import com.scit.lms.service.BoardService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import java.util.ArrayList;
 
 @Slf4j
 @Controller
 public class BoardController {
+
+    @Autowired
+    BoardService service;
 
     // 메인 화면
     @GetMapping("main")
@@ -66,6 +75,19 @@ public class BoardController {
     @GetMapping("questionBank")
     public String questionBank() {
         return "boardView/questionBank/questionBank";
+    }
+    
+    //사이드바 경로
+    @GetMapping("sidebar")
+    public String sidebar(Model model
+                          ){
+        // 회원인증폼 일반사용자회원 수 조회(회원인증알림)
+        log.debug("인증수1:{}","확인");
+        int selectCount = service.selectCount();
+        log.debug("인증수2:{}",selectCount);
+        model.addAttribute("countUser",selectCount);
+
+        return "fragments/sidebar :: sidebarFrag";
     }
 
 

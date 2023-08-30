@@ -13,7 +13,8 @@
         address,
         phone,
         email,
-        rolename
+        rolename,
+        enabled
         from lms_member
 
     </select>

@@ -23,6 +23,7 @@ public class Member implements UserDetails {
     String note;
     String rolename;
     boolean enabled;
+    int count;
 
 
     @Override
