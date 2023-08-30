@@ -21,18 +21,6 @@ public class BoardController {
         return "boardView/manage/manage";
     }
 
-    // 시험 페이지 이동
-    @GetMapping("test")
-    public String test() {
-        return "boardView/test/test";
-    }
-    // 시험 문제 생성
-    @GetMapping("test/create")
-    public String createTestForm() {
-        return "boardView/test/createTest";
-    }
-
-
     // 과제 페이지 이동
     @GetMapping("homework")
     public String homework() {

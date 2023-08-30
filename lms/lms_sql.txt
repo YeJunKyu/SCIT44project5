@@ -14,3 +14,19 @@ create table lms_member(
     rolename        varchar2(100)   default 'ROLE_USER' check (rolename in('ROLE_USER','ROLE_teacher','ROLE_student','ROLE_admin')),
     enabled         number          default 1 check (enabled in (0, 1))
 );
+
+--공지 테이블
+create table lms_notice(
+	noticenum	    number	        not null primary   key,
+	memberid	    varchar2(20)	not null,
+	noticetitle 	varchar2(50)	not null,
+	noticecontents	varchar2(1000)	not null,
+	noticedate	    date	        default sysdate,
+	viewauthority	number      	default 0, --읽기권한(0:모두, 1:선생)
+	hits	        number	        default 0,
+	originalfile	varchar2(225),
+	savedfile   	varchar2(225)
+);
+
+--공지 시퀀스
+create sequence lms_notice_seq;
