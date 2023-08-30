@@ -13,7 +13,7 @@ public class NoticeController {
     public String write(Board board) {
 //        log.debug("제목 : {}", board.getTitle());
 //        log.debug("내용 : {}", board.getContents());
-        service.write(board);
+        //service.write(board);
         return "redirect:/notice";
     }
 }

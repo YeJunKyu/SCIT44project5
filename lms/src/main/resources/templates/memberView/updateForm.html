@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>회원정보수정</title>
@@ -45,7 +45,8 @@
         <tr>
             <td>ID</td>
             <td>
-                <input type="text" id="memberid" name="memberid" readonly th:value="${user.memberid}" required>
+<!--                <p th:text="${user.memberid}">ID</p>-->
+                <input type="text" id="memberid" name="memberid" readonly th:value="${user.memberid}">
                 <span id="idLengthMessage" ></span>
             </td>
         </tr>
