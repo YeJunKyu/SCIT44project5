@@ -1,0 +1,138 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.scit.lms.dao.NoticeDAO">
+
+    <!-- 공지 글 작성-->
+    <insert id="insert" parameterType="Notice">
+        insert into lms_notice
+        (
+        noticenum
+        , memberid
+        , noticetitle
+        , noticecontents
+        , viewauthority
+        <if test="originalfile != null and savedfile != null">
+            , originalfile
+            , savedfile
+        </if>
+        )
+        values
+        (
+        lms_notice_seq.nextval
+        , #{memberid}
+        , #{noticetitle}
+        , #{noticecontents}
+        , #{viewauthority}
+        <if test="originalfile != null and savedfile != null">
+            , #{originalfile}
+            , #{savedfile}
+        </if>
+        )
+    </insert>
+
+    <!-- 공지 글 목록 -->
+    <select id="list" resultType="Notice">
+        select
+            noticenum, memberid, noticetitle, noticecontents, to_char(noticedate, 'yyyy-mm-dd') noticedate, viewauthority, hits
+        from
+            lms_notice
+        <where>
+            <if test="type == 'title'">
+                and upper(noticetitle) like upper('%' || #{searchWord} || '%')
+            </if>
+            <if test="type == 'contents'">
+                and upper(noticecontents) like upper('%' || #{searchWord} || '%')
+            </if>
+            <if test="type == 'memberid'">
+                and memberid = #{searchWord}
+            </if>
+            <if test="type == 'all'">
+                and
+                upper(noticetitle) like upper('%' || #{searchWord} || '%')
+                or
+                upper(noticecontents) like upper('%' || #{searchWord} || '%')
+                or
+                upper(memberid) like upper('%' || #{searchWord} || '%')
+            </if>
+        </where>
+        order by
+            noticenum desc
+    </select>
+
+    <!-- 공지 글 목록(학생용) -->
+    <select id="studentlist" resultType="Notice">
+        select
+            noticenum, memberid, noticetitle, noticecontents, to_char(noticedate, 'yyyy-mm-dd') noticedate, viewauthority, hits
+        from
+            lms_notice
+        where
+            viewauthority = 0
+        order by
+            noticenum desc
+    </select>
+
+    <!-- 전체 글 개수 -->
+    <select id="getTotal" parameterType="hashmap" resultType="int">
+        select
+            count(*)
+        from
+            lms_notice
+        <where>
+            <if test="type == 'title'">
+                and upper(noticetitle) like upper('%' || #{searchWord} || '%')
+            </if>
+            <if test="type == 'contents'">
+                and upper(noticecontents) like upper('%' || #{searchWord} || '%')
+            </if>
+            <if test="type == 'memberid'">
+                and upper(memberid) = upper(#{searchWord})
+            </if>
+            <if test="type == 'all'">
+                and
+                upper(noticetitle) like upper('%' || #{searchWord} || '%')
+                or
+                upper(noticecontents) like upper('%' || #{searchWord} || '%')
+                or
+                upper(memberid) like upper('%' || #{searchWord} || '%')
+            </if>
+        </where>
+    </select>
+
+    <!-- 공지 글 조회 -->
+    <select id="read" resultType="Notice">
+        select
+            noticenum, memberid, noticetitle, noticecontents, to_char(noticedate, 'yyyy-mm-dd') noticedate, viewauthority, hits, originalfile, savedfile
+        from
+            lms_notice
+        where
+            noticenum=#{noticenum}
+    </select>
+
+    <!-- 공지 글 조회수 증가 -->
+    <update id="updateHits">
+        update lms_notice set hits=hits+1 where noticenum=#{noticenum}
+    </update>
+
+    <!-- 공지 글 수정 -->
+    <update id="update" parameterType="Notice">
+        update lms_notice
+        set
+        noticetitle=#{noticetitle}
+        , noticecontents=#{noticecontents}
+        , viewauthority=#{viewauthority}
+        , noticedate=sysdate
+        <if test="originalfile != null and savedfile != null">
+            , originalfile=#{originalfile}
+            , savedfile=#{savedfile}
+        </if>
+        where noticenum=#{noticenum} and memberid=#{memberid}
+    </update>
+
+    <!-- 공지 글 삭제 -->
+    <delete id="delete" parameterType="Notice">
+        delete from lms_notice where noticenum=#{noticenum} and memberid=#{memberid}
+    </delete>
+
+</mapper>
