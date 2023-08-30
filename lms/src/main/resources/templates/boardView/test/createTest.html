@@ -1,15 +1,166 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>시험문제 제출</title>
-</head>
-<body>
-    <h1>[시험문제 제출]</h1>
-    <form th:action="@{/teacher/createTest}" method="post">
-        <h1><input type="text" name="" id="" placeholder="시험명"></h1>
-        <input type="submit" value="시험 등록">
+<html xmlns:th="http://thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>시험문제 작성</title>
 
-    </form>
-</body>
+        <link rel="stylesheet" th:href="@{/assets/extensions/choices.js/public/assets/styles/choices.css}" />
+
+        <link rel="stylesheet" th:href="@{/assets/css/main/app.css}" />
+        <link rel="stylesheet" th:href="@{/assets/css/main/app-dark.css}" />
+        <link rel="stylesheet" th:href="@{/assets/css/main/lms.css}" />
+        <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.svg}" type="image/x-icon" />
+        <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png" />
+        <script th:src="@{/assets/js/jquery-3.6.0.js}"></script>
+        <script>
+            $(document).ready(function () {
+                $("button").on("click", function (e) {
+                    e.preventDefault();
+                });
+
+                $("#type").on("change", function () {
+                    let type = $("#type").val();
+                    console.log(type);
+                    let qPlace = $("#qPlace");
+
+                    switch (type) {
+                        case "1":
+                            qPlace.html(`<div id="optionTarget"></div>
+                        <section class="d-flex justify-content-between">
+                            <button id="plusOption" class="btn btn-primary btn-sm rounded-pill">보기 추가</button>
+                            <button class="btn btn-outline-primary btn-sm icon">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </section>`);
+                            return;
+                        case "2":
+                            return;
+                        case "3":
+                            return;
+                        case "4":
+                            return;
+                        case "5":
+                            return;
+                    }
+                });
+
+                $("#qPlace").on("click", "#plusOption", function (e) {
+                    e.preventDefault();
+                    $("#optionTarget").append(`<div class="d-flex justify-content-between">
+                                <div>
+                                    <input type="radio" name="문제번호" value="1" id="보기1" />
+                                    <label for="보기1"><input type="text" /></label>
+                                </div>
+                                <button class="btn btn-outline-primary btn-sm icon deleteOption">
+                                    <i class="bi bi-x"></i>
+                                </button>
+                            </div>`);
+                });
+
+                $("#optionTarget").on("click", "#deleteOption", function (e) {
+                    e.preventDefault();
+                    $(this).parent().remove();
+                });
+
+                let textEle = $("#taTarget");
+                textEle.on("input", function () {
+                    adjustHeight();
+                });
+
+                function adjustHeight() {
+                    let textEle = $("#taTarget");
+                    textEle[0].style.height = "auto";
+                    let textEleHeight = textEle.prop("scrollHeight");
+                    textEle.css("height", textEleHeight);
+                }
+            });
+        </script>
+    </head>
+
+    <body>
+        <div id="app">
+            <div th:replace="/fragments/sidebar.html :: sidebarFrag"></div>
+            <div id="main">
+                <header class="mb-3">
+                    <a href="#" class="burger-btn d-block d-xl-none">
+                        <i class="bi bi-justify fs-3"></i>
+                    </a>
+                </header>
+
+                <div class="page-heading">
+                    <div class="page-title">
+                        <div class="row">
+                            <div class="col-12 col-md-6 order-md-1 order-last">
+                                <h3>시험문제 작성</h3>
+                                <p class="text-subtitle text-muted">Customize the native &laquo;select&raquo; with custom CSS that changes the element’s initial appearance..</p>
+                            </div>
+                            <div class="col-12 col-md-6 order-md-2 order-first">
+                                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item"><a th:href="@{/test}">시험</a></li>
+                                        <li class="breadcrumb-item active" aria-current="page">문제등록</li>
+                                    </ol>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                    <form action="#" method="">
+                        <section class="section">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">시험명</h4>
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div class="form-group input-group-lg">
+                                                <input type="text" class="form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="section" id="question">
+                            <!--문제 추가될 부분-->
+                            <div class="card">
+                                <div class="card-header justify-content-between">
+                                    <div class="d-flex mb-3">
+                                        <h6 class="col-md-10">{문제번호}</h6>
+                                        <div class="col-md-2">
+                                            <select class="form-select" id="type">
+                                                <option value="1" selected>객관식</option>
+                                                <option value="2">객관식 복수정답</option>
+                                                <option value="3">단답형</option>
+                                                <option value="4">서술형</option>
+                                                <option value="5">파일</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <textarea id="taTarget" rows="1" class="form-control" placeholder="문제" onkeyup="adjustHeight();"></textarea>
+                                </div>
+                                <div id="qPlace" class="card-body">
+                                    <!--객관식 복수정답-->
+                                    <!--단답형-->
+                                    <!--장문형-->
+                                    <!--파일-->
+                                </div>
+                            </div>
+                        </section>
+                        <section class="d-flex justify-content-between">
+                            <button class="btn btn-primary">문제 추가</button>
+                            <button class="btn btn-primary">제출</button>
+                        </section>
+                    </form>
+                </div>
+            </div>
+            <script th:src="@{/assets/js/bootstrap.js}"></script>
+            <script th:src="@{/assets/js/app.js}"></script>
+
+            <script th:src="@{/assets/extensions/choices.js/public/assets/scripts/choices.js}"></script>
+            <script th:src="@{/assets/js/pages/form-element-select.js}"></script>
+        </div>
+    </body>
 </html>

@@ -14,9 +14,6 @@ public class NoticeController {
 //        log.debug("제목 : {}", board.getTitle());
 //        log.debug("내용 : {}", board.getContents());
 
-
-        //service.write(board);
-
         return "redirect:/notice";
     }
 }
