@@ -1,22 +1,31 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>회원정보</title>
+
+    <link rel="stylesheet" th:href="@{/assets/css/main/app.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main/app-dark.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main/lms.css}" />
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.svg}" type="image/x-icon">
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png">
+
+    <link rel="stylesheet" th:href="@{/assets/css/shared/iconly.css}">
 <script th:src="@{/assets/js/jquery-3.6.0.js}"></script>
 <script>
 $(document).ready(function(){
-    let birth = $("#ageValue").val();                               // 50번째 줄 히든에 user.birthday 를 밸류로 가져옴
+<!--    let birth = $("#ageValue").val();                               // 50번째 줄 히든에 user.birthday 를 밸류로 가져옴-->
 
-    let birthForm = birth.substring(0,10);                          //생년월일에 시간까지 떠서 자름
-    let birthday = document.getElementById('birthday');             // 47번째줄 아이디 가져와서
-    birthday.innerHTML = birthForm;                                 // birthForm을 안에넣어줌
+<!--    let birthForm = birth.substring(0,10);                          //생년월일에 시간까지 떠서 자름-->
+<!--    let birthday = document.getElementById('birthday');             // 47번째줄 아이디 가져와서-->
+<!--    birthday.innerHTML = birthForm;                                 // birthForm을 안에넣어줌-->
 
-    let date = new Date();                                          //현재시간을 담음
-    let ageCalculate = date.getFullYear() - birth.substring(0,4);   //현재시간의 년도 - 회원생년월일의 년도부분
+<!--    let date = new Date();                                          //현재시간을 담음-->
+<!--    let ageCalculate = date.getFullYear() - birth.substring(0,4);   //현재시간의 년도 - 회원생년월일의 년도부분-->
 
-    let age = document.getElementById('age');                       // 49번째줄 아이디를 가져와서
-    age.innerHTML = ageCalculate;                                   // 그안에 ageCalculate 넣음
+<!--    let age = document.getElementById('age');                       // 49번째줄 아이디를 가져와서-->
+<!--    age.innerHTML = ageCalculate;                                   // 그안에 ageCalculate 넣음-->
 
 <!--    let genderValue = $("#genderValue").val();                      //41번째 줄 히든의 밸류값을 가져옴-->
 <!--    let gender = document.getElementById('gender');                 // 40번째줄 아이디를 가져와서-->
@@ -26,50 +35,164 @@ $(document).ready(function(){
 <!--        gender.innerHTML = "여성";-->
 <!--    }-->
 
-    //document.getElementById('gender').innerHTML = "남성";
+<!--    //document.getElementById('gender').innerHTML = "남성";-->
 });
 
 
 
-function goBack(){
-    history.back();
-}
+<!--function goBack(){-->
+<!--    history.back();-->
+<!--}-->
 </script>
 </head>
 <body>
-<h1>[회원정보]</h1>
+<div id="app">
+    <div th:replace="/fragments/sidebar.html :: sidebarFrag"></div>
 
-<form>
-    <table>
-        <tr>
-            <td>이름</td>
-            <td th:text="${user.membername}"></td>
-            <td>성별</td>
-            <td id="gender" th:text="${user.gender}"></td>
-<!--            <input type="hidden" id="genderValue" th:value="${user.gender}">-->
-        </tr>
-        <tr>
-            <td>생년월일</td>
-<!-- 1993-06-17 00:00:00 처럼 뒤에 시간이 나와서 substring 으로 잘라서가져옴
-    <td th:text="${user.birthday}"></td> -->
-            <td id="birthday"></td>
-            <td>나이</td>
-            <td id="age"></td>
-            <input type="hidden" id="ageValue" th:value="${user.birthday}">
-        </tr>
-        <tr>
-            <td>전화</td>
-            <td th:text="${user.phone}"></td>
-            <td>이메일</td>
-            <td th:text="${user.email}"></td>
-        </tr>
-        <tr>
-            <td >주소</td>
-            <td th:text="${user.address}"></td>
-        </tr>
-    </table>
-</form>
-<a th:href="@{/member/updateForm}">수정</a><input type="button" value="탈퇴"><br>
-<input type="button" value="목록으로" onclick="goBack()">
+
+
+    <div id="main">
+        <div class="col-md-6 col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h1 class="auth-title">회원정보</h1>
+                </div>
+                <div class="card-content">
+                    <div class="card-body">
+
+                        <form class="form form-vertical">
+                            <div class="form-body">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="form-group has-icon-left">
+                                            <label for="first-name-icon">이름</label>
+                                            <div class="position-relative">
+                                                <input type="text" class="form-control"
+                                                       th:placeholder="${user.membername}" id="first-name-icon" readonly>
+                                                <div class="form-control-icon">
+                                                    <i class="bi bi-card-text"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+
+                                        <div class="form-group has-icon-left">
+                                            <label for="gender-id-icon">성별</label>
+                                            <div class="position-relative">
+                                                <input type="text" class="form-control" th:placeholder="${user.gender}"
+                                                       id="gender-id-icon" readonly>
+                                                <div class="form-control-icon">
+                                                    <i class="bi bi-gender-ambiguous"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <div class="form-group has-icon-left">
+                                            <label for="birthday">생년월일</label>
+                                            <div class="position-relative">
+                                                <input type="text" class="form-control" th:placeholder="${user.birthday.substring(0, 10)}"
+                                                       id="birthday" readonly>
+                                                <div class="form-control-icon">
+                                                    <i class="bi bi-calendar-event"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <div class="form-group has-icon-left">
+                                            <label for="phone-id-icon">전화번호</label>
+                                            <div class="position-relative">
+                                                <input type="text" class="form-control" th:placeholder="${user.phone}"
+                                                       id="phone-id-icon" readonly>
+                                                <div class="form-control-icon">
+                                                    <i class="bi bi-telephone"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <div class="form-group has-icon-left">
+                                            <label for="email-id-icon">Email</label>
+                                            <div class="position-relative">
+                                                <input type="text" class="form-control" th:placeholder="${user.email}"
+                                                       id="email-id-icon" readonly>
+                                                <div class="form-control-icon">
+                                                    <i class="bi bi-envelope"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <div class="form-group has-icon-left">
+                                            <label for="address-id-icon">주소</label>
+                                            <div class="position-relative">
+                                                <input type="text" class="form-control" th:placeholder="${user.address}"
+                                                       id="address-id-icon" readonly>
+                                                <div class="form-control-icon">
+                                                    <i class="bi bi-house-door"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-12 d-flex justify-content-end">
+                                        <a th:href="@{/member/updateForm}" class="btn btn-primary me-1 mb-1">수정</a>
+                                        <a th:href="@{/main}"
+                                                class="btn btn-light-secondary me-1 mb-1">돌아가기</a>
+                                        <a href="" class="btn btn-danger me-1 mb-1">탈퇴</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<!--        <h1>[회원정보]</h1>-->
+
+<!--        <form>-->
+<!--            <table>-->
+<!--                <tr>-->
+<!--                    <td>이름</td>-->
+<!--                    <td th:text="${user.membername}"></td>-->
+<!--                    <td>성별</td>-->
+<!--                    <td id="gender" th:text="${user.gender}"></td>-->
+<!--                    &lt;!&ndash;            <input type="hidden" id="genderValue" th:value="${user.gender}">&ndash;&gt;-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <td>생년월일</td>-->
+<!--                    &lt;!&ndash; 1993-06-17 00:00:00 처럼 뒤에 시간이 나와서 substring 으로 잘라서가져옴-->
+<!--                        <td th:text="${user.birthday}"></td> &ndash;&gt;-->
+<!--    &lt;!&ndash;                <td id="birthday"></td>&ndash;&gt;-->
+<!--                    <td>나이</td>-->
+<!--    &lt;!&ndash;                <td id="age"></td>&ndash;&gt;-->
+<!--    &lt;!&ndash;                <input type="hidden" id="ageValue" th:value="${user.birthday}">&ndash;&gt;-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <td>전화</td>-->
+<!--                    <td th:text="${user.phone}"></td>-->
+<!--                    <td>이메일</td>-->
+<!--                    <td th:text="${user.email}"></td>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <td >주소</td>-->
+<!--                    <td th:text="${user.address}"></td>-->
+<!--                </tr>-->
+<!--            </table>-->
+<!--        </form>-->
+<!--        <a th:href="@{/member/updateForm}">수정</a><input type="button" value="탈퇴"><br>-->
+<!--        <input type="button" value="목록으로" onclick="goBack()">-->
+    </div>
+</div>
+
 </body>
 </html>
