@@ -14,3 +14,20 @@ create table lms_member(
     rolename        varchar2(100)   default 'ROLE_USER' check (rolename in('ROLE_USER','ROLE_teacher','ROLE_student','ROLE_admin')),
     enabled         number          default 1 check (enabled in (0, 1))
 );
+
+--학생 테이블
+CREATE TABLE lms_student (
+	memberid	varchar2(20) references lms_member(memberid)	NOT NULL,
+	school	varchar2(100)		NULL,
+	major	varchar2(100)		NULL,
+	graduation	number	DEFAULT 1	NULL,
+	socialexperience	varchar2(1000)		NULL
+);
+
+--과정기수 및 분반테이블
+CREATE TABLE class_category (
+	id	number		primary key,
+	parent_id	number	REFERENCES class_category(id),
+	memberid	varchar2(20)		NOT NULL,
+	classname	varchar2(50)		NOT NULL
+);

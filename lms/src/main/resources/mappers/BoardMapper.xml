@@ -5,7 +5,7 @@
 <mapper namespace="com.scit.lms.dao.BoardDAO">
 
 <select id="selectCount" resultType="int">
-    SELECT COUNT(*) FROM lms_member WHERE rolename = 'ROLE_USER'
+    SELECT COUNT(*) FROM lms_member WHERE rolename = 'ROLE_USER' and enabled = 1
 
 </select>
 
