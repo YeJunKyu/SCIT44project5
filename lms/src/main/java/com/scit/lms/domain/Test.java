@@ -7,10 +7,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Board {
-    String memberid;
-    String title;
-    String contents;
-    String inputdate;
-    String file;
+public class Test {
+    int testid;
+    int categoryid;
+    String testdate;
+    String testlimit;
+
+
 }

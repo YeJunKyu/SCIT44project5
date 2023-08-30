@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCIT LMS</title>
+
+    <link rel="stylesheet" th:href="@{/assets/css/main/app.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main/app-dark.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main/lms.css}" />
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.svg}" type="image/x-icon">
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png">
+
+    <link rel="stylesheet" th:href="@{/assets/css/shared/iconly.css}">
+
+    <style>
+        .table-responsive {
+            text-align: center;
+        }
+    </style>
+
+</head>
+
+<body>
+<div id="app">
+    <div th:replace="~{/fragments/sidebar.html :: sidebarFrag}"></div>
+</div>
+<div id="main">
+    <header class="mb-3">
+        <a href="#" class="burger-btn d-block d-xl-none">
+            <i class="bi bi-justify fs-3"></i>
+        </a>
+    </header>
+
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <h3>공지</h3>
+                    <p class="text-subtitle text-muted"></p>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a th:href="@{/main}">메인</a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/notice}">공지</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">공지 조회</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table head options start -->
+        <section class="section">
+            <div class="row" id="table-head">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+
+                            <!-- table head dark -->
+                            <div class="table-responsive">
+                                <table>
+                                    <tr>
+                                        <th>작성자</th>
+                                        <td th:text="${notice.memberid}"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>작성일</th>
+                                        <td th:text="${notice.noticedate}"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>조회수</th>
+                                        <td th:text="${notice.hits}"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>제목</th>
+                                        <td th:text="${notice.noticetitle}"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>내용</th>
+                                        <td><pre th:text="${notice.noticecontents}"></pre></td>
+                                    </tr>
+                                    <tr th:if="${notice.originalfile} != null">
+                                        <th>첨부파일</th>
+                                        <td>
+                                            <a th:href="@{/notice/download(noticenum=${notice.noticenum})}" th:text="${notice.originalfile}"></a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <!-- 버튼 -->
+                            <div class="row">
+
+                                <div class="col-12 col-md-6 order-md-1 order-last">
+                                    <div th:if="${#authentication.name} == ${notice.memberid}">
+                                        <a class="btn btn-primary" th:href="@{/notice/update(noticenum=${notice.noticenum})}">수정</a>
+                                        <a class="btn btn-light-secondary" th:href="@{/notice/delete(noticenum=${notice.noticenum})}">삭제</a>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-6 order-md-2 order-first">
+                                    <div class="breadcrumb-header float-start float-lg-end">
+                                        <div class="button">
+                                            <a th:href="@{/notice}" class="btn btn-outline-primary">목록으로</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                         </div>
+                     </div>
+                </div>
+            </div>
+        </section>
+        <!-- Table head options end -->
+
+    </div>
+
+</div>
+<script th:src="@{/assets/js/bootstrap.js}"></script>
+<script th:src="@{/assets/js/app.js}"></script>
+
+</body>
+
+</html>
