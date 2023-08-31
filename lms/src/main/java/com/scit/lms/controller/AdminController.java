@@ -105,6 +105,11 @@ public class AdminController {
 		return "redirect:/admin/authentication";
 	}
 
+	@GetMapping("studentManager")
+	public String studentManager(){
+
+		return "adminView/studentManager";
+	}
 
 
 }

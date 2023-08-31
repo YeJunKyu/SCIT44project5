@@ -75,7 +75,7 @@
                         </li>
 
                         <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
-                            <a href="#" class="sidebar-link">
+                            <a th:href="@{/admin/studentManager}" class="sidebar-link">
                                 <i class="bi bi-stack"></i>
                                 <span>학생관리</span>
                             </a>

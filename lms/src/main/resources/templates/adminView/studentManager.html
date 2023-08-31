@@ -58,63 +58,59 @@
                 회원 목록
             </div>
             <div class="card-body">
-                <form th:action="@{update}" method="post">
+
                     <table class="table table-striped" id="table1">
                         <thead>
                         <tr>
                             <th>아이디</th>
                             <th>이름</th>
+                            <th>분반</th>
+                            <th>생년월일</th>
                             <th>성별</th>
+                            <th>학교</th>
+                            <th>졸업여부</th>
                             <th>주소</th>
-                            <th>전화번호</th>
-                            <th>이메일</th>
-                            <th>인증</th>
-                            <th>직책</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="member : ${list}" th:if="${member.rolename == 'ROLE_USER' and member.enabled == true}">
+                        <tr>
 
-                            <td><input type="hidden" name="memberid" th:value="${member.memberid}" readonly>[[${member.memberid}]]</td>
-                            <td><input type="hidden" name="membername" th:value="${member.membername}" readonly>[[${member.membername}]]</td>
-                            <td th:if="${member.gender == 'male'}">
-                                <input type="hidden" name="gender" th:value="${member.gender}">남성</td>
-                            <td th:if="${member.gender == 'female'}">
-                                <input type="hidden" name="gender" th:value="${member.gender}">여성</td>
-                            <td th:text="${member.address}"><input type="text" name="address" th:value="${member.address}" readonly></td>
-                            <td th:text="${member.phone}"><input type="text" name="phone" th:value="${member.phone}" readonly></td>
-                            <td th:text="${member.email}"><input type="text" name="email" th:value="${member.email}" readonly></td>
                             <td>
-                                <span class="badge bg-success"><input type="checkbox" value="true" th:name="'enabled' + ${member.memberid}" class="approve">승인</span>
-                                <span class="badge bg-success"><input type="checkbox" value="false" th:name="'enabled' + ${member.memberid}" class="deny">거부</span>
-                                <select th:name="'rolename' + ${member.memberid}" class="role-selection" style="display:none">
-                                    <option value="ROLE_USER">일반사용자</option>
-                                    <option value="ROLE_student">학생</option>
-                                    <option value="ROLE_teacher">선생</option>
-                                    <option value="ROLE_admin">관리자</option>
-                                </select>
+
+                            </td>
+                            <td>
+
+                            </td>
+                            <td>
+
+                            </td>
+                            <td>
+
+                            </td>
+                            <td >
+
+                            </td>
+                            <td >
+
+                            </td>
+                            <td >
+
+                            </td>
+                            <td>
+
                             </td>
 
-                            <td th:if="${member.rolename == 'ROLE_USER'}">
-                                일반사용자
-                            </td>
-                            <td th:if="${member.rolename == 'ROLE_admin'}">
-                                관리자
-                            </td>
-                            <td th:if="${member.rolename == 'ROLE_teacher'}">
-                                선생
-                            </td>
-                            <td th:if="${member.rolename == 'ROLE_student'}">
-                                학생
-                            </td>
+
+
+
 
                         </tr>
 
                         </tbody>
                     </table>
-                    <input type="submit" value="저장">
+                    <input type="button" value="공통정보편집">
 
-                </form>
+       
 
             </div>
         </div>
