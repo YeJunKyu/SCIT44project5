@@ -1,16 +1,15 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <head>
         <meta charset="UTF-8" />
         <title>Title</title>
-        <link rel="stylesheet" th:href="@{/assets/css/main/app.css}">
-        <link rel="stylesheet" th:href="@{/assets/css/main/app-dark.css}">
+        <link rel="stylesheet" th:href="@{/assets/css/main/app.css}" />
+        <link rel="stylesheet" th:href="@{/assets/css/main/app-dark.css}" />
         <link rel="stylesheet" th:href="@{/assets/css/main/lms.css}" />
-        <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.svg}" type="image/x-icon">
-        <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png">
+        <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.svg}" type="image/x-icon" />
+        <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png" />
 
-        <link rel="stylesheet" th:href="@{/assets/css/shared/iconly.css}">
+        <link rel="stylesheet" th:href="@{/assets/css/shared/iconly.css}" />
     </head>
     <body>
         <div id="sidebar" class="active" th:fragment="sidebarFrag">
@@ -49,9 +48,7 @@
                 </div>
                 <div class="sidebar-menu">
                     <ul class="menu">
-                        <li class="sidebar-title" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">관리자
-
-                        </li>
+                        <li class="sidebar-title" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">관리자</li>
                         <li class="sidebar-item active" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
                             <a th:href="@{/main}" class="sidebar-link">
                                 <i class="bi bi-grid-fill"></i>
@@ -98,7 +95,7 @@
                         <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
                             <a href="#" class="sidebar-link">
                                 <i class="bi bi-collection-fill"></i>
-                                <span>(선생)시험</span>
+                                <span>(교사)시험</span>
                             </a>
                             <ul class="submenu">
                                 <li class="submenu-item">
@@ -116,14 +113,14 @@
                         <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
                             <a href="#" class="sidebar-link">
                                 <i class="bi bi-collection-fill"></i>
-                                <span>(선생)과제</span>
+                                <span>(교사)과제</span>
                             </a>
                         </li>
 
                         <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
                             <a href="#" class="sidebar-link">
                                 <i class="bi bi-collection-fill"></i>
-                                <span>(선생)강의</span>
+                                <span>(교사)강의</span>
                             </a>
                             <ul class="submenu">
                                 <li class="submenu-item">
@@ -138,7 +135,7 @@
                         <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
                             <a href="#" class="sidebar-link">
                                 <i class="bi bi-collection-fill"></i>
-                                <span>(선생)문제은행</span>
+                                <span>(교사)문제은행</span>
                             </a>
                             <ul class="submenu">
                                 <li class="submenu-item">
@@ -165,12 +162,7 @@
                             </ul>
                         </li>
 
-
-
-
-                        <li class="sidebar-title" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')')}">교사
-
-                        </li>
+                        <li class="sidebar-title" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')')}">교사</li>
                         <li class="sidebar-item active" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')')}">
                             <a th:href="@{/main}" class="sidebar-link">
                                 <i class="bi bi-grid-fill"></i>
@@ -240,10 +232,7 @@
                             </ul>
                         </li>
 
-
-                        <li class="sidebar-title" th:if="${#authorization.expression('hasRole(''ROLE_student'')')}">학생
-
-                        </li>
+                        <li class="sidebar-title" th:if="${#authorization.expression('hasRole(''ROLE_student'')')}">학생</li>
                         <li class="sidebar-item active" th:if="${#authorization.expression('hasRole(''ROLE_student'')')}">
                             <a th:href="@{/main}" class="sidebar-link">
                                 <i class="bi bi-grid-fill"></i>
@@ -306,7 +295,6 @@
                                 </li>
                             </ul>
                         </li>
-
 
                         <hr />
                         <li class="sidebar-item">
