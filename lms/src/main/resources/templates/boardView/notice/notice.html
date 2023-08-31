@@ -83,6 +83,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="card-content">
                         <!-- table head dark -->
                         <div class="table-responsive">
@@ -112,14 +113,14 @@
                     <div class="card-header">
 
                         <!-- 페이지네이션 -->
-                        <ul class="pagination pagination-primary  justify-content-center">
+                        <ul class="pagination pagination-primary  justify-content-center" th:unless="${navi.currentPage == 0}">
                             <li class="page-item">
                                 <a class="page-link" th:href="|javascript:pagingFormSubmit(${navi.currentPage - navi.pagePerGroup})|">&laquo;</a>
                             </li>
                             <li class="page-item">
                                 <a class="page-link" th:href="|javascript:pagingFormSubmit(${navi.currentPage - 1})|">&lsaquo;</a>
                             </li>
-                            <li class="page-item" th:each="counter : ${#numbers.sequence(navi.startPageGroup, navi.endPageGroup)}">
+                            <li class="page-item" th:each="counter : ${#numbers.sequence(navi.startPageGroup, navi.endPageGroup)}" th:classappend="${counter == navi.currentPage} ? 'active' : ''">
                                 <th:block th:if="${counter == navi.currentPage}"></th:block>
                                 <a class="page-link" th:text="${counter}" th:href="|javascript:pagingFormSubmit(${counter})|"></a>
                                 <th:block th:if="${counter == navi.currentPage}"></th:block>
@@ -132,21 +133,24 @@
                             </li>
                         </ul>
                         </ul>
+
+                        <hr>
+
                         <!-- 검색 창 -->
-                        <div>
+                        <div style="margin-left: 25%">
                             <div class="col-12 col-md-6">
                                 <div class="input-group mb-3">
-                                    <form id="pagingForm" th:action="@{/notice}" method="get">
+                                    <form id="pagingForm" th:action="@{/notice}" method="get" style="display: flex">
                                         <input type="hidden" name="page" id="page">
-                                        <select id="type" name="type" class="form-select" >
+                                        <select id="type" name="type" class="form-select" style="width: 110px">
                                             <option value="title" th:selected="${type} == 'title'">제목</option>
                                             <option value="contents" th:selected="${type} == 'contents'">본문</option>
                                             <option value="memberid" th:selected="${type} == 'memberid'">작성자</option>
                                             <option value="all" th:selected="${type} == 'all'">전체</option>
                                         </select>
 
-                                        <input type="text" name="searchWord" th:value="${searchWord}" class="form-control">
-                                        <input type="button" value="검색" onclick="pagingFormSubmit(${navi.currentPage})" class="btn btn-outline-secondary">
+                                        <input type="text" name="searchWord" th:value="${searchWord}" class="form-control" style="width: 400px">
+                                        <input type="button" value="검색" th:onclick="pagingFormSubmit([[${navi.currentPage}]])" class="btn btn-outline-secondary">
                                     </form>
                                 </div>
                             </div>

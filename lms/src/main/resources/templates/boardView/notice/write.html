@@ -85,7 +85,7 @@
                 <div class="card">
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">공지 등록</h4>
+                            <h3>공지 등록</h3>
                         </div>
                         <div class="card-content">
                             <div class="card-body">
@@ -93,31 +93,31 @@
                                 <form th:action="@{/notice/write}" method="post" enctype="multipart/form-data" onsubmit="return check()" class="form form-horizontal">
                                     <div class="form-body">
                                         <div class="row">
-                                            <div class="col-md-4">
+                                            <div class="col-md-2">
                                                 <label>제목</label>
                                             </div>
-                                            <div class="col-md-8 form-group">
+                                            <div class="col-md-10 form-group">
                                                 <input name="noticetitle" id="noticetitle" class="form-control">
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-2">
                                                 <label>내용</label>
                                             </div>
-                                            <div class="col-md-8 form-group">
+                                            <div class="col-md-10 form-group">
                                                 <textarea name="noticecontents" id="noticecontents" class="form-control" rows="5"></textarea>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-2">
                                                 <label>읽기 권한</label>
                                             </div>
-                                            <div class="col-md-8 form-group">
+                                            <div class="col-md-10 form-group">
                                                 <select name="viewauthority" class="form-select">
                                                     <option value="0">전체</option>
                                                     <option value="1">선생님</option>
                                                 </select>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-2">
                                                 <label>첨부파일</label>
                                             </div>
-                                            <div class="col-md-8 form-group">
+                                            <div class="col-md-10 form-group">
                                                 <div class="mb-3">
                                                     <input type="file" name="upload" class="form-control" id="formFile">
                                                 </div>
