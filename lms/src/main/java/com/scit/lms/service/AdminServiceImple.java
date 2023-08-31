@@ -1,11 +1,10 @@
 package com.scit.lms.service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import com.scit.lms.dao.AdminDAO;
 import com.scit.lms.domain.Member;
-import org.apache.ibatis.session.RowBounds;
+import com.scit.lms.domain.StudentsAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +28,11 @@ public class AdminServiceImple implements AdminService {
 	@Override
 	public void update(Member member) {
 		dao.update(member);
+	}
+
+	@Override
+	public ArrayList<StudentsAll> selectAllStudents() {
+		return dao.selectAllStudents();
 	}
 
 

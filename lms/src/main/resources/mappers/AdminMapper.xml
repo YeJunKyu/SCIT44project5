@@ -33,5 +33,26 @@
         memberid = #{memberid}
     </update>
 
+<!--    학생관리 학생조회-->
+    <select id="selectAllStudents" resultType="StudentsAll">
+        SELECT
+        m.memberid as "member.memberid",
+        m.membername as "member.membername",
+        m.birthday as "member.birthday",
+        m.gender as "member.gender",
+        m.address as "member.address",
+        s.school as "student.school",
+        s.major as "student.major",
+        s.graduation as "student.graduation",
+        s.curriculum as "student.curriculum",
+        jp.jpclassname as "jpCategory.jpclassname",
+        it.itclassname as "itCategory.itclassname"
+        FROM
+        lms_member m
+        JOIN lms_student s ON m.memberid = s.memberid
+        JOIN class_jp_category jp ON m.memberid = jp.memberid
+        JOIN class_it_category it ON m.memberid = it.memberid
+    </select>
+
 
 </mapper>

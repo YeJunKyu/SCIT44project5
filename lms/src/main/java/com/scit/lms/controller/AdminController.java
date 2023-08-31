@@ -1,9 +1,11 @@
 package com.scit.lms.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
-import com.scit.lms.domain.Member;
+import com.scit.lms.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -104,9 +106,19 @@ public class AdminController {
 
 		return "redirect:/admin/authentication";
 	}
-
+	
+	//학생관리 학생정보조회
 	@GetMapping("studentManager")
-	public String studentManager(){
+	public String studentManager(Model model,
+								 StudentsAll studentsAll){
+		log.debug("컨트롤러 확인:{}","확인");
+
+
+		ArrayList<StudentsAll> studentslist = service.selectAllStudents();
+		log.debug("학생확인:{}",studentslist);
+
+		model.addAttribute("students",studentslist);
+		log.debug("학생확인2:{}",studentslist);
 
 		return "adminView/studentManager";
 	}

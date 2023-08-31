@@ -1,11 +1,10 @@
 package com.scit.lms.dao;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import com.scit.lms.domain.Member;
+import com.scit.lms.domain.StudentsAll;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.session.RowBounds;
 
 
 @Mapper
@@ -17,4 +16,6 @@ public interface AdminDAO {
 
 
     void update(Member member);
+
+    ArrayList<StudentsAll> selectAllStudents();
 }

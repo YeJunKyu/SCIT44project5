@@ -64,7 +64,9 @@
                         <tr>
                             <th>아이디</th>
                             <th>이름</th>
-                            <th>분반</th>
+                            <th>과정</th>
+                            <th>일본어분반</th>
+                            <th>IT분반</th>
                             <th>생년월일</th>
                             <th>성별</th>
                             <th>학교</th>
@@ -73,30 +75,36 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-
-                            <td>
-
-                            </td>
-                            <td>
+                        <tr th:each="students : ${students}">
+                            <td th:text="${students.member.memberid}">
 
                             </td>
-                            <td>
+
+                            <td th:text="${students.member.membername}">
 
                             </td>
-                            <td>
+                            <td th:text="${students.student.curriculum}">
 
                             </td>
-                            <td >
+                            <td th:text="${students.jpCategory.jpclassname}">
 
                             </td>
-                            <td >
+                            <td th:text="${students.itCategory.itclassname}">
 
                             </td>
-                            <td >
+                            <td th:text="${students.member.birthday}">
 
                             </td>
-                            <td>
+                            <td th:text="${students.member.gender}">
+
+                            </td>
+                            <td th:text="${students.student.school}">
+
+                            </td>
+                            <td th:text="${students.student.graduation}">
+
+                            </td>
+                            <td th:text="${students.member.address}">
 
                             </td>
 
@@ -110,7 +118,7 @@
                     </table>
                     <input type="button" value="공통정보편집">
 
-       
+
 
             </div>
         </div>
