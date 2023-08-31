@@ -4,6 +4,13 @@
     <head>
         <meta charset="UTF-8" />
         <title>Title</title>
+        <link rel="stylesheet" th:href="@{/assets/css/main/app.css}">
+        <link rel="stylesheet" th:href="@{/assets/css/main/app-dark.css}">
+        <link rel="stylesheet" th:href="@{/assets/css/main/lms.css}" />
+        <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.svg}" type="image/x-icon">
+        <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png">
+
+        <link rel="stylesheet" th:href="@{/assets/css/shared/iconly.css}">
     </head>
     <body>
         <div id="sidebar" class="active" th:fragment="sidebarFrag">
@@ -43,191 +50,262 @@
                 <div class="sidebar-menu">
                     <ul class="menu">
                         <li class="sidebar-title" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">관리자
-                            <li class="sidebar-item active" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
-                                <a th:href="@{/main}" class="sidebar-link">
-                                    <i class="bi bi-grid-fill"></i>
-                                    <span>메인화면</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
-                                <a th:href="@{/notice}" class="sidebar-link">
-                                    <i class="bi bi-stack"></i>
-                                    <span>공지</span>
-                                </a>
-                            </li>
 
-                            <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
-                                <a th:href="@{/admin/authentication}" class="sidebar-link">
-                                    <i class="bi bi-collection-fill"></i>
-                                    <span>회원 인증</span>
-                                    <i class="bi bi-bell"></i>
-                                    <span th:text="${countUser}"></span>
-                                </a>
-                            </li>
+                        </li>
+                        <li class="sidebar-item active" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
+                            <a th:href="@{/main}" class="sidebar-link">
+                                <i class="bi bi-grid-fill"></i>
+                                <span>메인화면</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
+                            <a th:href="@{/notice}" class="sidebar-link">
+                                <i class="bi bi-stack"></i>
+                                <span>공지</span>
+                            </a>
+                        </li>
 
-                            <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
-                                <a href="#" class="sidebar-link">
-                                    <i class="bi bi-stack"></i>
-                                    <span>학생관리</span>
-                                </a>
-                            </li>
+                        <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
+                            <a th:href="@{/admin/authentication}" class="sidebar-link">
+                                <i class="bi bi-collection-fill"></i>
+                                <span>회원 인증</span>
+                                <i class="bi bi-bell"></i>
+                                <span th:text="${countUser}"></span>
+                            </a>
+                        </li>
 
-                            <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
-                                <a href="#" class="sidebar-link">
-                                    <i class="bi bi-stack"></i>
-                                    <span>출결관리</span>
-                                </a>
-                            </li>
+                        <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
+                            <a href="#" class="sidebar-link">
+                                <i class="bi bi-stack"></i>
+                                <span>학생관리</span>
+                            </a>
+                        </li>
 
-                            <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
-                                <a href="#" class="sidebar-link">
-                                    <i class="bi bi-stack"></i>
-                                    <span>시험등록</span>
-                                </a>
-                            </li>
+                        <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
+                            <a href="#" class="sidebar-link">
+                                <i class="bi bi-stack"></i>
+                                <span>출결관리</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
+                            <a href="#" class="sidebar-link">
+                                <i class="bi bi-stack"></i>
+                                <span>시험등록</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
+                            <a href="#" class="sidebar-link">
+                                <i class="bi bi-collection-fill"></i>
+                                <span>(선생)시험</span>
+                            </a>
+                            <ul class="submenu">
+                                <li class="submenu-item">
+                                    <a href="extra-component-avatar.html">시험등록</a>
+                                </li>
+                                <li class="submenu-item">
+                                    <a href="extra-component-sweetalert.html">채점</a>
+                                </li>
+                                <li class="submenu-item">
+                                    <a href="extra-component-sweetalert.html">시험</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
+                            <a href="#" class="sidebar-link">
+                                <i class="bi bi-collection-fill"></i>
+                                <span>(선생)과제</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
+                            <a href="#" class="sidebar-link">
+                                <i class="bi bi-collection-fill"></i>
+                                <span>(선생)강의</span>
+                            </a>
+                            <ul class="submenu">
+                                <li class="submenu-item">
+                                    <a href="extra-component-avatar.html">실시간 강의</a>
+                                </li>
+                                <li class="submenu-item">
+                                    <a href="extra-component-sweetalert.html">지난 강의</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
+                            <a href="#" class="sidebar-link">
+                                <i class="bi bi-collection-fill"></i>
+                                <span>(선생)문제은행</span>
+                            </a>
+                            <ul class="submenu">
+                                <li class="submenu-item">
+                                    <a href="extra-component-avatar.html">문제 관리</a>
+                                </li>
+                                <li class="submenu-item">
+                                    <a href="extra-component-sweetalert.html">문제 현황</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
+                            <a href="#" class="sidebar-link">
+                                <i class="bi bi-collection-fill"></i>
+                                <span>(학생)문제은행</span>
+                            </a>
+                            <ul class="submenu">
+                                <li class="submenu-item">
+                                    <a href="extra-component-avatar.html">문제 풀기</a>
+                                </li>
+                                <li class="submenu-item">
+                                    <a href="extra-component-sweetalert.html">오답노트</a>
+                                </li>
+                            </ul>
                         </li>
 
 
 
 
                         <li class="sidebar-title" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')')}">교사
-                            <li class="sidebar-item active" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')')}">
-                                <a th:href="@{/main}" class="sidebar-link">
-                                    <i class="bi bi-grid-fill"></i>
-                                    <span>메인화면</span>
-                                </a>
-                            </li>
 
-                            <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')')}">
-                                <a th:href="@{/notice}" class="sidebar-link">
-                                    <i class="bi bi-stack"></i>
-                                    <span>공지</span>
-                                </a>
-                            </li>
-
-                            <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')')}">
-                                <a href="#" class="sidebar-link">
-                                    <i class="bi bi-collection-fill"></i>
-                                    <span>시험</span>
-                                </a>
-                                <ul class="submenu">
-                                    <li class="submenu-item">
-                                        <a href="extra-component-avatar.html">시험등록</a>
-                                    </li>
-                                    <li class="submenu-item">
-                                        <a href="extra-component-sweetalert.html">채점</a>
-                                    </li>
-                                    <li class="submenu-item">
-                                        <a href="extra-component-sweetalert.html">시험</a>
-                                    </li>
-                                </ul>
-                            </li>
-
-                            <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')')}">
-                                <a href="#" class="sidebar-link">
-                                    <i class="bi bi-collection-fill"></i>
-                                    <span>과제</span>
-                                </a>
-                            </li>
-
-                            <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')')}">
-                                <a href="#" class="sidebar-link">
-                                    <i class="bi bi-collection-fill"></i>
-                                    <span>강의</span>
-                                </a>
-                                <ul class="submenu">
-                                    <li class="submenu-item">
-                                        <a href="extra-component-avatar.html">실시간 강의</a>
-                                    </li>
-                                    <li class="submenu-item">
-                                        <a href="extra-component-sweetalert.html">지난 강의</a>
-                                    </li>
-                                </ul>
-                            </li>
-
-                            <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')')}">
-                                <a href="#" class="sidebar-link">
-                                    <i class="bi bi-collection-fill"></i>
-                                    <span>문제은행</span>
-                                </a>
-                                <ul class="submenu">
-                                    <li class="submenu-item">
-                                        <a href="extra-component-avatar.html">문제 관리</a>
-                                    </li>
-                                    <li class="submenu-item">
-                                        <a href="extra-component-sweetalert.html">문제 현황</a>
-                                    </li>
-                                </ul>
-                            </li>
+                        </li>
+                        <li class="sidebar-item active" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')')}">
+                            <a th:href="@{/main}" class="sidebar-link">
+                                <i class="bi bi-grid-fill"></i>
+                                <span>메인화면</span>
+                            </a>
                         </li>
 
+                        <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')')}">
+                            <a th:href="@{/notice}" class="sidebar-link">
+                                <i class="bi bi-stack"></i>
+                                <span>공지</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')')}">
+                            <a href="#" class="sidebar-link">
+                                <i class="bi bi-collection-fill"></i>
+                                <span>시험</span>
+                            </a>
+                            <ul class="submenu">
+                                <li class="submenu-item">
+                                    <a href="extra-component-avatar.html">시험등록</a>
+                                </li>
+                                <li class="submenu-item">
+                                    <a href="extra-component-sweetalert.html">채점</a>
+                                </li>
+                                <li class="submenu-item">
+                                    <a href="extra-component-sweetalert.html">시험</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')')}">
+                            <a href="#" class="sidebar-link">
+                                <i class="bi bi-collection-fill"></i>
+                                <span>과제</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')')}">
+                            <a href="#" class="sidebar-link">
+                                <i class="bi bi-collection-fill"></i>
+                                <span>강의</span>
+                            </a>
+                            <ul class="submenu">
+                                <li class="submenu-item">
+                                    <a href="extra-component-avatar.html">실시간 강의</a>
+                                </li>
+                                <li class="submenu-item">
+                                    <a href="extra-component-sweetalert.html">지난 강의</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')')}">
+                            <a href="#" class="sidebar-link">
+                                <i class="bi bi-collection-fill"></i>
+                                <span>문제은행</span>
+                            </a>
+                            <ul class="submenu">
+                                <li class="submenu-item">
+                                    <a href="extra-component-avatar.html">문제 관리</a>
+                                </li>
+                                <li class="submenu-item">
+                                    <a href="extra-component-sweetalert.html">문제 현황</a>
+                                </li>
+                            </ul>
+                        </li>
 
 
                         <li class="sidebar-title" th:if="${#authorization.expression('hasRole(''ROLE_student'')')}">학생
-                            <li class="sidebar-item active" th:if="${#authorization.expression('hasRole(''ROLE_student'')')}">
-                                <a th:href="@{/main}" class="sidebar-link">
-                                    <i class="bi bi-grid-fill"></i>
-                                    <span>메인화면</span>
-                                </a>
-                            </li>
 
-                            <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_student'')')}">
-                                <a th:href="@{/notice}" class="sidebar-link">
-                                    <i class="bi bi-stack"></i>
-                                    <span>공지</span>
-                                </a>
-                            </li>
-
-                            <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_student'')')}">
-                                <a href="#" class="sidebar-link">
-                                    <i class="bi bi-collection-fill"></i>
-                                    <span>시험</span>
-                                </a>
-                                <ul class="submenu">
-                                    <li class="submenu-item">
-                                        <a href="extra-component-sweetalert.html">시험</a>
-                                    </li>
-                                </ul>
-                            </li>
-
-                            <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_student'')')}">
-                                <a href="#" class="sidebar-link">
-                                    <i class="bi bi-collection-fill"></i>
-                                    <span>과제</span>
-                                </a>
-                            </li>
-
-                            <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_student'')')}">
-                                <a href="#" class="sidebar-link">
-                                    <i class="bi bi-collection-fill"></i>
-                                    <span>강의</span>
-                                </a>
-                                <ul class="submenu">
-                                    <li class="submenu-item">
-                                        <a href="extra-component-avatar.html">실시간 강의</a>
-                                    </li>
-                                    <li class="submenu-item">
-                                        <a href="extra-component-sweetalert.html">지난 강의</a>
-                                    </li>
-                                </ul>
-                            </li>
-
-                            <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_student'')')}">
-                                <a href="#" class="sidebar-link">
-                                    <i class="bi bi-collection-fill"></i>
-                                    <span>문제은행</span>
-                                </a>
-                                <ul class="submenu">
-                                    <li class="submenu-item">
-                                        <a href="extra-component-avatar.html">문제 풀기</a>
-                                    </li>
-                                    <li class="submenu-item">
-                                        <a href="extra-component-sweetalert.html">오답노트</a>
-                                    </li>
-                                </ul>
-                            </li>
+                        </li>
+                        <li class="sidebar-item active" th:if="${#authorization.expression('hasRole(''ROLE_student'')')}">
+                            <a th:href="@{/main}" class="sidebar-link">
+                                <i class="bi bi-grid-fill"></i>
+                                <span>메인화면</span>
+                            </a>
                         </li>
 
+                        <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_student'')')}">
+                            <a th:href="@{/notice}" class="sidebar-link">
+                                <i class="bi bi-stack"></i>
+                                <span>공지</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_student'')')}">
+                            <a href="#" class="sidebar-link">
+                                <i class="bi bi-collection-fill"></i>
+                                <span>시험</span>
+                            </a>
+                            <ul class="submenu">
+                                <li class="submenu-item">
+                                    <a href="extra-component-sweetalert.html">시험</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_student'')')}">
+                            <a href="#" class="sidebar-link">
+                                <i class="bi bi-collection-fill"></i>
+                                <span>과제</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_student'')')}">
+                            <a href="#" class="sidebar-link">
+                                <i class="bi bi-collection-fill"></i>
+                                <span>강의</span>
+                            </a>
+                            <ul class="submenu">
+                                <li class="submenu-item">
+                                    <a href="extra-component-avatar.html">실시간 강의</a>
+                                </li>
+                                <li class="submenu-item">
+                                    <a href="extra-component-sweetalert.html">지난 강의</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_student'')')}">
+                            <a href="#" class="sidebar-link">
+                                <i class="bi bi-collection-fill"></i>
+                                <span>문제은행</span>
+                            </a>
+                            <ul class="submenu">
+                                <li class="submenu-item">
+                                    <a href="extra-component-avatar.html">문제 풀기</a>
+                                </li>
+                                <li class="submenu-item">
+                                    <a href="extra-component-sweetalert.html">오답노트</a>
+                                </li>
+                            </ul>
+                        </li>
 
 
                         <hr />
@@ -247,5 +325,12 @@
                 </div>
             </div>
         </div>
+
+        <script th:src="@{/assets/js/bootstrap.js}"></script>
+        <script th:src="@{/assets/js/app.js}"></script>
+
+        <!-- Need: Apexcharts -->
+        <script th:src="@{/assets/extensions/apexcharts/apexcharts.min.js}"></script>
+        <script th:src="@{/assets/js/pages/dashboard.js}"></script>
     </body>
 </html>
