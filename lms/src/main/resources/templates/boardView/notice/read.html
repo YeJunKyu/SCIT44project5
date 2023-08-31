@@ -38,7 +38,6 @@
         <div class="page-title">
             <div class="row">
                 <div class="col-12 col-md-6 order-md-1 order-last">
-                    <h3>공지</h3>
                     <p class="text-subtitle text-muted"></p>
                 </div>
                 <div class="col-12 col-md-6 order-md-2 order-first">
@@ -62,26 +61,28 @@
 
                             <!-- table head dark -->
                             <div class="table-responsive">
-                                <table>
+                                <table class="col-12" id="notice">
                                     <tr>
-                                        <th>작성자</th>
-                                        <td th:text="${notice.memberid}"></td>
+                                        <td colspan="2">
+                                            <h3 th:text="${notice.noticetitle}"></h3>
+                                        </td>
                                     </tr>
                                     <tr>
-                                        <th>작성일</th>
-                                        <td th:text="${notice.noticedate}"></td>
+                                        <td colspan="2">
+                                            <span>작성자 </span>
+                                            <span th:text="${notice.memberid}"></span>
+                                            <span>·</span>
+                                            <span th:text="${notice.noticedate}"></span>
+                                            <span>·</span>
+                                            <span>조회수 </span>
+                                            <span th:text="${notice.hits}"></span>
+                                        </td>
                                     </tr>
                                     <tr>
-                                        <th>조회수</th>
-                                        <td th:text="${notice.hits}"></td>
-                                    </tr>
-                                    <tr>
-                                        <th>제목</th>
-                                        <td th:text="${notice.noticetitle}"></td>
-                                    </tr>
-                                    <tr>
-                                        <th>내용</th>
-                                        <td><pre th:text="${notice.noticecontents}"></pre></td>
+                                        <td colspan="2">
+                                            <hr>
+                                            <pre th:text="${notice.noticecontents}"></pre>
+                                        </td>
                                     </tr>
                                     <tr th:if="${notice.originalfile} != null">
                                         <th>첨부파일</th>
@@ -92,13 +93,15 @@
                                 </table>
                             </div>
 
+                            <hr>
+
                             <!-- 버튼 -->
                             <div class="row">
 
                                 <div class="col-12 col-md-6 order-md-1 order-last">
                                     <div th:if="${#authentication.name} == ${notice.memberid}">
                                         <a class="btn btn-primary" th:href="@{/notice/update(noticenum=${notice.noticenum})}">수정</a>
-                                        <a class="btn btn-light-secondary" th:href="@{/notice/delete(noticenum=${notice.noticenum})}">삭제</a>
+                                        <a class="btn btn-light-secondary" th:href="@{/notice/delete(noticenum=${notice.noticenum})}" onclick="return confirm('삭제하겠습니까?');">삭제</a>
                                     </div>
                                 </div>
 

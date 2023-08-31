@@ -103,7 +103,7 @@
     <!-- 공지 글 조회 -->
     <select id="read" resultType="Notice">
         select
-            noticenum, memberid, noticetitle, noticecontents, to_char(noticedate, 'yyyy-mm-dd') noticedate, viewauthority, hits, originalfile, savedfile
+            noticenum, memberid, noticetitle, noticecontents, noticedate, viewauthority, hits, originalfile, savedfile
         from
             lms_notice
         where
