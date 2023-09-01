@@ -30,7 +30,10 @@
                             <div class="card-header justify-content-between">
                                 <div class="d-flex mb-3 align-items-center">
                                     <h6 class="col-md-8">${currentQuestionNumber}</h6>
-                                    <div class="col-md-2">이미지</div>
+                                    <div class="col-md-2 icon">
+                                        <input type="file" id="${cardId}-file-input" style="display: none;">
+                                        <button id="${cardId}-attach-file-btn" class="btn btn-primary btn-sm rounded-pill m-lg-2">파일 첨부</button>
+                                    </div>
                                     <div class="col-md-2">
                                         <select class="form-select type" data-card-id="${cardId}">
                                             <option value="1" selected>객관식</option>
@@ -184,6 +187,24 @@
 
                     updateAnswerNumbers(cardId);
                 });
+
+                // 파일 첨부 버튼 클릭 시 파일 선택 다이얼로그 트리거
+                $(document).on("click", "[id$='-attach-file-btn']", function (e) {
+                    e.preventDefault();
+
+                    let cardId = $(this).closest(".card").attr("id");
+
+                    $("#" + cardId + "-file-input").trigger('click');
+                });
+
+                // 파일 선택 시 선택된 파일명 표시
+                $(document).on("change", "[type='file']", function () {
+                    let fileName = this.files[0].name;
+                    let cardId = $(this).closest(".card").attr("id");
+
+                    $("#" + cardId + "-attach-file-btn").text(fileName);
+                });
+
             });
 
             function updateAnswerNumbers(cardId) {
