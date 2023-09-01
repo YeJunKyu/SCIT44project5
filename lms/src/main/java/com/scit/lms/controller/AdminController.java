@@ -123,5 +123,26 @@ public class AdminController {
 		return "adminView/studentManager";
 	}
 
+	
+	//학생관리 : 학교 및 과정등록
+	@GetMapping("insertStudentA")
+	public String insertStudentA(Model model){
+		
+		return "adminView/insertStudentA";
+	}
+
+	//학생관리 : 분반 등록
+	@GetMapping("insertStudentB")
+	public String insertStudentB(Model model){
+
+		return "adminView/insertStudentB";
+	}
+
+	//학생관리 : 기타정보 등록
+	@GetMapping("insertStudentC")
+	public String insertStudentC(Model model){
+
+		return "adminView/insertStudentC";
+	}
 
 }

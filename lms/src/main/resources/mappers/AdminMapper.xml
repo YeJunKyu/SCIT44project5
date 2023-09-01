@@ -38,7 +38,7 @@
         SELECT
         m.memberid as "member.memberid",
         m.membername as "member.membername",
-        m.birthday as "member.birthday",
+        TO_CHAR(m.birthday, 'YY/MM/DD') as "member.birthday",
         m.gender as "member.gender",
         m.address as "member.address",
         s.school as "student.school",

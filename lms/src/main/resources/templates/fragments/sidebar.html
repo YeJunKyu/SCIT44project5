@@ -74,11 +74,25 @@
                             </a>
                         </li>
 
-                        <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
-                            <a th:href="@{/admin/studentManager}" class="sidebar-link">
+                        <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
+                            <a href="" class="sidebar-link">
                                 <i class="bi bi-stack"></i>
                                 <span>학생관리</span>
                             </a>
+                            <ul class="submenu">
+                                <li class="submenu-item">
+                                    <a th:href="@{/admin/studentManager}">전체정보</a>
+                                </li>
+                                <li class="submenu-item">
+                                    <a th:href="@{/admin/insertStudentA}">학교정보 및 과정등록</a>
+                                </li>
+                                <li class="submenu-item">
+                                    <a th:href="@{/admin/insertStudentB}">분반등록</a>
+                                </li>
+                                <li class="submenu-item">
+                                    <a th:href="@{/admin/insertStudentC}">기타정보등록</a>
+                                </li>
+                            </ul>
                         </li>
 
                         <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">

@@ -42,11 +42,12 @@ CREATE TABLE class_it_category (
 CREATE TABLE student_info (
 	memberid	varchar2(20) primary key references lms_member(memberid),
 	certi_jpname	varchar2(200)		NULL,
-	certi_name	varchar2(200)		NOT NULL,
+	certi_name	varchar2(200)		 NULL,
 	company	varchar2(200)		NULL,
 	note	varchar2(2000)		NULL,
-	experience	varchar2(200)		NULL
-
+	experience	varchar2(200)		NULL,
+    originalphoto varchar2(2000),
+    savedphoto varchar2(2000)
 );
 
 
