@@ -156,17 +156,46 @@ public class AdminController {
 	}
 
 	//학생관리 : 분반 등록
-	@GetMapping("insertStudentB")
-	public String insertStudentB(Model model){
+	@GetMapping("insertClass")
+	public String insertClass(Model model){
+		log.debug("컨트롤러확인:{}","okay");
+		ArrayList<Member> studentsOnly = service.selectOnlyStudentClass();
+		log.debug("분반폼1:{}",studentsOnly);
+		model.addAttribute("student",studentsOnly);
+		return "adminView/insertClass";
+	}
 
-		return "adminView/insertStudentB";
+	//학생분반등록
+	@PostMapping("insertClass")
+	public String insertClass(@RequestParam("memberid") ArrayList<String> memberids,
+							  String jpclassname,
+							  String jpsubject,
+							  String itclassname,
+							  String itsubject){
+		ArrayList<StudentClasses> studentsAllClasses = new ArrayList<>();
+		log.debug("컨트롤러확인:{}",studentsAllClasses);
+
+		for (String memberid : memberids) {
+			StudentClasses studentClass = new StudentClasses();
+			studentClass.setMemberid(memberid);
+			studentClass.setJpclassname(jpclassname);
+			studentClass.setJpsubject(jpsubject);
+			studentClass.setItclassname(itclassname);
+			studentClass.setItsubject(itsubject);
+			studentsAllClasses.add(studentClass);
+		}
+		log.debug("컨트롤러 확인2:{}",studentsAllClasses);
+		service.insertClass(studentsAllClasses);
+		log.debug("분반등록:{}",studentsAllClasses);
+		return "redirect:/admin/insertClass";
 	}
 
 	//학생관리 : 기타정보 등록
-	@GetMapping("insertStudentC")
-	public String insertStudentC(Model model){
+	@GetMapping("insertInformation")
+	public String insertInformation(Model model){
 
-		return "adminView/insertStudentC";
+		return "adminView/insertInformation";
 	}
+
 
 }

@@ -50,10 +50,10 @@
         FROM
         lms_member m
         JOIN lms_student s ON m.memberid = s.memberid
-        JOIN class_jp_category jp ON m.memberid = jp.memberid
-        JOIN class_it_category it ON m.memberid = it.memberid
+        LEFT JOIN class_jp_category jp ON m.memberid = jp.memberid
+        LEFT JOIN class_it_category it ON m.memberid = it.memberid
     </select>
-
+<!--학생관리 : 과정등록폼-->
     <select id="selectOnlyStudent" resultType="Member">
         SELECT m.*
         FROM lms_member m
@@ -67,6 +67,29 @@
         INSERT ALL
         <foreach collection="list" item="s">
             INTO lms_student (memberid, curriculum) VALUES (#{s.memberid}, #{s.curriculum})
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+
+<!--    학생관리: 분반등록 폼-->
+    <select id="selectOnlyStudentClass" resultType="Member">
+        SELECT m.*
+        FROM lms_member m
+        LEFT JOIN class_jp_category jp ON m.memberid = jp.memberid
+        LEFT JOIN class_it_category it ON m.memberid = it.memberid
+        WHERE m.rolename = 'ROLE_student' AND (jp.jpclassname IS  NULL AND it.itclassname IS  NULL)
+
+    </select>
+
+<!--    학생관리: 분반등록-->
+    <insert id="insertClass" parameterType="StudentClasses">
+        INSERT ALL
+        <foreach collection="list" item="s">
+            INTO class_jp_category (memberid, jpclassname, jpsubject)
+            VALUES (#{s.memberid}, #{s.jpclassname}, #{s.jpsubject})
+
+            INTO class_it_category (memberid, itclassname, itsubject)
+            VALUES (#{s.memberid}, #{s.itclassname}, #{s.itsubject})
         </foreach>
         SELECT * FROM dual
     </insert>

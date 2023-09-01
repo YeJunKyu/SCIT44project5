@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>학생 관리</title>
+
+    <link rel="stylesheet" th:href="@{/assets/css/main/app.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main/app-dark.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main/lms.css}" />
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.svg}" type="image/x-icon">
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png">
+
+    <link rel="stylesheet" th:href="@{/assets/extensions/simple-datatables/style.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/pages/simple-datatables.css}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script th:src="@{/privatejs/sidebarLoader.js}"></script>
+    <script>
+
+        function insertchk(){
+
+		if(confirm('등록하시겠습니까?')){
+			return true;
+	}
+		return false;
+    }
+
+
+    $(document).ready(function() {
+        // '모두 선택' 체크박스 클릭 이벤트 핸들러
+        $('#selectAll').click(function() {
+            // '모두 선택' 체크박스의 현재 상태를 가져옵니다
+            var isChecked = $(this).prop('checked');
+
+            // 모든 체크박스의 선택 상태를 '모두 선택' 체크박스와 동일하게 설정합니다
+            $('input[name="memberid"]').prop('checked', isChecked);
+        });
+
+        // 개별 체크박스 클릭 이벤트 핸들러
+        $('input[name="memberid"]').click(function() {
+            if ($('input[name="memberid"]:checked').length == $('input[name="memberid"]').length) {
+                // 모든 체크박스가 선택된 경우 '모두 선택' 체크박스를 선택 상태로 설정합니다
+                $('#selectAll').prop('checked', true);
+            } else {
+                // 하나 이상의 체크박스가 선택 해제된 경우 '모두 선택' 체크박스를 선택 해제 상태로 설정합니다
+                $('#selectAll').prop('checked', false);
+            }
+        });
+    });
+
+
+
+    </script>
+
+</head>
+
+<body>
+<div id="app">
+    <div id="sidebar-placeholder"></div>
+    <div id="main">
+        <header class="mb-3">
+            <a href="#" class="burger-btn d-block d-xl-none">
+                <i class="bi bi-justify fs-3"></i>
+            </a>
+        </header>
+
+        <div class="page-heading">
+            <div class="page-title">
+                <div class="row">
+                    <div class="col-12 col-md-6 order-md-1 order-last">
+                        <h3>분반</h3>
+                        <p class="text-subtitle text-muted">학생의 분반을 등록해주세요.</p>
+                    </div>
+                    <div class="col-12 col-md-6 order-md-2 order-first">
+                        <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                            <ol class="breadcrumb">
+
+
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <section class="section">
+                <div class="card">
+                    <div class="card-header">
+
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{insertClass}" method="post" onsubmit="return insertchk()">
+                        <table class="table table-striped" id="table1">
+                            <thead>
+                            <tr>
+                                <input type="checkbox" id="selectAll"> 모두 선택
+                            </tr>
+                            <tr>
+                                <th>선택</th>
+                                <th>아이디</th>
+                                <th>이름</th>
+                                <th>생년월일</th>
+                                <th>성별</th>
+                                <th>주소</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+
+                            <tr th:each="student : ${student}">
+                                <td><input type="checkbox" name="memberid" th:value="${student.memberid}"></td>
+                                <td th:text="${student.memberid}">
+                                </td>
+
+                                <td th:text="${student.membername}">
+
+                                </td>
+
+
+                                <td th:text="${#strings.substring(student.birthday, 0, 10)}">
+
+                                </td>
+                                <td th:if="${student.gender == 'male'}">
+                                    남성
+                                </td>
+                                <td th:if="${student.gender == 'female'}">
+                                    여성
+                                </td>
+
+                                <td th:text="${student.address}">
+
+                                </td>
+
+
+
+
+
+                            </tr>
+
+                            </tbody>
+                        </table>
+
+                        일본어 반<select name="jpclassname">
+                            <option value="">해당없음</option>
+                            <option value="A">A반</option>
+                            <option value="B">B반</option>
+                            <option value="C">C반</option>
+                            <option value="D">D반</option>
+                            <option value="E">E반</option>
+                            <option value="F">F반</option>
+                            <option value="G">G반</option>
+                            <option value="H">H반</option>
+                            <option value="I">I반</option>
+                            <option value="J">J반</option>
+                        </select><br>
+                            IT 반<select name="itclassname">
+                            <option value="">해당없음</option>
+                            <option value="A">A반</option>
+                            <option value="B">B반</option>
+                            <option value="C">C반</option>
+                            <option value="D">D반</option>
+                            <option value="E">E반</option>
+                            <option value="F">F반</option>
+                            <option value="G">G반</option>
+                            <option value="H">H반</option>
+                            <option value="I">I반</option>
+                            <option value="J">J반</option>
+                        </select>
+                            <input type="hidden" name="jpsubject" value="일본어">
+                            <input type="hidden" name="itsubject" value="IT"><br>
+                        <input type="submit" value="저장">
+                        </form>
+
+
+                    </div>
+                </div>
+
+            </section>
+        </div>
+
+
+    </div>
+</div>
+<script th:src="@{/assets/js/bootstrap.js}"></script>
+<script th:src="@{/assets/js/app.js}"></script>
+
+<script th:src="@{/assets/extensions/simple-datatables/umd/simple-datatables-1.js}"></script>
+<script th:src="@{/assets/js/pages/simple-datatables.js}"></script>
+
+</body>
+
+</html>
