@@ -54,5 +54,20 @@
         JOIN class_it_category it ON m.memberid = it.memberid
     </select>
 
+    <select id="selectOnlyStudent" resultType="Member">
+        SELECT m.*
+        FROM lms_member m
+        LEFT JOIN lms_student s ON m.memberid = s.memberid
+        WHERE m.rolename = 'ROLE_student' AND s.curriculum IS NULL
 
+    </select>
+
+<!--    학생관리 : 과정 등록-->
+    <insert id="insertCurriculum" parameterType="Student">
+        INSERT ALL
+        <foreach collection="list" item="s">
+            INTO lms_student (memberid, curriculum) VALUES (#{s.memberid}, #{s.curriculum})
+        </foreach>
+        SELECT * FROM dual
+    </insert>
 </mapper>

@@ -124,11 +124,35 @@ public class AdminController {
 	}
 
 	
-	//학생관리 : 학교 및 과정등록
-	@GetMapping("insertStudentA")
+	//학생관리 : 과정등록폼
+	@GetMapping("insertCurriculum")
 	public String insertStudentA(Model model){
-		
-		return "adminView/insertStudentA";
+		log.debug("컨트롤러확인:{}","okay");
+		ArrayList<Member> studentsOnly = service.selectOnlyStudent();
+		log.debug("과정폼1:{}",studentsOnly);
+		model.addAttribute("student",studentsOnly);
+		return "adminView/insertCurriculum";
+	}
+	
+	//학생관리 : 과정등록 다중인설트
+	@PostMapping("insertCurriculum")
+	public String insertCurriculum(@RequestParam("memberid") ArrayList<String> memberids,
+								   @RequestParam String curriculum){
+		log.debug("컨트롤러확인:{}","okay");
+		ArrayList<Student> students = new ArrayList<>();
+
+		for (String memberid : memberids) {
+			log.debug("Member ID: {}", memberid);
+
+			Student student = new Student();
+			student.setMemberid(memberid);
+			student.setCurriculum(curriculum);
+			students.add(student);
+		}
+
+		service.insertCurriculum(students);
+		log.debug("과정등록1: {}", students);
+		return "redirect:/main";
 	}
 
 	//학생관리 : 분반 등록

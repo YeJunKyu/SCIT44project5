@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.scit.lms.dao.AdminDAO;
 import com.scit.lms.domain.Member;
+import com.scit.lms.domain.Student;
 import com.scit.lms.domain.StudentsAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,16 @@ public class AdminServiceImple implements AdminService {
 	@Override
 	public ArrayList<StudentsAll> selectAllStudents() {
 		return dao.selectAllStudents();
+	}
+
+	@Override
+	public ArrayList<Member> selectOnlyStudent() {
+		return dao.selectOnlyStudent();
+	}
+
+	@Override
+	public void insertCurriculum(ArrayList<Student> student) {
+		dao.insertCurriculum(student);
 	}
 
 
