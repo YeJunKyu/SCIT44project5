@@ -185,7 +185,7 @@
                             </a>
                         </li>
 
-                        <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
+                        <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')')}">
                             <a th:href="@{/schedule}" class="sidebar-link">
                                 <i class="bi bi-calendar"></i>
                                 <span>일정</span>
@@ -262,7 +262,7 @@
                             </a>
                         </li>
 
-                        <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
+                        <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_student'')')}">
                             <a th:href="@{/schedule}" class="sidebar-link">
                                 <i class="bi bi-calendar"></i>
                                 <span>일정</span>
