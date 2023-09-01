@@ -57,5 +57,10 @@ public class AdminServiceImple implements AdminService {
 		dao.insertClass(studentsAllClasses);
 	}
 
+	@Override
+	public ArrayList<Member> selectOnlyStudentInformation() {
+		return dao.selectOnlyStudentInformation();
+	}
+
 
 }

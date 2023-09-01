@@ -155,7 +155,7 @@ public class AdminController {
 		return "redirect:/main";
 	}
 
-	//학생관리 : 분반 등록
+	//학생관리 : 분반 등록폼
 	@GetMapping("insertClass")
 	public String insertClass(Model model){
 		log.debug("컨트롤러확인:{}","okay");
@@ -190,10 +190,13 @@ public class AdminController {
 		return "redirect:/admin/insertClass";
 	}
 
-	//학생관리 : 기타정보 등록
+	//학생관리 : 기타정보 등록폼
 	@GetMapping("insertInformation")
 	public String insertInformation(Model model){
-
+		log.debug("컨트롤러확인:{}","okay");
+		ArrayList<Member> studentsOnly = service.selectOnlyStudentInformation();
+		log.debug("기타정보폼1:{}",studentsOnly);
+		model.addAttribute("student",studentsOnly);
 		return "adminView/insertInformation";
 	}
 

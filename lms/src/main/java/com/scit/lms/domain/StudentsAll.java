@@ -12,4 +12,5 @@ public class StudentsAll{
     private Student student;
     private IT_category itCategory;
     private JP_category jpCategory;
+    private StudentInfo studentInfo;
 }

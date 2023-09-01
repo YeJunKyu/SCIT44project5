@@ -28,4 +28,6 @@ public interface AdminDAO {
     ArrayList<Member> selectOnlyStudentClass();
 
     void insertClass(ArrayList<StudentClasses> studentsAllClasses);
+
+    ArrayList<Member> selectOnlyStudentInformation();
 }

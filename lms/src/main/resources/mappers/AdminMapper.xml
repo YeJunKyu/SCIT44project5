@@ -62,6 +62,8 @@
 
     </select>
 
+
+
 <!--    학생관리 : 과정 등록-->
     <insert id="insertCurriculum" parameterType="Student">
         INSERT ALL
@@ -77,7 +79,7 @@
         FROM lms_member m
         LEFT JOIN class_jp_category jp ON m.memberid = jp.memberid
         LEFT JOIN class_it_category it ON m.memberid = it.memberid
-        WHERE m.rolename = 'ROLE_student' AND (jp.jpclassname IS  NULL AND it.itclassname IS  NULL)
+        WHERE m.rolename = 'ROLE_student' AND (jp.jpsubject IS  NULL AND it.itsubject IS  NULL)
 
     </select>
 
@@ -93,4 +95,21 @@
         </foreach>
         SELECT * FROM dual
     </insert>
+
+<!--    학생관리 : 기타정보등록폼-->
+    <select id="selectOnlyStudentInformation"  resultType="Member">
+     select m.*
+        from lms_member m
+        LEFT JOIN student_info si ON m.memberid = si.memberid
+        WHERE m.rolename = 'ROLE_student' AND (
+        si.certi_jpname IS NULL AND
+        si.certi_name IS NULL AND
+        si.company IS NULL AND
+        si.note IS NULL AND
+        si.experience IS NULL AND
+        si.scitgraduation IS NULL AND
+        si.originalphoto IS NULL AND
+        si.savedphoto IS NULL
+        )
+    </select>
 </mapper>
