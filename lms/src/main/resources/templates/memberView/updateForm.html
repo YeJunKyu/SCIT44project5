@@ -1,99 +1,300 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>회원정보수정</title>
-    <script th:src="@{/assets/js/jquery-3.6.0.js}"></script>
+
+    <link rel="stylesheet" th:href="@{/assets/css/main/app.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main/app-dark.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main/lms.css}" />
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.svg}" type="image/x-icon">
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png">
+
+    <link rel="stylesheet" th:href="@{/assets/css/shared/iconly.css}">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script th:src="@{/privatejs/sidebarLoader.js}"></script>
+
+    <link rel="stylesheet" th:href="@{/assets/extensions/filepond/filepond.css}">
+    <link rel="stylesheet" th:href="@{/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.css}">
+    <link rel="stylesheet" th:href="@{/assets/extensions/toastify-js/src/toastify.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/pages/filepond.css}">
+
     <script>
-        $(document).ready(function(){
-            let birth = $("#birthday").val();                               // 50번째 줄 히든에 user.birthday 를 밸류로 가져옴
+<!--        $(document).ready(function(){-->
+<!--            let birth = $("#birthday").val();                               // 50번째 줄 히든에 user.birthday 를 밸류로 가져옴-->
 
 
-            let birthForm = birth.substring(0,10);                          //생년월일에 시간까지 떠서 자름
-            $("#birthday").val(birthForm);
+<!--            let birthForm = birth.substring(0,10);                          //생년월일에 시간까지 떠서 자름-->
+<!--            $("#birthday").val(birthForm);-->
 
-            let genderValue = $("#gender").val();                      //41번째 줄 히든의 밸류값을 가져옴
-            let gender = document.getElementById('gender');                 // 40번째줄 아이디를 가져와서
-            if(genderValue == "male"){                                      //male이면 남성 이외는 여성
-                $("#gender").val("남성");
-            }else{
-                $("#gender").val("여성");
-            }
+<!--            let genderValue = $("#gender").val();                      //41번째 줄 히든의 밸류값을 가져옴-->
+<!--            let gender = document.getElementById('gender');                 // 40번째줄 아이디를 가져와서-->
+<!--            if(genderValue == "male"){                                      //male이면 남성 이외는 여성-->
+<!--                $("#gender").val("남성");-->
+<!--            }else{-->
+<!--                $("#gender").val("여성");-->
+<!--            }-->
 
-        });
+<!--        });-->
 
-        function passwordCheck(){
-            var pw = document.getElementById('memberpw').value;
-            var pwC = document.getElementById('memberpwCheck').value;
+<!--비밀번호체크-->
+<!--        function passwordCheck(){-->
+<!--            var pw = document.getElementById('memberpw').value;-->
+<!--            var pwC = document.getElementById('memberpwCheck').value;-->
 
-            if(pw != pwC){
-                alert('비밀번호가 일치하지 않습니다.');
-                return false;
-            }
+<!--            if(pw != pwC){-->
+<!--                alert('비밀번호가 일치하지 않습니다.');-->
+<!--                return false;-->
+<!--            }-->
 
-            return true;
-        }
+<!--            return true;-->
+<!--        }-->
+
+<!--        function preview(){-->
+
+<!--        }-->
+
+<!--        function updatePhoto(){-->
+<!--            console.log("asdsadsasdadsdaadsasd");-->
+
+<!--            const formData = new FormData();-->
+<!--            formData.append("img", $("#memberphoto")[0].files[0]);-->
+
+<!--            $.ajax({-->
+<!--                url: 'updatePhoto',-->
+<!--                type: 'post',-->
+<!--                data : formData,-->
+<!--                dataType : 'json',-->
+<!--                enctype : 'multipart/form-data',-->
+<!--                processData : false,-->
+<!--                contentType: false,-->
+<!--                success: function(result){-->
+<!--                    alert(result);-->
+<!--                },-->
+<!--        		error:function(){-->
+<!--        		    alert("실패");-->
+<!--	        	}-->
+<!--        	});-->
+<!--        }-->
+
+
 
     </script>
 </head>
 <body>
-<h1>[회원정보 수정]</h1>
-
-<form  th:action="@{/member/memberUpdate}" method="post" onsubmit="return passwordCheck()">
-
-    <table>
-        <tr>
-            <td>ID</td>
-            <td>
-<!--                <p th:text="${user.memberid}">ID</p>-->
-                <input type="text" id="memberid" name="memberid" readonly th:value="${user.memberid}">
-                <span id="idLengthMessage" ></span>
-            </td>
-        </tr>
-
-        <tr>
-            <td rowspan="2">비밀번호</td>
-            <td>
-                <input type="password" id="memberpw" name="memberpw" placeholder="비밀번호 입력">
-            </td>
-
-            <td><span id="pwcheck"></span></td>
-        </tr>
-
-        <tr>
-            <td><input type="password" id="memberpwCheck" placeholder="비밀번호 다시 입력"></td>
-        </tr>
+<div id="app">
+    <div id="sidebar-placeholder"></div>
+    <div id="main">
+        <div class="page-heading">
+            <h1>회원정보 수정</h1>
+        </div>
 
 
-        <tr>
-            <td>이름</td>
-            <td><input type="text" id="membername" name="membername" th:value="${user.membername}" ></td>
-        </tr>
-        <tr>
-            <td>성별</td>
-            <td><input type="text" id="gender" name="gender" th:value="${user.gender}" ></td>
-        </tr>
-        <tr>
-            <td>생년월일</td>
-            <td><input type="text" id="birthday" name="birthday" th:value="${user.birthday}" ></td>
-        </tr>
-        <tr>
-            <td>이메일</td>
-            <td><input type="text" id="email" name="email" th:value="${user.email}" required></td>
-        </tr>
-        <tr>
-            <td>전화번호</td>
-            <td><input type="text" id="phone" name="phone" th:value="${user.phone}" required></td>
-        </tr>
-        <tr>
-            <td>주소</td>
-            <td colspan="2"><input type="text" id="address" name="address" th:value="${user.address}" required></td>
-        </tr>
-        <tr>
-            <td><input type="submit" value="수정"></td>
-            <td><input type="button" value="취소" onclick=""></td>
-        </tr>
-    </table>
-</form>
+        <div class="col-md-6 col-12">
+            <div class="card">
+
+                <div class="card-content">
+                    <div class="card-body">
+
+                        <form class="form form-vertical" th:action="@{/member/memberUpdate}" method="post"
+                               enctype="multipart/form-data">
+                            <input type="hidden" id="memberid" name="memberid" th:value="${#authentication.name}">
+
+                            <div class="form-body">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="form-group has-icon-left">
+                                            <a th:href="@{/member/changePassword}"
+                                               class="btn btn-info me-1 mb-1">비밀번호 변경</a>
+
+
+<!--                                            <label for="memberpw">비밀번호</label>-->
+<!--                                            <div class="position-relative">-->
+<!--                                                <input type="password" class="form-control" th:value="${user.memberpw}"-->
+<!--                                                       id="memberpw" name="memberpw">-->
+<!--                                                <div class="form-control-icon">-->
+<!--                                                    <i class="bi bi-shield-lock"></i>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                            <div class="position-relative">-->
+<!--                                                <input type="password" class="form-control" th:value="${user.memberpw}"-->
+<!--                                                       id="memberpwCheck">-->
+<!--&lt;!&ndash;                                                <span id="pwcheck"></span>&ndash;&gt;-->
+<!--                                                <div class="form-control-icon">-->
+<!--                                                    <i class="bi bi-shield-check"></i>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-group has-icon-left">
+                                            <label for="membername">이름</label>
+                                            <div class="position-relative" th:if="${user.membername != null}">
+                                                <input type="text" class="form-control"
+                                                       id="membername" name="membername" th:value="${user.membername}">
+                                                <div class="form-control-icon">
+                                                    <i class="bi bi-card-text"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+
+                                        <div class="form-group has-icon-left">
+                                            <label for="gender">성별</label>
+                                            <div class="position-relative">
+                                                <fieldset class="form-group">
+                                                    <select class="form-select" id="gender" name="gender">
+                                                        <option value="male" th:selected="${user.gender == '남자'}">남자</option>
+                                                        <option value="female" th:selected="${user.gender == '여자'}">여자</option>
+                                                    </select>
+                                                </fieldset>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <div class="form-group has-icon-left">
+                                            <label for="birthday">생년월일</label>
+                                            <div class="position-relative">
+                                                <input type="date" class="form-control" th:value="${user.birthday.substring(0, 10)}"
+                                                       id="birthday" name="birthday">
+                                                <div class="form-control-icon">
+                                                    <i class="bi bi-calendar-event"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <div class="form-group has-icon-left">
+                                            <label for="phone">전화번호</label>
+                                            <div class="position-relative">
+                                                <input type="text" class="form-control" th:value="${user.phone}"
+                                                       id="phone" name="phone">
+                                                <div class="form-control-icon">
+                                                    <i class="bi bi-telephone"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <div class="form-group has-icon-left">
+                                            <label for="email">Email</label>
+                                            <div class="position-relative">
+                                                <input type="text" class="form-control" th:value="${user.email}"
+                                                       id="email" name="email">
+                                                <div class="form-control-icon">
+                                                    <i class="bi bi-envelope"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <div class="form-group has-icon-left">
+                                            <label for="address">주소</label>
+                                            <div class="position-relative">
+                                                <input type="text" class="form-control" th:value="${user.address}"
+                                                       id="address" name="address">
+                                                <div class="form-control-icon">
+                                                    <i class="bi bi-house-door"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-12 d-flex justify-content-end">
+                                        <input type="submit" value="수정완료" class="btn btn-success me-1 mb-1">
+                                        <a th:href="@{/member/information}"
+                                           class="btn btn-light-secondary me-1 mb-1">취소</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <a th:href="@{/member/insertPhoto}"> 사진올리기 </a>
+                            <input type="file" id="upload" name="upload" class="image-preview-filepond">
+
+<!--                            <input type="button" onclick="photoForm()" value="적용">-->
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+<!--        <form  th:action="@{/member/memberUpdate}" method="post" onsubmit="return passwordCheck()" enctype="multipart/form-data">-->
+
+<!--            <table>-->
+<!--                <tr>-->
+<!--                    <td>ID</td>-->
+<!--                    <td>-->
+<!--        &lt;!&ndash;                <p th:text="${user.memberid}">ID</p>&ndash;&gt;-->
+<!--                        <input type="text" id="memberid" name="memberid" readonly th:value="${user.memberid}">-->
+<!--                        <span id="idLengthMessage" ></span>-->
+<!--                    </td>-->
+<!--                </tr>-->
+
+<!--                <tr>-->
+<!--                    <td rowspan="2">비밀번호</td>-->
+<!--                    <td>-->
+<!--                        <input type="password" id="memberpw" name="memberpw" placeholder="비밀번호 입력">-->
+<!--                    </td>-->
+
+<!--                    <td><span id="pwcheck"></span></td>-->
+<!--                </tr>-->
+
+<!--                <tr>-->
+<!--                    <td><input type="password" id="memberpwCheck" placeholder="비밀번호 다시 입력"></td>-->
+<!--                </tr>-->
+
+
+<!--                <tr>-->
+<!--                    <td>이름</td>-->
+<!--                    <td><input type="text" id="membername" name="membername" th:value="${user.membername}" ></td>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <td>성별</td>-->
+<!--                    <td><input type="text" id="gender" name="hgender" th:value="${user.gender}" ></td>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <td>생년월일</td>-->
+<!--                    <td><input type="text" id="birthday" name="birthday" th:value="${user.birthday}" ></td>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <td>이메일</td>-->
+<!--                    <td><input type="text" id="email" name="email" th:value="${user.email}" required></td>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <td>전화번호</td>-->
+<!--                    <td><input type="text" id="phone" name="phone" th:value="${user.phone}" required></td>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <td>주소</td>-->
+<!--                    <td colspan="2"><input type="text" id="address" name="address" th:value="${user.address}" required></td>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <td><input type="submit" value="수정"></td>-->
+<!--                    <td><input type="button" value="취소" onclick=""></td>-->
+<!--                </tr>-->
+<!--            </table>-->
+
+
+
+<!--        </form>-->
+
+    </div>
+</div>
+
+
+
 </body>
 </html>

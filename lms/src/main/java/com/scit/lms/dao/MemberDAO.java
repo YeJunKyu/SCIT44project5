@@ -15,4 +15,5 @@ public interface MemberDAO {
     //회원정보 수정
     public int memberUpdate(Member member);
 
+    public int memberphoto(Member member);
 }

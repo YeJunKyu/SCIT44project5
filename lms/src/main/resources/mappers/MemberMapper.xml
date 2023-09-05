@@ -60,13 +60,29 @@
         <if test="memberpw != null and memberpw != '' ">
             , memberpw = #{memberpw}
         </if>
+        <if test="memberpw == null and memberpw == '' ">
+            , memberpw = memberpw
+        </if>
         , gender = #{gender}
         , birthday = #{birthday}
         , email = #{email}
         , phone = #{phone}
         , address = #{address}
+        <if test="memberphoto != null">
+        , memberphoto=#{memberphoto}
+        </if>
 
         where
         memberid = #{memberid}
+    </update>
+<!-- 멤버 사진 업데이트 -->
+    <update id="memberphoto" parameterType="Member">
+        update lms_member
+        set
+        memberpw = memberpw
+        <if test="memberphoto != null">
+            ,memberphoto=#{memberphoto}
+        </if>
+        where memberid=#{memberid}
     </update>
 </mapper>

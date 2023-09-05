@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,6 +23,10 @@ public class Member implements UserDetails {
     String address;
     String note;
     String rolename;
+    String memberphoto;
+//    String originalfile;
+//    String savedfile;
+
     boolean enabled;
     int count;
 
@@ -64,4 +69,29 @@ public class Member implements UserDetails {
     public void setGender(String gender) {
         this.gender = gender;
     }
+
+    public String getMembername(){
+        return membername;
+    }
+    public void setMembername(String membername){
+        this.membername = membername;
+    }
+
+
+//    public String getOriginalfile() {
+//        return originalfile;
+//    }
+//
+//    public void setOriginalfile(String originalfile) {
+//        this.originalfile = originalfile;
+//    }
+//
+//    public String getSavedfile() {
+//        return savedfile;
+//    }
+//
+//    public void setSavedfile(String savedfile) {
+//        this.savedfile = savedfile;
+//    }
+
 }

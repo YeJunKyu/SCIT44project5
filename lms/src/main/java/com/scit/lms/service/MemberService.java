@@ -13,4 +13,7 @@ public interface MemberService {
 
     //회원정보 수정
     public int memberUpdate(Member member);
+
+    //사진 업데이트
+    public int memberphoto(Member member);
 }
