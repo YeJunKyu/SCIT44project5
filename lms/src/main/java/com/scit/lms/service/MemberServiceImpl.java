@@ -56,20 +56,26 @@ public class MemberServiceImpl implements MemberService {
 	//회원정보 수정
 	@Override
 	public int memberUpdate(Member member){
-		String pw = "";
-		if(member.getPassword() != "") {
-			pw = passwordEncoder.encode(member.getMemberpw());
-			log.debug("!!!!비밀번호 확인{}", pw);
-		}
-
-
-		log.debug("암호화 전 : {}", member.getMemberpw());
-		log.debug("암호화 후 : {}", pw);
-
-		member.setMemberpw(pw);
+//		String pw = "";
+//		if(member.getPassword() != "") {
+//			pw = passwordEncoder.encode(member.getMemberpw());
+//			log.debug("!!!!비밀번호 확인{}", pw);
+//		}
+//
+//
+//		log.debug("암호화 전 : {}", member.getMemberpw());
+//		log.debug("암호화 후 : {}", pw);
+//
+//		member.setMemberpw(pw);
 
 		int n = dao.memberUpdate(member);
 
 		return n;
 	}
+
+	@Override
+	public int memberphoto(Member member){
+		int n = dao.memberphoto(member);
+        return n;
+    }
 }

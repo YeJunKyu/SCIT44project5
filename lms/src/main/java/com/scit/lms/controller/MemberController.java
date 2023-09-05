@@ -1,17 +1,24 @@
 package com.scit.lms.controller;
 
+import com.scit.lms.domain.Notice;
+import com.scit.lms.util.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import lombok.extern.slf4j.Slf4j;
 import com.scit.lms.domain.Member;
 import com.scit.lms.service.MemberService;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
 
 //회원정보 관련 콘트롤러
 
@@ -22,6 +29,9 @@ public class MemberController {
 
     @Autowired
     MemberService service;
+
+    @Value("${member.servlet.multipart.location}")
+    String uploadPath;
 
     //회원가입 폼으로 이동
     @GetMapping("join")
@@ -86,17 +96,113 @@ public class MemberController {
 
         //검색결과 모델에 저장
         model.addAttribute("user", member);
-        log.debug("{}", member);
+        log.debug("** param :{}", member);
         return "memberView/updateForm";
     }
 
     @PostMapping("memberUpdate")
-    public String memberUpdate(@AuthenticationPrincipal UserDetails user, Model model, Member member){
+    public String memberUpdate(@AuthenticationPrincipal UserDetails user, Model model, Member member
+            , MultipartFile upload){
+
+
         int n = service.memberUpdate(member);
         log.debug("11111111{}", member);
         Member m = service.memberInfor(user.getUsername());
+
         //검색결과 모델에 저장
         model.addAttribute("user", m);
+
+
+
+//멤버사진 업데이트
+
+
+
+        log.debug("dddddddddddddddddddddddddddddddddddddddd");
+        log.debug("멀티파트파일:{}", upload);
+        log.debug("멤버:{}", member);
+        log.debug("이름이름이름{}", member.getMembername());
+
+        if(member.getMemberphoto() != null && !member.getMemberphoto().isEmpty() && upload != null && !upload.isEmpty()) {
+            String fullPath = uploadPath + "/" + member.getMemberphoto();
+            FileService.deleteFile(fullPath);
+        }
+
+        if (upload != null && !upload.isEmpty()) {
+            String savedfile=FileService.saveFile(upload, uploadPath);
+            member.setMemberphoto(upload.getOriginalFilename());
+            member.setMemberphoto(savedfile);
+
+        }
+
+        member.setMemberid(user.getUsername());
+        log.debug("멤버2:{}", member);
+
+        service.memberphoto(member);
+        model.addAttribute("user", member);
+
+
         return "memberView/memberInfo";
     }
+
+    //비밀번호 확인
+    @GetMapping("changePassword")
+    public String checkPassword(){
+        return "memberView/changePassword";
+    }
+
+    //비밀번호 변경
+    @PostMapping("changePassword")
+    public String changePassword(){
+        return "memberView/memberInfo";
+    }
+
+
+
+    //사진변경폼으로 이동
+
+    @GetMapping("insertPhoto")
+    public String insertPhoto() {
+        return "memberView/insertPhoto";
+    }
+
+    //사진 변경하기
+    @PostMapping("updatePhoto")
+    public String update(Member member, @AuthenticationPrincipal UserDetails user
+            , MultipartFile upload, Model model) {
+
+        log.debug("dddddddddddddddddddddddddddddddddddddddd");
+        log.debug("멀티파트파일:{}", upload);
+        log.debug("멤버:{}", member);
+        log.debug("이름이름이름{}", member.getMembername());
+
+        if(member.getMemberphoto() != null && !member.getMemberphoto().isEmpty() && upload != null && !upload.isEmpty()) {
+            String fullPath = uploadPath + "/" + member.getMemberphoto();
+            FileService.deleteFile(fullPath);
+        }
+
+        if (upload != null && !upload.isEmpty()) {
+            String savedfile=FileService.saveFile(upload, uploadPath);
+            member.setMemberphoto(upload.getOriginalFilename());
+            member.setMemberphoto(savedfile);
+
+        }
+
+
+        member.setMemberid(user.getUsername());
+        log.debug("멤버2:{}", member);
+
+        service.memberphoto(member);
+        model.addAttribute("user", member);
+
+
+        Member m = service.memberInfor(user.getUsername());
+        //검색결과 모델에 저장
+        model.addAttribute("user", m);
+
+        return "memberView/memberInfo";
+    }
+
+
+
 }
