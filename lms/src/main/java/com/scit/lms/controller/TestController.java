@@ -2,6 +2,7 @@ package com.scit.lms.controller;
 
 import com.scit.lms.domain.Question;
 import com.scit.lms.domain.Test;
+import com.scit.lms.domain.TestRequestObject;
 import com.scit.lms.service.TestService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
@@ -35,9 +37,20 @@ public class TestController {
     }
 
     // 시험 문제 등록
-    @PostMapping("submit")
-    public String submitTest(Test test, Question question) {
-        service.submitTest(test, question);
+    @PostMapping("submitTest")
+    public String submitTest(@RequestBody TestRequestObject requestObject) {
+        log.debug("{}");
+        String testname = requestObject.getTestname();
+        String testdate = requestObject.getTestdate();
+        String testlimit = requestObject.getTestlimit();
+
+        Question[] questions = requestObject.getQuestionDataArray();
+
+        log.debug("{}", testname);
+        log.debug("{}", testdate);
+        log.debug("{}", testlimit);
+        log.debug("{}", questions);
+//        service.submitTest();
         return "redirect:/test";
     }
 }

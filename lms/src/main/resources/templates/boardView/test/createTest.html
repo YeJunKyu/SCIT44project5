@@ -31,11 +31,11 @@
                                 <div class="d-flex mb-3 align-items-center">
                                     <h6 class="col-md-8">${currentQuestionNumber}</h6>
                                     <div class="col-md-2 icon">
-                                        <input type="file" id="${cardId}-file-input" style="display: none;">
+                                        <input type="file" id="${cardId}-file-input" name="file" style="display: none;">
                                         <button id="${cardId}-attach-file-btn" class="btn btn-primary btn-sm rounded-pill m-lg-2">파일 첨부</button>
                                     </div>
                                     <div class="col-md-2">
-                                        <select class="form-select type" data-card-id="${cardId}">
+                                        <select class="form-select type" name="type" data-card-id="${cardId}">
                                             <option value="1" selected>객관식</option>
                                             <option value="2">객관식 복수정답</option>
                                             <option value="3">단답형</option>
@@ -44,19 +44,17 @@
                                         </select>
                                     </div>
                                 </div>
-                                <textarea id="taTarget" rows="1" class="form-control" placeholder="문제 입력" onkeyup="adjustHeight();"></textarea>
+                                <!--문제 입력부분-->
+                                <textarea id="taTarget" rows="1" name="contents" class="form-control" placeholder="문제 입력" onkeyup="adjustHeight();"></textarea>
                             </div>
                             <div id="qPlace" class="card-body">
-                                <!--객관식 복수정답-->
-                                <!--단답형-->
-                                <!--장문형-->
-                                <!--파일-->
+                                <!--문제 보기 출력 부분-->
                             </div>
                             <div class="card-footer d-flex justify-content-between">
                                 <div class="col-md-2">
                                     <label class="d-flex align-items-center">
                                         <span class="col-md-3">배점</span>
-                                        <input type="number" class="form-control"/>
+                                        <input type="number" name="points" class="form-control"/>
                                     </label>
                                 </div>
                                 <button id="qDelete" class="btn btn-outline-primary btn-sm icon">
@@ -70,6 +68,7 @@
 
                     let typeContents = getQuestionTypeContents("1");
                     $("#" + cardId + " #qPlace").html(typeContents);
+
                 });
                 // 문제 제거
                 $(document).on("click", "#qDelete", function (e) {
@@ -80,8 +79,9 @@
                     // 남은 모든 문항들의 순서 업데이트
                     $(".card").each(function (index) {
                         let currentQuestionNumber = index;
-                        $(this).find("h6").text(`문제번호: ${currentQuestionNumber}`);
+                        $(this).find("h6").text(`${currentQuestionNumber}`);
                     });
+
                 });
 
                 // 문제 유형 선택
@@ -97,35 +97,35 @@
                 // 문제 유형에 따른 내용 반환 함수
                 function getQuestionTypeContents(type) {
                     switch (type) {
-                        case "1":
+                        case "1": // 객관식
                             return `
                                 <div id="optionTarget"></div>
                                 <section class="d-flex justify-content-between">
                                     <button id="plusOption" class="btn btn-primary btn-sm rounded-pill m-lg-2">보기 추가</button>
                                 </section>
                             `;
-                        case "2":
+                        case "2": // 객관식 복수정답
                             return `
                                 <div id="multiOptionTarget"></div>
                                 <section>
                                     <button id="plusMultiOption" class="btn btn-primary btn-sm rounded-pill m-lg-2">보기 추가</button>
                                 </section>
                             `;
-                        case "3":
+                        case "3": // 단답형
                             return `
                                 <div id="shortAnswerTarget"></div>
                                 <section>
-                                    <input type="text" class="form-control"/>
+                                    <input type="text" class="form-control" placeholder="정답 입력"/>
                                 </section>
                             `;
-                        case "4":
+                        case "4": // 장문형
                             return `
                                 <div id="longAnswerTarget"></div>
                                 <section>
                                     <textarea class="form-control" rows="5"></textarea>
                                 </section>
                             `;
-                        case "5":
+                        case "5": // 파일첨부형
                             return `
                                 ...
                             `;
@@ -136,12 +136,15 @@
                 $(document).on("click", "#plusOption", function (e) {
                     e.preventDefault();
                     let cardId = $(this).closest(".card").attr("id");
+                    let optionCount = $("#" + cardId + " .optionItem").length;
+                    let value = optionCount + 1;
+
                     $("#" + cardId + " #optionTarget").append(`
-                    <div class="d-flex justify-content-between mb-1">
+                    <div class="d-flex justify-content-between mb-1 optionItem">
                         <div>
                             <label class="d-flex align-items-center">
-                            <input type="radio" class="form-check-input m-lg-1" name="answer" value="" />
-                            <input type="text" class="form-control"/>
+                            <input type="radio" class="form-check-input m-lg-1 optionCount" name="${cardId}-answer" value="${value}" />
+                            <input type="text" class="form-control" />
                             </label>
                         </div>
                         <button class="btn btn-outline-primary btn-sm icon deleteOption">
@@ -164,11 +167,14 @@
                 $(document).on("click", "#plusMultiOption", function (e) {
                     e.preventDefault();
                     let cardId = $(this).closest(".card").attr("id");
+                    let multiOptionCount = $("#" + cardId + " .multiOptionItem").length;
+                    let value = multiOptionCount + 1;
+
                     $("#" + cardId + " #multiOptionTarget").append(`
-                    <div class="d-flex justify-content-between mb-1 ">
+                    <div class="d-flex justify-content-between mb-1 multiOptionItem">
                         <div>
                             <label class="d-flex align-items-center">
-                            <input type="checkbox" class="form-check-input m-lg-1" name="answer" value="" />
+                            <input type="checkbox" class="form-check-input m-lg-1 optionCount" name="${cardId}-answer" value="${value}" />
                             <input type="text" class="form-control"/>
                             </label>
                         </div>
@@ -188,13 +194,21 @@
                     updateAnswerNumbers(cardId);
                 });
 
+                // 보기 value 번호 조정
+                function updateAnswerNumbers(cardId) {
+                    $("#" + cardId + " .optionItem, #" + cardID +" .multiOptioinItem ").each(function(index) {
+                        let currentNumber = index+1;
+                        $(this).find(":input[type='radio'], :input[type='checkbox']").val(currentNumber); // input 요소의 value 값을 업데이트합니다.
+                    });
+                }
+
                 // 파일 첨부 버튼 클릭 시 파일 선택 다이얼로그 트리거
                 $(document).on("click", "[id$='-attach-file-btn']", function (e) {
                     e.preventDefault();
 
                     let cardId = $(this).closest(".card").attr("id");
 
-                    $("#" + cardId + "-file-input").trigger('click');
+                    $("#" + cardId + "-file-input").trigger("click");
                 });
 
                 // 파일 선택 시 선택된 파일명 표시
@@ -204,13 +218,13 @@
 
                     $("#" + cardId + "-attach-file-btn").text(fileName);
                 });
-
             });
+
 
             function updateAnswerNumbers(cardId) {
                 $("#" + cardId + " .form-check-input").each(function (index) {
                     let currentNumber = index + 1;
-                    $(this).attr('name', 'answer' + currentNumber); // 보기의 name 속성을 업데이트합니다.
+                    $(this).attr("name", "answer" + currentNumber); // 보기의 name 속성을 업데이트합니다.
                 });
             }
 
@@ -224,6 +238,105 @@
                 textEle[0].style.height = "auto";
                 let textEleHeight = textEle.prop("scrollHeight");
                 textEle.css("height", textEleHeight);
+            }
+
+            // 문제 저장
+            function submitForm() {
+                // 시험 정보 부분
+                let testname;
+                let testdate;
+                let testlimit;
+
+                // 문제 데이터 배열 생성
+                let questionDataArray = [];
+
+                // 각 문제마다 데이터 추출 및 구성
+                $(".card").each(function(index) {
+                    let cardId = $(this).attr("id");
+                    let type = $("#" + cardId + " .type").val();
+                    let content = $("#" + cardId + " #taTarget").val();
+                    let points = $("#" + cardId + " [name='points']").val();
+
+                    // 선택지 데이터 추출
+                    let options = [];
+                    if (type === "1") { // 객관식인 경우
+                        $("#" + cardId + " .optionItem").each(function() {
+                            let optionValue = $(this).find(".form-check-input").val();
+                            let optionContent = $(this).find(".form-control").val();
+                            if (!optionContent) { // 선택지 내용이 없을 경우 options 배열에 빈 객체 추가하지 않음
+                                return;
+                            }
+                            options.push({
+                                value: optionValue,
+                                content: optionContent,
+                                checked: $(this).find(".form-check-input:checked").length > 0  // 체크 여부 확인 후 추가
+                            });
+                        });
+                    } else if (type === "2") { // 객관식 복수정답인 경우
+                        $("#" + cardId + " .multiOptionItem").each(function() {
+                            let multiOptionValue = $(this).find(".form-check-input").val();
+                            let multiOptionContent = $(this).find(".form-control").val();
+                            if (!multiOptionContent) { // 선택지 내용이 없을 경우 options 배열에 빈 객체 추가하지 않음
+                                return;
+                            }
+                            options.push({
+                                value: multiOptionValue,
+                                content: multiOptionContent,
+                                checked: $(this).find(".form-check-input:checked").length > 0  // 체크 여부 확인 후 추가
+                            });
+                        });
+                    } else if (type === "3") { // 단답형인 경우
+                        let answerInputValue = $("#" + cardId + " .form-control[type='text']").val();
+                        if (!answerInputValue) { // 선택지 내용이 없을 경우 options 배열에 빈 객체 추가하지 않음
+                            return;
+                        }
+                        options.push({
+                            value: 1,
+                            content: answerInputValue,
+                        });
+                    } else if (type === "4") { // 서술형인 경우
+                        let answerTextareaValue = $("#" + cardId + " textarea.form-control").val();
+                        if (!answerTextareaValue) { // 선택지 내용이 없을 경우 options 배열에 빈 객체 추가하지 않음
+                            return;
+                        }
+                        options.push({
+                            value: 1,
+                            content: answerTextareaValue
+                        });
+                    }
+
+                    questionDataArray.push({
+                        qid: cardId,
+                        type: type,
+                        contents: content,
+                        points: points,
+                        options: options
+                    });
+
+                });
+                questionDataArray = questionDataArray.filter(function(question) {
+                    return question.qid !== undefined; // id가 undefined인 객체를 필터링하여 제거함.
+                });
+
+                console.log(questionDataArray);
+                // AJAX 요청 전송
+                $.ajax({
+                    url: "/test/submitTest",
+                    type: "POST",
+                    contentType: "json",
+                    data: JSON.stringify({
+                        testname: testname,
+                        testdate: testdate,
+                        testlimit: testlimit,
+                        questionDataArray: questionDataArray
+                    }),
+                    success: function (response) {
+                        alert("요청이 완료되었습니다.");
+                    },
+                    error: function (e) {
+                        alert(JSON.stringify(e));
+                    },
+                });
             }
         </script>
     </head>
@@ -259,18 +372,34 @@
                         <section class="section">
                             <div class="card">
                                 <div class="card-header">
-                                    <h4 class="card-title">시험명</h4>
-                                </div>
-
-                                <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-8">
+                                            <h4 class="card-title">시험명</h4>
                                             <div class="form-group input-group-lg">
-                                                <input type="text" class="form-control" />
+                                                <input type="text" class="form-control" name="testname"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <h4 class="card-title">총점</h4>
+                                            <span id="totalPoints">0</span>점
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h4 class="card-title">시험일시</h4>
+                                            <div class="form-group input-group">
+                                                <input type="datetime-local" name="testdate" class="form-control" id="testdate"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h4 class="card-title">마감일시</h4>
+                                            <div class="form-group input-group">
+                                                <input type="datetime-local" name="testlimit" class="form-control" id="testlimit"/>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="card-body"></div>
                             </div>
                         </section>
                         <section class="section" id="questions">
@@ -280,7 +409,7 @@
                             <button id="qPlus" class="btn btn-primary icon">
                                 <i class="bi bi-plus"></i>
                             </button>
-                            <button class="btn btn-primary">등록</button>
+                            <button class="btn btn-primary" type="button" onclick="submitForm();">등록</button>
                         </section>
                     </form>
                 </div>
