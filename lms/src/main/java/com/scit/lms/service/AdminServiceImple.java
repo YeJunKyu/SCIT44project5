@@ -3,10 +3,7 @@ package com.scit.lms.service;
 import java.util.ArrayList;
 
 import com.scit.lms.dao.AdminDAO;
-import com.scit.lms.domain.Member;
-import com.scit.lms.domain.Student;
-import com.scit.lms.domain.StudentClasses;
-import com.scit.lms.domain.StudentsAll;
+import com.scit.lms.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +35,7 @@ public class AdminServiceImple implements AdminService {
 	}
 
 	@Override
-	public ArrayList<Member> selectOnlyStudent() {
+	public ArrayList<StudentsAll> selectOnlyStudent() {
 		return dao.selectOnlyStudent();
 	}
 
@@ -48,7 +45,7 @@ public class AdminServiceImple implements AdminService {
 	}
 
 	@Override
-	public ArrayList<Member> selectOnlyStudentClass() {
+	public ArrayList<StudentsAll> selectOnlyStudentClass() {
 		return dao.selectOnlyStudentClass();
 	}
 
@@ -60,6 +57,11 @@ public class AdminServiceImple implements AdminService {
 	@Override
 	public ArrayList<Member> selectOnlyStudentInformation() {
 		return dao.selectOnlyStudentInformation();
+	}
+
+	@Override
+	public void insertInformation(ArrayList<StudentInfo> studentAllInfos) {
+		dao.insertInformation(studentAllInfos);
 	}
 
 

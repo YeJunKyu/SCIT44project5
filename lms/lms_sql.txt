@@ -18,34 +18,35 @@ create table lms_member(
 
 --학생 테이블
 CREATE TABLE lms_student (
-	memberid	varchar2(20) primary key references lms_member(memberid),
-	school	varchar2(100)		NULL,
-	major	varchar2(100)		NULL,
-	graduation	number	DEFAULT 1	NULL,
-	curriculum	varchar2(100)		NULL
+    memberid	varchar2(20) primary key references lms_member(memberid) ON DELETE CASCADE,
+    school	varchar2(100)		NULL,
+    major	varchar2(100)		NULL,
+    graduation	number	DEFAULT 1	NULL,
+    curriculum	varchar2(100)		NULL
 );
---분반테이블
+
+--분반테이블 (일본어)
 CREATE TABLE class_jp_category (
-	memberid	varchar2(20) primary key references lms_member(memberid),
-	jpclassname	varchar2(50)		NULL,
+    memberid	varchar2(20) primary key references lms_member(memberid) ON DELETE CASCADE,
+    jpclassname	varchar2(50)		NULL,
     jpsubject	varchar2(100)		NULL
-
 );
 
+--분반테이블 (IT)
 CREATE TABLE class_it_category (
-	memberid	varchar2(20) primary key references lms_member(memberid),
-	itclassname	varchar2(50)		NULL,
+    memberid	varchar2(20) primary key references lms_member(memberid) ON DELETE CASCADE,
+    itclassname	varchar2(50)		NULL,
     itsubject	varchar2(100)		NULL
-
 );
---자격증,내정회사,특이사항,경력 테이블
+
+--자격증, 내정회사, 특이사항, 경력 테이블
 CREATE TABLE student_info (
-	memberid	varchar2(20) primary key references lms_member(memberid),
-	certi_jpname	varchar2(200)		NULL,
-	certi_name	varchar2(200)		 NULL,
-	company	varchar2(200)		NULL,
-	note	varchar2(2000)		NULL,
-	experience	varchar2(200)		NULL,
+    memberid	varchar2(20) primary key references lms_member(memberid) ON DELETE CASCADE,
+    certi_jpname	varchar2(200)		NULL,
+    certi_name	varchar2(200)		 NULL,
+    company	varchar2(200)		NULL,
+    note	varchar2(2000)		NULL,
+    experience	varchar2(200)		NULL,
     scitgraduation varchar2(100),
     originalphoto varchar2(2000),
     savedphoto varchar2(2000)

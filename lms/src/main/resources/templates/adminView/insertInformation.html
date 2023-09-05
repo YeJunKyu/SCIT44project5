@@ -97,6 +97,9 @@
                             <table class="table table-striped" id="table1">
                                 <thead>
                                 <tr>
+                                    <h3>링크 선택시 개인정보 등록창 이동</h3>
+                                </tr>
+                                <tr>
                                     <input type="checkbox" id="selectAll"> 모두 선택
                                 </tr>
                                 <tr>
@@ -143,31 +146,57 @@
 
                                 </tbody>
                             </table>
-                            공인어학자격증<select name="certi_jpname">
-                            <option value="">미보유</option>
-                            <option value="JLPT N1">JLPT N1</option>
-                            <option value="JLPT N2">JLPT N2</option>
-                            <option value="JLPT N3">JLPT N3</option>
-                            <option value="JLPT N4">JLPT N4</option>
-                            <option value="JLPT N5">JLPT N5</option>
-                        </select>
+                            <table>
+                                <tr>
+                                    <h3>공통정보를 한꺼번에 등록하세요.</h3>
+                                </tr>
+                                <tr style="padding: 10px 0;">
+                                    <td>
+                                        공인어학자격증
+                                    </td>
+                                    <td>
+                                        <select name="certi_jpname">
+                                            <option value="">미보유</option>
+                                            <option value="JLPT N1">JLPT N1</option>
+                                            <option value="JLPT N2">JLPT N2</option>
+                                            <option value="JLPT N3">JLPT N3</option>
+                                            <option value="JLPT N4">JLPT N4</option>
+                                            <option value="JLPT N5">JLPT N5</option>
+                                        </select>
+                                </td>
+                                <td>
+                                    정보처리자격증
 
-                            정보처리자격증<select name="certi_name">
-                            <option value="">미보유</option>
-                            <option value="정보처리기사 필기">정보처리기사 필기</option>
-                            <option value="정보처리기사">정보처리기사</option>
-                            <option value="정보처리산업기사 필기">정보처리산업기사 필기</option>
-                            <option value="정보처리산업기사">정보처리산업기사</option>
-                        </select>
+                                </td>
+                                    <td style="padding-top: 10px; padding-bottom: 10px;">
+                                        <select name="certi_name">
+                                            <option value="미보유">미보유</option>
+                                            <option value="정보처리기사 필기">정보처리기사 필기</option>
+                                            <option value="정보처리기사">정보처리기사</option>
+                                            <option value="정보처리산업기사 필기">정보처리산업기사 필기</option>
+                                            <option value="정보처리산업기사">정보처리산업기사</option>
+                                        </select>
 
-                            토익,jpt 점수 등 기타 자격관련 모든정보나 특이사항을 입력해주세요.
-                            <textarea style="resize : none;" name="note"></textarea>
-                            <br>
-                            SCIT 수료여부<select name="scitgraduation">
-                            <option value="미수료">미수료</option>
-                            <option value="수료">수료</option>
-                        </select>
+                                    </td>
 
+                                </tr>
+                                <tr style="padding: 10px 0;">
+
+                                </tr>
+                                <tr style="padding: 10px 0;">
+                                <td>
+                                    SCIT 수료여부
+                                </td>
+                                    <td style="padding-top: 10px; padding-bottom: 10px;">
+                                        <select name="scitgraduation">
+                                            <option value="미수료">미수료</option>
+                                            <option value="수료">수료</option>
+                                        </select>
+                                    </td>
+                                </tr>
+
+
+                            </table>
                             <input type="submit" value="저장">
                         </form>
 

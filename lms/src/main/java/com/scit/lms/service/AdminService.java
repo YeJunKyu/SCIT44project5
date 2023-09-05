@@ -1,9 +1,6 @@
 package com.scit.lms.service;
 
-import com.scit.lms.domain.Member;
-import com.scit.lms.domain.Student;
-import com.scit.lms.domain.StudentClasses;
-import com.scit.lms.domain.StudentsAll;
+import com.scit.lms.domain.*;
 
 import java.util.ArrayList;
 
@@ -19,13 +16,15 @@ public interface AdminService {
 
     ArrayList<StudentsAll> selectAllStudents();
 
-    ArrayList<Member> selectOnlyStudent();
+    ArrayList<StudentsAll> selectOnlyStudent();
 
     void insertCurriculum(ArrayList<Student> student);
 
-    ArrayList<Member> selectOnlyStudentClass();
+    ArrayList<StudentsAll> selectOnlyStudentClass();
 
     void insertClass(ArrayList<StudentClasses> studentsAllClasses);
 
     ArrayList<Member> selectOnlyStudentInformation();
+
+    void insertInformation(ArrayList<StudentInfo> studentAllInfos);
 }

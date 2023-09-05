@@ -50,12 +50,16 @@
         FROM
         lms_member m
         JOIN lms_student s ON m.memberid = s.memberid
-        LEFT JOIN class_jp_category jp ON m.memberid = jp.memberid
-        LEFT JOIN class_it_category it ON m.memberid = it.memberid
+        JOIN class_jp_category jp ON m.memberid = jp.memberid
+        JOIN class_it_category it ON m.memberid = it.memberid
+        JOIN student_info si ON m.memberid = si.memberid
+        where m.rolename = 'ROLE_student'
     </select>
 <!--학생관리 : 과정등록폼-->
-    <select id="selectOnlyStudent" resultType="Member">
-        SELECT m.*
+    <select id="selectOnlyStudent" resultType="StudentsAll">
+        SELECT m.memberid AS "member.memberid",
+        m.membername as "member.membername",
+        s.curriculum as "student.curriculum"
         FROM lms_member m
         LEFT JOIN lms_student s ON m.memberid = s.memberid
         WHERE m.rolename = 'ROLE_student' AND s.curriculum IS NULL
@@ -74,12 +78,15 @@
     </insert>
 
 <!--    학생관리: 분반등록 폼-->
-    <select id="selectOnlyStudentClass" resultType="Member">
-        SELECT m.*
+    <select id="selectOnlyStudentClass" resultType="StudentsAll">
+        SELECT m.memberid AS "member.memberid",
+        m.membername as "member.membername",
+        jp.jpclassname AS "jpCategory.jpclassname",
+        it.itclassname AS "itCategory.itclassname"
         FROM lms_member m
         LEFT JOIN class_jp_category jp ON m.memberid = jp.memberid
         LEFT JOIN class_it_category it ON m.memberid = it.memberid
-        WHERE m.rolename = 'ROLE_student' AND (jp.jpsubject IS  NULL AND it.itsubject IS  NULL)
+        WHERE m.rolename = 'ROLE_student' AND jp.jpclassname IS NULL AND it.itclassname IS NULL
 
     </select>
 
@@ -112,4 +119,14 @@
         si.savedphoto IS NULL
         )
     </select>
+
+<!--    학생관리 : 기타정보등록-->
+    <insert id="insertInformation" parameterType="StudentInfo">
+        INSERT ALL
+        <foreach collection="list" item="info" separator=" ">
+            INTO student_info (memberid, certi_jpname, certi_name,  scitgraduation)
+            VALUES (#{info.memberid}, #{info.certi_jpname}, #{info.certi_name},  #{info.scitgraduation})
+        </foreach>
+        SELECT * FROM dual
+    </insert>
 </mapper>

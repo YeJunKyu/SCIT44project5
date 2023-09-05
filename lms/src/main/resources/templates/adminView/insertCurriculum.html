@@ -21,12 +21,49 @@
 
         function insertchk(){
 
+    var checkboxes = $('input[name="memberid"]');
+    var isChecked = false;
+
+    // 각 체크박스를 순회하면서 체크된 항목이 있는지 확인
+    checkboxes.each(function() {
+        if ($(this).prop('checked')) {
+            isChecked = true;
+            return false; // 체크된 항목을 찾았으면 더 이상의 순회는 필요 없으므로 종료
+        }
+    });
+
+    if (!isChecked) {
+        alert("적어도 하나 이상의 체크박스를 선택해 주세요.");
+        return false; // form 제출 중지
+    }
+
 		if(confirm('등록하시겠습니까?')){
 			return true;
 	}
 		return false;
     }
 
+        $(document).ready(function() {
+        // '모두 선택' 체크박스 클릭 이벤트 핸들러
+        $('#selectAll').click(function() {
+            // '모두 선택' 체크박스의 현재 상태를 가져옵니다
+            var isChecked = $(this).prop('checked');
+
+            // 모든 체크박스의 선택 상태를 '모두 선택' 체크박스와 동일하게 설정합니다
+            $('input[name="memberid"]').prop('checked', isChecked);
+        });
+
+        // 개별 체크박스 클릭 이벤트 핸들러
+        $('input[name="memberid"]').click(function() {
+            if ($('input[name="memberid"]:checked').length == $('input[name="memberid"]').length) {
+                // 모든 체크박스가 선택된 경우 '모두 선택' 체크박스를 선택 상태로 설정합니다
+                $('#selectAll').prop('checked', true);
+            } else {
+                // 하나 이상의 체크박스가 선택 해제된 경우 '모두 선택' 체크박스를 선택 해제 상태로 설정합니다
+                $('#selectAll').prop('checked', false);
+            }
+        });
+    });
     </script>
 
 </head>
@@ -68,40 +105,32 @@
                         <table class="table table-striped" id="table1">
                             <thead>
                             <tr>
-
+                                <input type="checkbox" id="selectAll"> 모두 선택
+                            </tr>
+                            <tr>
+                                <th>선택</th>
                                 <th>아이디</th>
                                 <th>이름</th>
-                                <th>생년월일</th>
-                                <th>성별</th>
-                                <th>주소</th>
+                                <th>과정</th>
                             </tr>
                             </thead>
 
                             <tbody>
 
                             <tr th:each="student : ${student}">
-
-                                <td>
-                                    <input type="hidden" name="memberid" th:value="${student.memberid}">
-                                    [[${student.memberid}]]
-                                </td>
-
-                                <td th:text="${student.membername}">
+                                <td><input type="checkbox" name="memberid" th:value="${student.member.memberid}"></td>
+                                <td th:text="${student.member.memberid}">
 
                                 </td>
 
-
-                                <td th:text="${#strings.substring(student.birthday, 0, 10)}">
+                                <td th:text="${student.member.membername}">
 
                                 </td>
-                                <td th:if="${student.gender == 'male'}">
-                                    남성
-                                </td>
-                                <td th:if="${student.gender == 'female'}">
-                                    여성
-                                </td>
 
-                                <td th:text="${student.address}">
+
+
+
+                                <td th:text="${student.student?.curriculum}">
 
                                 </td>
 

@@ -128,7 +128,7 @@ public class AdminController {
 	@GetMapping("insertCurriculum")
 	public String insertStudentA(Model model){
 		log.debug("컨트롤러확인:{}","okay");
-		ArrayList<Member> studentsOnly = service.selectOnlyStudent();
+		ArrayList<StudentsAll> studentsOnly = service.selectOnlyStudent();
 		log.debug("과정폼1:{}",studentsOnly);
 		model.addAttribute("student",studentsOnly);
 		return "adminView/insertCurriculum";
@@ -152,20 +152,20 @@ public class AdminController {
 
 		service.insertCurriculum(students);
 		log.debug("과정등록1: {}", students);
-		return "redirect:/main";
+		return "redirect:/admin/insertCurriculum";
 	}
 
 	//학생관리 : 분반 등록폼
 	@GetMapping("insertClass")
 	public String insertClass(Model model){
 		log.debug("컨트롤러확인:{}","okay");
-		ArrayList<Member> studentsOnly = service.selectOnlyStudentClass();
+		ArrayList<StudentsAll> studentsOnly = service.selectOnlyStudentClass();
 		log.debug("분반폼1:{}",studentsOnly);
 		model.addAttribute("student",studentsOnly);
 		return "adminView/insertClass";
 	}
 
-	//학생분반등록
+	//학생분반등록 다중인설트
 	@PostMapping("insertClass")
 	public String insertClass(@RequestParam("memberid") ArrayList<String> memberids,
 							  String jpclassname,
@@ -198,6 +198,28 @@ public class AdminController {
 		log.debug("기타정보폼1:{}",studentsOnly);
 		model.addAttribute("student",studentsOnly);
 		return "adminView/insertInformation";
+	}
+
+	//학생 관리 : 기타정보 등록
+	@PostMapping("insertInformation")
+	public String insertInformation(@RequestParam("memberid") ArrayList<String> memberids,
+									@RequestParam String certi_jpname,
+									@RequestParam String certi_name,
+									@RequestParam String scitgraduation){
+		ArrayList<StudentInfo> studentAllInfos = new ArrayList<>();
+		log.debug("컨트롤러확인:{}",studentAllInfos);
+		for (String memberid : memberids) {
+			StudentInfo studentInfo = new StudentInfo();
+			studentInfo.setMemberid(memberid);
+			studentInfo.setCerti_jpname(certi_jpname);
+			studentInfo.setCerti_name(certi_name);
+			studentInfo.setScitgraduation(scitgraduation);
+			studentAllInfos.add(studentInfo);
+		}
+		log.debug("컨트롤러확인2:{}",studentAllInfos);
+		service.insertInformation(studentAllInfos);
+		log.debug("기타정보등록확인:{}",studentAllInfos);
+		return "redirect:/admin/insertInformation";
 	}
 
 

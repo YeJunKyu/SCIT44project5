@@ -2,10 +2,7 @@ package com.scit.lms.dao;
 
 import java.util.ArrayList;
 
-import com.scit.lms.domain.Member;
-import com.scit.lms.domain.Student;
-import com.scit.lms.domain.StudentClasses;
-import com.scit.lms.domain.StudentsAll;
+import com.scit.lms.domain.*;
 import org.apache.ibatis.annotations.Mapper;
 
 
@@ -21,13 +18,15 @@ public interface AdminDAO {
 
     ArrayList<StudentsAll> selectAllStudents();
 
-    ArrayList<Member> selectOnlyStudent();
+    ArrayList<StudentsAll> selectOnlyStudent();
 
     void insertCurriculum(ArrayList<Student> students);
 
-    ArrayList<Member> selectOnlyStudentClass();
+    ArrayList<StudentsAll> selectOnlyStudentClass();
 
     void insertClass(ArrayList<StudentClasses> studentsAllClasses);
 
     ArrayList<Member> selectOnlyStudentInformation();
+
+    void insertInformation(ArrayList<StudentInfo> studentAllInfos);
 }
