@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import com.scit.lms.domain.Member;
 import com.scit.lms.service.MemberService;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
@@ -102,7 +103,8 @@ public class MemberController {
 
     @PostMapping("memberUpdate")
     public String memberUpdate(@AuthenticationPrincipal UserDetails user, Model model, Member member
-            , MultipartFile upload){
+            , MultipartFile upload
+            , ResourceHandlerRegistry registry){
 
 
         int n = service.memberUpdate(member);

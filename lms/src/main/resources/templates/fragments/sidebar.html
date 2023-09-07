@@ -58,14 +58,14 @@
 
                         <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
                             <a th:href="@{/notice}" class="sidebar-link">
-                                <i class="bi bi-megaphone"></i>
+                                <i class="bi bi-megaphone-fill"></i>
                                 <span>공지</span>
                             </a>
                         </li>
 
                         <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
                             <a th:href="@{/schedule}" class="sidebar-link">
-                                <i class="bi bi-calendar"></i>
+                                <i class="bi bi-calendar-event-fill"></i>
                                 <span>일정</span>
                             </a>
                         </li>
@@ -133,8 +133,8 @@
                         </li>
 
                         <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
-                            <a href="#" class="sidebar-link">
-                                <i class="bi bi-collection-fill"></i>
+                            <a th:href="@{/homework}" class="sidebar-link">
+                                <i class="bi bi-clipboard-check-fill"></i>
                                 <span>(교사)과제</span>
                             </a>
                         </li>
@@ -194,14 +194,14 @@
 
                         <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')')}">
                             <a th:href="@{/notice}" class="sidebar-link">
-                                <i class="bi bi-megaphone"></i>
+                                <i class="bi bi-megaphone-fill"></i>
                                 <span>공지</span>
                             </a>
                         </li>
 
                         <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')')}">
                             <a th:href="@{/schedule}" class="sidebar-link">
-                                <i class="bi bi-calendar"></i>
+                                <i class="bi bi-calendar-event-fill"></i>
                                 <span>일정</span>
                             </a>
                         </li>
@@ -225,8 +225,8 @@
                         </li>
 
                         <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')')}">
-                            <a href="#" class="sidebar-link">
-                                <i class="bi bi-collection-fill"></i>
+                            <a th:href="@{/homework}" class="sidebar-link">
+                                <i class="bi bi-clipboard-check-fill"></i>
                                 <span>과제</span>
                             </a>
                         </li>
@@ -271,14 +271,14 @@
 
                         <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_student'')')}">
                             <a th:href="@{/notice}" class="sidebar-link">
-                                <i class="bi bi-megaphone"></i>
+                                <i class="bi bi-megaphone-fill"></i>
                                 <span>공지</span>
                             </a>
                         </li>
 
                         <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_student'')')}">
                             <a th:href="@{/schedule}" class="sidebar-link">
-                                <i class="bi bi-calendar"></i>
+                                <i class="bi bi-calendar-event-fill"></i>
                                 <span>일정</span>
                             </a>
                         </li>
@@ -296,8 +296,8 @@
                         </li>
 
                         <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_student'')')}">
-                            <a href="#" class="sidebar-link">
-                                <i class="bi bi-collection-fill"></i>
+                            <a th:href="@{/homework}" class="sidebar-link">
+                                <i class="bi bi-clipboard-check-fill"></i>
                                 <span>과제</span>
                             </a>
                         </li>
