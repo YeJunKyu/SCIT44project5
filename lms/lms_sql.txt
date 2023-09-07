@@ -77,8 +77,10 @@ CREATE TABLE primary_ratio_category (
 	parent_id	number		NULL,
     categoryname	varchar2(50)		NULL,
 	ratio	decimal(5,2)		NULL,
+    divname varchar2(100) NULL,
     CONSTRAINT PK_PRIMARY_RATIO_CATEGORY PRIMARY KEY (category_id),
-    CONSTRAINT FK_PRIMARY_PARENT_CATEGORY FOREIGN KEY (parent_id) REFERENCES Primary_ratio_category (category_id) ON DELETE CASCADE
+    CONSTRAINT FK_PRIMARY_PARENT_CATEGORY FOREIGN KEY (parent_id) REFERENCES Primary_ratio_category (category_id) ON DELETE CASCADE,
+     CONSTRAINT UQ_CATEGORY_NAME UNIQUE (categoryname)
 );
 --시험 비중테이블 고유번호 시퀀스
 create sequence primary_ratio_category_seq;

@@ -12,5 +12,6 @@ public class PrimaryRatio {
     int parent_id;
     String categoryname;
     double ratio;
+    String divname;
 
 }

@@ -29,4 +29,8 @@ public interface AdminService {
     void insertInformation(ArrayList<StudentInfo> studentAllInfos);
 
     ArrayList<PrimaryRatio> AllRatios();
+
+    int InsertBigRatio(PrimaryRatio primaryRatio);
+
+    PrimaryRatio selectOneCategory(String categoryname);
 }

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>시험등록</title>
+</head>
+<body>
+    <h1>시험등록</h1>
+    <!-- 첫 번째 폼 -->
+    <form th:if="${categoryname == 'IT'" th:action="@{InsertMiddleRatio}" method="post" onsubmit="return saveValue()">
+        <table>
+            <tr>
+                <td>중분류</td>
+                <td>
+                    <select name="categoryname">
+                        <option value="역량평가">역량평가</option>
+                        <option value="과목평가">과목평가</option>
+                        <option value="프로젝트">프로젝트</option>
+                    </select>
+                </td>
+                <input type="hidden" th:value="${category_id}" name="parent_id">
+            </tr>
+
+        </table>
+    </form>
+
+    <form th:if="${categoryname == '일본어'" th:action="@{InsertMiddleRatio}" method="post" onsubmit="return saveValue()">
+        <table>
+            <tr>
+                <td>중분류</td>
+                <td>
+                    <select name="categoryname">
+                        <option value="역량평가">역량평가</option>
+                        <option value="종합평가">종합평가</option>
+                        <option value="월별평가">월별평가</option>
+                    </select>
+                </td>
+                <input type="hidden" th:value="${category_id}" name="parent_id">
+            </tr>
+
+        </table>
+    </form>
+
+    <form th:if="${categoryname == '출석'" th:action="@{InsertMiddleRatio}" method="post" onsubmit="return saveValue()">
+        <table>
+            <tr>
+                <td>중분류</td>
+                <td>
+                    월별성적<select name="categoryname">
+                    <option value="1월">1월</option>
+                    <option value="2월">2월</option>
+                    <option value="3월">3월</option>
+                    <option value="4월">4월</option>
+                    <option value="5월">5월</option>
+                    <option value="6월">6월</option>
+                    <option value="7월">7월</option>
+                    <option value="8월">8월</option>
+                    <option value="9월">9월</option>
+                    <option value="10월">10월</option>
+                    <option value="11월">11월</option>
+                    <option value="12월">12월</option>
+                    </select>
+                </td>
+                <input type="hidden" th:value="${category_id}" name="parent_id">
+            </tr>
+
+        </table>
+
+        <input type="submit" value="저장">
+    </form>
+
+
+
+
+</body>
+</html>

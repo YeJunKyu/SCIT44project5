@@ -69,5 +69,15 @@ public class AdminServiceImple implements AdminService {
 		return dao.AllRatios();
 	}
 
+	@Override
+	public int InsertBigRatio(PrimaryRatio primaryRatio) {
+		return dao.InsertBigRatio(primaryRatio);
+	}
+
+	@Override
+	public PrimaryRatio selectOneCategory(String categoryname) {
+		return dao.selectOneCategory(categoryname);
+	}
+
 
 }

@@ -230,10 +230,18 @@ public class AdminController {
 	}
 
 	//시험비중등록대분류
-	@ResponseBody
+
 	@PostMapping("InsertBigRatio")
-	public void InsertBigRatio(String categoryname,Model model)
+	public String InsertBigRatio()
 	{
-		
+
+		return "redirect:/admin/InsertMiddleRatio";
 	}
+
+	@GetMapping("InsertMiddleRatio")
+	public String InsertMiddleRatio(){
+
+			return "adminView/InsertMiddleRatio";
+		}
+
 }
