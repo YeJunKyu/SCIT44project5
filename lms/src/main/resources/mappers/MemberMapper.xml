@@ -81,7 +81,8 @@
         set
         memberpw = memberpw
         <if test="memberphoto != null">
-            ,memberphoto=#{memberphoto}
+            , memberphoto=#{memberphoto}
+            , photopath=#{photopath}
         </if>
         where memberid=#{memberid}
     </update>

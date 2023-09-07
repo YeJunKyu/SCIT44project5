@@ -24,6 +24,7 @@ public class Member implements UserDetails {
     String note;
     String rolename;
     String memberphoto;
+    String photopath;
 //    String originalfile;
 //    String savedfile;
 

@@ -10,6 +10,7 @@ create table lms_member(
     email           varchar2(200)   not null,
     address         varchar2(200)   not null,
     memberphoto     varchar2(500),
+    photopath       varchar2(500),
     note            varchar2(1000),
     rolename        varchar2(100)   default 'ROLE_USER' check (rolename in('ROLE_USER','ROLE_teacher','ROLE_student','ROLE_admin')),
     enabled         number          default 1 check (enabled in (0, 1))
