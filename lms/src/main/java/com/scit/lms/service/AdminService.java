@@ -27,4 +27,6 @@ public interface AdminService {
     ArrayList<Member> selectOnlyStudentInformation();
 
     void insertInformation(ArrayList<StudentInfo> studentAllInfos);
+
+    ArrayList<PrimaryRatio> AllRatios();
 }

@@ -129,4 +129,9 @@
         </foreach>
         SELECT * FROM dual
     </insert>
+    
+<!--    시험비중등록폼 기본조회-->
+    <select id="AllRatios" resultType="PrimaryRatio">
+        select * from primary_ratio_category
+    </select>
 </mapper>

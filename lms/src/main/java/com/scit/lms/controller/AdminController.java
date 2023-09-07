@@ -16,10 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import lombok.extern.slf4j.Slf4j;
 import com.scit.lms.service.AdminService;
@@ -222,5 +219,21 @@ public class AdminController {
 		return "redirect:/admin/insertInformation";
 	}
 
+	//시험비중등록폼
+	@GetMapping("InsertRatio")
+	public String InsertRation(Model model){
 
+
+
+
+		return "adminView/InsertRatio";
+	}
+
+	//시험비중등록대분류
+	@ResponseBody
+	@PostMapping("InsertBigRatio")
+	public void InsertBigRatio(int category_id,
+							   String categoryname){
+
+	}
 }

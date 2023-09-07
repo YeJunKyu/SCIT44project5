@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>시험등록</title>
+</head>
+<body>
+    <h1>시험등록</h1>
+    <!-- 첫 번째 폼 -->
+    <form id="bigCategoryForm" onsubmit="return saveValue()">
+        <table>
+            <tr>
+                <td>대분류</td>
+                <td>
+                    <select name="categoryname" id="categorySelect">
+                        <option value="일본어">일본어</option>
+                        <option value="IT">IT</option>
+                        <option value="출석">출석</option>
+                    </select>
+                </td>
+
+            </tr>
+
+        </table>
+
+        <input type="submit" value="저장">
+    </form>
+
+    <!-- 두 번째 폼 -->
+    <form id="middleCategoryForm">
+        <input name="parent_id" id="parentIdInput" readonly>
+    </form>
+
+    <script>
+        function saveValue() {
+        var confirmation = confirm("저장하시겠습니까?");
+        if (confirmation) {
+            var selectedCategory = document.getElementById("categorySelect").value;
+            document.getElementById("parentIdInput").value = selectedCategory;
+            // 여기에 저장 로직 또는 다른 처리를 추가할 수 있습니다.
+            return true;  // 폼 제출
+        } else {
+            return false;  // 폼 제출 취소
+        }
+    }
+    </script>
+</body>
+</html>

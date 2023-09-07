@@ -108,7 +108,7 @@
                         </li>
 
                         <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
-                            <a href="#" class="sidebar-link">
+                            <a th:href="@{/admin/InsertRatio}" class="sidebar-link">
                                 <i class="bi bi-stack"></i>
                                 <span>시험등록</span>
                             </a>

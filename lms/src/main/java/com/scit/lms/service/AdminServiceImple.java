@@ -64,5 +64,10 @@ public class AdminServiceImple implements AdminService {
 		dao.insertInformation(studentAllInfos);
 	}
 
+	@Override
+	public ArrayList<PrimaryRatio> AllRatios() {
+		return dao.AllRatios();
+	}
+
 
 }

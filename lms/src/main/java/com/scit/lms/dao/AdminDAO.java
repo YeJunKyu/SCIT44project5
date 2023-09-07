@@ -29,4 +29,6 @@ public interface AdminDAO {
     ArrayList<Member> selectOnlyStudentInformation();
 
     void insertInformation(ArrayList<StudentInfo> studentAllInfos);
+
+    ArrayList<PrimaryRatio> AllRatios();
 }
