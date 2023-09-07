@@ -226,14 +226,14 @@ public class AdminController {
 
 
 
-		return "adminView/InsertRatio";
+		return "adminView/InsertBigRatio";
 	}
 
 	//시험비중등록대분류
 	@ResponseBody
 	@PostMapping("InsertBigRatio")
-	public void InsertBigRatio(int category_id,
-							   String categoryname){
-
+	public void InsertBigRatio(String categoryname,Model model)
+	{
+		
 	}
 }
