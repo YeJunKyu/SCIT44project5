@@ -44,13 +44,13 @@
                     <i class="bi bi-justify fs-3"></i>
                 </a>
             </header>
-            
+
 <div class="page-heading">
     <div class="page-title">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
                 <h3>공지</h3>
-                <p class="text-subtitle text-muted"></p>
+                <p class="text-subtitle text-muted">공지사항을 확인해주세요.</p>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
@@ -94,7 +94,7 @@
                                                 <option value="all" th:selected="${type} == 'all'">전체</option>
                                             </select>
 
-                                            <input type="text" name="searchWord" th:value="${searchWord}" class="form-control">
+                                            <input type="text" name="searchWord" placeholder="검색어를 입력해주세요." th:value="${searchWord}" class="form-control">
                                             <input type="button" value="검색" th:onclick="pagingFormSubmit([[${navi.currentPage}]])" class="btn btn-outline-secondary">
                                         </form>
                                     </div>
@@ -130,7 +130,7 @@
                         </div>
                     </div>
 
-                    <div class="card-header">
+                    <div class="card-footer">
 
                         <!-- 페이지네이션 -->
                         <ul class="pagination pagination-primary  justify-content-center" th:unless="${navi.currentPage == 0}">
@@ -166,7 +166,7 @@
 
     <script th:src="@{/assets/js/bootstrap.js}"></script>
     <script th:src="@{/assets/js/app.js}"></script>
-    
+
 </body>
 
 </html>

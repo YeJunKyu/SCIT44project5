@@ -83,3 +83,21 @@ CREATE TABLE primary_ratio_category (
 --시험 비중테이블 고유번호 시퀀스
 create sequence primary_ratio_category_seq;
 
+
+
+
+--일정 테이블
+create table lms_schedule (
+	eventid         number          primary key,
+	title           varchar2(200)   not null,
+	note            varchar2(1000),
+	startdate       date            default sysdate,
+	enddate         date,
+    allday          number(1),
+    color           varchar2(100),
+    textcolor       varchar(100),
+	memberid        varchar2(100)   not null
+);
+
+--일정 테이블 시퀀스
+create sequence lms_schedule_seq;

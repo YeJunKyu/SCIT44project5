@@ -84,7 +84,7 @@ public class MemberController {
 
         //검색결과 모델에 저장
         model.addAttribute("user", member);
-        log.debug("{}", member);
+        log.debug("인포메이션멤버{}", member);
         return "memberView/memberInfo";
     }
 

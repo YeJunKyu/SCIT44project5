@@ -1,109 +1,785 @@
 <!DOCTYPE html>
-<html xmlns:th="http://thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html
+  xmlns:th="http://thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SCIT LMS</title>
 
-    <link rel="stylesheet" th:href="@{/assets/css/main/app.css}">
-    <link rel="stylesheet" th:href="@{/assets/css/main/app-dark.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main/app.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/main/app-dark.css}" />
     <link rel="stylesheet" th:href="@{/assets/css/main/lms.css}" />
-    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.svg}" type="image/x-icon">
-    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png">
+    <link
+      rel="shortcut icon"
+      th:href="@{/assets/images/logo/favicon.svg}"
+      type="image/x-icon"
+    />
+    <link
+      rel="shortcut icon"
+      th:href="@{/assets/images/logo/favicon.png}"
+      type="image/png"
+    />
 
-    <link rel="stylesheet" th:href="@{/assets/css/shared/iconly.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/shared/iconly.css}" />
 
     <style>
-        .table-responsive {
-            text-align: center;
-        }
+      .table-responsive {
+        text-align: center;
+      }
     </style>
 
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
+    <script th:src="@{/assets/js/jquery-3.6.0.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/assets/calendar/index.global.min.js}"></script>
     <script>
+      // 캘린더
+      let calendar;
+      let selectedEvent;
 
-        document.addEventListener('DOMContentLoaded', function() {
-          let calendarEl = document.getElementById('calendar');
-          let calendar = new Calendar(calendarEl, {
-              plugins: [ interactionPlugin, dayGridPlugin ],
-              initialView: 'dayGridMonth',
-              selectable: true
-          });
+      document.addEventListener("DOMContentLoaded", function () {
+        let calendarEl = document.getElementById("calendar");
+
+        // new FullCalendar.Calendar(대상 DOM객체, {속성:속성값, 속성2:속성값2..})
+        calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: "dayGridMonth",
+          headerToolbar: {
+            left: "prev,next today",
+            center: "title",
+            right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
+          },
+          timeZone: "UTC",
+          editable: true,
+          dayMaxEvents: true,
+          selectable: true,
+
+          //날짜 선택해서 이벤트 등록
+          select: function (arg) {
+            console.log(arg);
+
+            // 시작 날짜 및 시간 추출
+            let startDate = new Date(arg.start);
+            let startDateStr = startDate.toISOString().slice(0, 16); // "YYYY-MM-DDTHH:MM" 형태로 변환
+
+            // 종료 날짜 및 시간 추출
+            let endDate = new Date(arg.end);
+            let endDateStr = endDate.toISOString().slice(0, 16); // "YYYY-MM-DDTHH:MM" 형태로 변환
+
+            // 모달에 날짜 및 시간 설정
+            document.getElementById("eventStartTime").value = startDateStr;
+            document.getElementById("eventEndTime").value = endDateStr;
+
+            openModal(); // 모달 열기
+
+            calendar.unselect(); // 선택 해제
+          },
+
+          eventClick: function (arg) {
+            console.log(arg);
+            selectedEvent = arg.event;
+
+            // 모달에 사용자 정보 세팅
+            document.getElementById("eventMemberID").value =
+              arg.event.extendedProps.memberID;
+            document.getElementById("eventTitleUpdate").value = arg.event.title;
+            document.getElementById("eventDescriptionUpdate").value =
+              arg.event.extendedProps.description;
+
+            if (arg.event.allDay) {
+              document.getElementById("eventStartTimeUpdate").type = "date";
+              document.getElementById("eventEndTimeUpdate").type = "date";
+              document.getElementById("eventStartTimeUpdate").value =
+                arg.event.start.toISOString().split("T")[0];
+              document.getElementById("eventEndTimeUpdate").value = arg.event
+                .end
+                ? arg.event.end.toISOString().split("T")[0]
+                : "";
+              document.getElementById("allDayCheckUpdate").checked = true;
+            } else {
+              document.getElementById("eventStartTimeUpdate").type =
+                "datetime-local";
+              document.getElementById("eventEndTimeUpdate").type =
+                "datetime-local";
+              document.getElementById("eventStartTimeUpdate").value =
+                arg.event.start.toISOString().slice(0, 16); // 시간 포함한 형식으로 변환
+              document.getElementById("eventEndTimeUpdate").value = arg.event
+                .end
+                ? arg.event.end.toISOString().slice(0, 16)
+                : "";
+              document.getElementById("allDayCheckUpdate").checked = false;
+            }
+
+            toggleTimeInputsUpdate(); // 시작 및 종료 시간 입력 필드 상태 업데이트
+
+            openUpdateModal(); // 모달 열기
+
+            calendar.unselect(); // 선택 해제
+          },
+
+          // DB에 있는 일정 불러오기
+          events: function (info, successCallback, failureCallback) {
+            $.ajax({
+              url: "schedule/list",
+              type: "get",
+              dataType: "json",
+              success: function (data) {
+                console.log(data);
+
+                let transformedData = data.map(function (event) {
+                  return {
+                    id: event.eventid,
+                    title: event.title,
+                    start: event.startdate,
+                    end: event.enddate,
+                    allDay: event.allday,
+                    color: event.color,
+                    textColor: event.textcolor,
+                    description: event.note,
+                    memberID: event.memberid,
+                  };
+                });
+
+                successCallback(transformedData);
+              },
+              error: function (e) {
+                alert(JSON.stringify(e));
+              },
+            });
+          },
         });
+        calendar.render();
+      });
 
+      // 일정 저장
+      function saveEventData() {
+        var eventTitle = document.getElementById("eventTitle").value;
+        var eventDescription =
+          document.getElementById("eventDescription").value;
+        var allDay = document.getElementById("allDayCheck").checked;
+        var startTime = document.getElementById("eventStartTime").value;
+        var endTime = document.getElementById("eventEndTime").value;
+        let member = document.getElementById("member").value;
+
+        var startTimeFormatted = formatDateToOracle(startTime);
+        var endTimeFormatted = formatDateToOracle(endTime);
+
+        var newEvent = {
+          title: eventTitle,
+          description: eventDescription,
+          allDay: allDay,
+          start: startTimeFormatted,
+          end: endTimeFormatted,
+          memberID: member,
+        };
+
+        // Calendar에 이벤트 추가
+        calendar.addEvent(newEvent);
+
+        // 이벤트 데이터를 서버로 전송하여 저장
+        saveEventToServer(newEvent);
+
+        closeModal(); // 모달 닫기
+      }
+
+      // 일정 삭제
+      function deleteSelectedEvent() {
+        if (selectedEvent) {
+          if (confirm("이벤트를 삭제하시겠습니까?")) {
+            deleteEventFromServer(selectedEvent); // 서버에서 데이터 삭제
+            selectedEvent.remove(); // 캘린더 화면에서 이벤트 삭제
+            selectedEvent = null; // 선택한 이벤트 정보 초기화
+          }
+        }
+      }
+
+      // 날짜 DB의 date 형식으로 변경
+      function formatDateToOracle(dateString) {
+        var date = new Date(dateString);
+        var yyyy = date.getFullYear();
+        var mm = String(date.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 1을 더해줍니다.
+        var dd = String(date.getDate()).padStart(2, "0");
+        var hh = String(date.getHours()).padStart(2, "0");
+        var min = String(date.getMinutes()).padStart(2, "0");
+        var sec = String(date.getSeconds()).padStart(2, "0");
+
+        return yyyy + "-" + mm + "-" + dd + " " + hh + ":" + min + ":" + sec;
+      }
+
+      // 하루종일 체크 시 시간 선택 불가
+      function toggleTimeInputs() {
+        var allDayCheck = document.getElementById("allDayCheck");
+        var startTimeInput = document.getElementById("eventStartTime");
+        var endTimeInput = document.getElementById("eventEndTime");
+
+        if (allDayCheck.checked) {
+          startTimeInput.disabled = true;
+          endTimeInput.disabled = true;
+        } else {
+          startTimeInput.disabled = false;
+          endTimeInput.disabled = false;
+        }
+      }
+
+      // 하루종일 체크 시 시간 선택 불가(변경모달)
+      function toggleTimeInputsUpdate() {
+        var allDayCheckUpdate = document.getElementById("allDayCheckUpdate");
+        var startTimeInputUpdate = document.getElementById(
+          "eventStartTimeUpdate"
+        );
+        var endTimeInputUpdate = document.getElementById("eventEndTimeUpdate");
+
+        // 현재 값 및 현재 타입 저장
+        var savedStartTime = startTimeInputUpdate.value;
+        var savedEndTime = endTimeInputUpdate.value;
+        var currentType = startTimeInputUpdate.type;
+
+        if (allDayCheckUpdate.checked) {
+          startTimeInputUpdate.type = "date";
+          endTimeInputUpdate.type = "date";
+
+          // 현재 타입이 'datetime-local'인 경우 날짜 부분만 추출
+          if (currentType === "datetime-local") {
+            savedStartTime = savedStartTime.split("T")[0];
+            savedEndTime = savedEndTime.split("T")[0];
+          }
+        } else {
+          startTimeInputUpdate.type = "datetime-local";
+          endTimeInputUpdate.type = "datetime-local";
+
+          // 현재 타입이 'date'이고 저장된 값에 시간 부분이 없는 경우 시간 부분 추가
+          if (currentType === "date" && !savedStartTime.includes("T")) {
+            savedStartTime += "T00:00"; // 임의로 자정으로 설정
+            savedEndTime += "T00:00";
+          }
+        }
+
+        // 저장된 값을 복원
+        startTimeInputUpdate.value = savedStartTime;
+        endTimeInputUpdate.value = savedEndTime;
+      }
+
+      // 일정 저장 모달 표시
+      function openModal() {
+        $("#insert").modal("show");
+      }
+
+      // 일정 저장 모달 숨기기
+      function closeModal() {
+        $("#insert").modal("hide");
+      }
+
+      // 일정 변경 모달 표시
+      function openUpdateModal() {
+        $("#update").modal("show");
+
+        let deleteButton = document.getElementById("deleteButton");
+        let updateButton = document.getElementById("updateButton");
+        let eventMemberID = document.getElementById("eventMemberID").value;
+        let currentUsername = deleteButton.getAttribute("data-username");
+
+        if (eventMemberID === currentUsername) {
+          deleteButton.style.display = "block";
+          updateButton.style.display = "block";
+        }
+      }
+
+      // 일정 변경 모달 숨기기
+      function closeUpdateModal() {
+        $("#update").modal("hide");
+      }
+
+      //DB에 일정 저장
+      function saveEventToServer(event) {
+        $.ajax({
+          url: "schedule/insert",
+          type: "post",
+          data: JSON.stringify(event),
+          contentType: "application/json",
+          success: function () {
+            Swal.fire({
+              icon: "success",
+              title: "저장 성공",
+              text: "일정이 저장되었습니다!",
+            });
+          },
+          error: function (e) {
+            console.log(JSON.stringify(e));
+            Swal.fire({
+              icon: "error",
+              title: "저장 실패",
+              text: "일정 저장 중 문제가 발생했습니다.",
+            });
+          },
+        });
+      }
+
+      // DB에서 일정 삭제
+      function deleteEventFromServer(event) {
+        $.ajax({
+          url: "schedule/delete",
+          type: "post",
+          data: { eventid: event.id }, // 이벤트 아이디를 서버에 전달
+          success: function () {
+            Swal.fire({
+              icon: "success",
+              title: "삭제 성공",
+              text: "일정이 삭제되었습니다!",
+            });
+          },
+          error: function (e) {
+            console.log(JSON.stringify(e));
+            Swal.fire({
+              icon: "error",
+              title: "삭제 실패",
+              text: "일정 삭제 중 문제가 발생했습니다.",
+            });
+          },
+        });
+      }
+
+      // DB에서 일정 수정
+      function updateEventInServer(event) {
+        // 모달에서 수정된 데이터 수집
+        var selectedEventId = selectedEvent.id;
+        var updatedTitle = document.getElementById("eventTitleUpdate").value;
+        var updatedDescription = document.getElementById(
+          "eventDescriptionUpdate"
+        ).value;
+        var updatedStartTime = document.getElementById(
+          "eventStartTimeUpdate"
+        ).value;
+        var updatedEndTime =
+          document.getElementById("eventEndTimeUpdate").value;
+        var allDay = document.getElementById("allDayCheckUpdate").checked;
+
+        var startTimeFormatted = formatDateToOracle(updatedStartTime);
+        var endTimeFormatted = formatDateToOracle(updatedEndTime);
+
+        var updateEvent = {
+          eventId: selectedEventId,
+          title: updatedTitle,
+          description: updatedDescription,
+          start: startTimeFormatted,
+          end: endTimeFormatted,
+          allDay: allDay,
+        };
+
+        $.ajax({
+          url: "schedule/update",
+          type: "post",
+          data: JSON.stringify(updateEvent),
+          contentType: "application/json",
+          success: function () {
+            calendar.refetchEvents();
+            Swal.fire({
+              icon: "success",
+              title: "수정 성공",
+              text: "일정이 수정되었습니다!",
+            });
+          },
+          error: function (e) {
+            console.log(JSON.stringify(e));
+            Swal.fire({
+              icon: "error",
+              title: "수정 실패",
+              text: "일정 수정 중 문제가 발생했습니다.",
+            });
+          },
+        });
+      }
+
+      function searchEvent() {
+        var searchTerm = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+
+        // 현재 캘린더의 모든 이벤트 가져오기
+        var events = calendar.getEvents();
+
+        for (var i = 0; i < events.length; i++) {
+          var event = events[i];
+
+          // 검색어가 이벤트의 제목에 포함되어 있는지 확인
+          if (event.title.toLowerCase().includes(searchTerm)) {
+            // 해당하는 이벤트의 날짜로 캘린더 이동
+            calendar.gotoDate(event.start);
+            break;
+          }
+        }
+      }
     </script>
+  </head>
 
-</head>
-
-<body>
-<div id="app">
-    <div th:replace="~{/fragments/sidebar.html :: sidebarFrag}"></div>
-</div>
-
-<div id="main">
-    <header class="mb-3">
-        <a href="#" class="burger-btn d-block d-xl-none">
-            <i class="bi bi-justify fs-3"></i>
-        </a>
-    </header>
-
-    <div class="page-heading">
-        <div class="page-title">
-            <div class="row">
-                <div class="col-12 col-md-6 order-md-1 order-last">
-                    <p class="text-subtitle text-muted"></p>
-                </div>
-                <div class="col-12 col-md-6 order-md-2 order-first">
-                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a th:href="@{/main}">메인</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">일정</li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
-        </div>
+  <body>
+    <div id="app">
+      <div th:replace="~{/fragments/sidebar.html :: sidebarFrag}"></div>
     </div>
 
-    <section class="section">
-        <div class="row" id="table-head">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="row">
-                            <div class="col-12 col-md-6 order-md-1 order-last">
-                                <h3>일정</h3>
-                            </div>
-                            <div class="col-12 col-md-6 order-md-2 order-first">
-                                <!--일정 등록 버튼-->
-                                <div class="float-start float-lg-end" sec:authorize="hasAnyRole('ROLE_admin', 'ROLE_teacher')">
-                                    <div class="button">
-                                        <a th:href="@{/notice/write}" class="btn btn-outline-primary">일정 등록</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <div id="main">
+      <header class="mb-3">
+        <a href="#" class="burger-btn d-block d-xl-none">
+          <i class="bi bi-justify fs-3"></i>
+        </a>
+      </header>
 
-                    <div class="card-header">
-                    </div>
-
-                    <div class="card-content">
-                        <div id="calendar"></div>
-                    </div>
-
-                </div>
+      <div class="page-heading">
+        <div class="page-title">
+          <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+              <h3>일정</h3>
+              <p
+                sec:authorize="hasAnyRole('ROLE_admin', 'ROLE_teacher')"
+                class="text-subtitle text-muted"
+              >
+                날짜를 선택해서 일정을 등록하세요.
+              </p>
+              <p
+                sec:authorize="hasAnyRole('ROLE_student')"
+                class="text-subtitle text-muted"
+              >
+                학사 일정을 확인해주세요.
+              </p>
             </div>
+            <div class="col-12 col-md-6 order-md-2 order-first">
+              <nav
+                aria-label="breadcrumb"
+                class="breadcrumb-header float-start float-lg-end"
+              >
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item">
+                    <a th:href="@{/main}">메인</a>
+                  </li>
+                  <li class="breadcrumb-item active" aria-current="page">
+                    일정
+                  </li>
+                </ol>
+              </nav>
+            </div>
+          </div>
         </div>
-    </section>
+      </div>
 
-</div>
+      <section class="section">
+        <div class="row" id="table-head">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <div class="row">
+                  <!-- 일정 등록 버튼 -->
+                  <div class="col-12 col-md-6 order-md-1 order-last">
+                    <div class="float-start float-lg-start">
+                      <div
+                        sec:authorize="hasAnyRole('ROLE_admin', 'ROLE_teacher')"
+                      >
+                        <div class="button">
+                          <button
+                            onclick="openModal()"
+                            class="btn btn-outline-primary"
+                          >
+                            일정 등록
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- 검색 창 -->
+                  <div class="col-12 col-md-6 order-md-2 order-first">
+                    <div class="float-start float-lg-end">
+                      <div class="input-group mb-3">
+                        <input
+                          type="text"
+                          id="searchInput"
+                          placeholder="일정 제목을 입력해주세요."
+                          class="form-control"
+                        />
+                        <button
+                          onclick="searchEvent()"
+                          class="btn btn-outline-secondary"
+                        >
+                          검색
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-<script th:src="@{/assets/js/bootstrap.js}"></script>
-<script th:src="@{/assets/js/app.js}"></script>
+              <div class="card-content">
+                <!-- 캘린더 -->
+                <div style="margin: 30px">
+                  <div id="calendar"></div>
+                </div>
 
-</body>
+                <!-- 일정 저장 모달 -->
+                <div sec:authorize="hasAnyRole('ROLE_admin', 'ROLE_teacher')">
+                  <div
+                    aria-labelledby="myModalLabel1"
+                    aria-modal="true"
+                    class="modal fade text-left show"
+                    id="insert"
+                    role="dialog"
+                    style="display: none; padding-right: 17px"
+                    tabindex="-1"
+                  >
+                    <div
+                      class="modal-dialog modal-dialog-scrollable"
+                      role="document"
+                    >
+                      <div class="modal-content" id="eventModal">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="myModalLabel1">
+                            일정 등록
+                          </h5>
+                          <button
+                            type="button"
+                            class="close rounded-pill"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                            onclick="closeModal()"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              class="feather feather-x"
+                            >
+                              <line x1="18" y1="6" x2="6" y2="18"></line>
+                              <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                          </button>
+                        </div>
 
+                        <div class="modal-body">
+                          <label>일정 작성자: </label>
+                          <div class="form-group">
+                            <input
+                              type="text"
+                              class="form-control"
+                              id="member"
+                              th:value="${#authentication.name}"
+                              readonly
+                            />
+                          </div>
+                          <label>일정 제목: </label>
+                          <div class="form-group">
+                            <input
+                              type="text"
+                              id="eventTitle"
+                              class="form-control"
+                            />
+                          </div>
+                          <label>일정 내용: </label>
+                          <div class="form-group">
+                            <input
+                              type="text"
+                              id="eventDescription"
+                              class="form-control"
+                            />
+                          </div>
+                          <label>시작 시간: </label>
+                          <div class="form-group">
+                            <input
+                              type="datetime-local"
+                              id="eventStartTime"
+                              class="form-control"
+                            />
+                          </div>
+                          <label>종료 시간: </label>
+                          <div class="form-group">
+                            <input
+                              type="datetime-local"
+                              id="eventEndTime"
+                              class="form-control"
+                            />
+                          </div>
+                          <label for="allDayCheck">하루 종일:</label>
+                          <div class="checkbox">
+                            <input
+                              type="checkbox"
+                              id="allDayCheck"
+                              class="form-check-input"
+                              onchange="toggleTimeInputs()"
+                            />
+                          </div>
+                        </div>
+
+                        <div class="modal-footer">
+                          <button
+                            type="button"
+                            class="btn btn-light-primary"
+                            data-bs-dismiss="modal"
+                            onclick="closeModal()"
+                          >
+                            <i class="bx bx-x d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">취소</span>
+                          </button>
+                          <button
+                            type="button"
+                            class="btn btn-primary ml-1"
+                            data-bs-dismiss="modal"
+                            onclick="saveEventData()"
+                          >
+                            <i class="bx bx-check d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">저장</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 일정 수정/삭제 모달 -->
+                <div sec:authorize="hasAnyRole('ROLE_admin', 'ROLE_teacher')">
+                  <div
+                    class="modal fade text-left show"
+                    id="update"
+                    tabindex="-1"
+                    aria-labelledby="myModalLabel1"
+                    style="display: none; padding-right: 17px"
+                    aria-modal="true"
+                    role="dialog"
+                  >
+                    <div
+                      class="modal-dialog modal-dialog-scrollable"
+                      role="document"
+                    >
+                      <div class="modal-content" id="eventModalUpdate">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="myModalLabel2">
+                            일정 변경
+                          </h5>
+                          <button
+                            type="button"
+                            class="close rounded-pill"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                            onclick="closeUpdateModal()"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              class="feather feather-x"
+                            >
+                              <line x1="18" y1="6" x2="6" y2="18"></line>
+                              <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                          </button>
+                        </div>
+
+                        <div class="modal-body">
+                          <label>일정 작성자: </label>
+                          <div class="form-group">
+                            <input
+                              type="text"
+                              id="eventMemberID"
+                              class="form-control"
+                              readonly
+                            />
+                          </div>
+                          <label>일정 제목: </label>
+                          <div class="form-group">
+                            <input
+                              type="text"
+                              id="eventTitleUpdate"
+                              class="form-control"
+                            />
+                          </div>
+                          <label>일정 내용: </label>
+                          <div class="form-group">
+                            <input
+                              type="text"
+                              id="eventDescriptionUpdate"
+                              class="form-control"
+                            />
+                          </div>
+                          <label>시작 시간: </label>
+                          <div class="form-group">
+                            <input
+                              type="datetime-local"
+                              id="eventStartTimeUpdate"
+                              class="form-control"
+                            />
+                          </div>
+                          <label>종료 시간: </label>
+                          <div class="form-group">
+                            <input
+                              type="datetime-local"
+                              id="eventEndTimeUpdate"
+                              class="form-control"
+                            />
+                          </div>
+                          <label for="allDayCheck">하루 종일:</label>
+                          <input
+                            type="checkbox"
+                            id="allDayCheckUpdate"
+                            class="form-check-input"
+                            onchange="toggleTimeInputsUpdate()"
+                          />
+                        </div>
+
+                        <div class="modal-footer">
+                          <button
+                            type="button"
+                            class="btn btn-light-primary"
+                            data-bs-dismiss="modal"
+                            onclick="closeUpdateModal()"
+                          >
+                            <i class="bx bx-x d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">취소</span>
+                          </button>
+                          <button
+                            type="button"
+                            class="btn btn-danger ml-1"
+                            data-bs-dismiss="modal"
+                            onclick="deleteSelectedEvent()"
+                            id="deleteButton"
+                            th:data-username="${#authentication.name}"
+                            style="display: none"
+                          >
+                            <i class="bx bx-check d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">삭제</span>
+                          </button>
+                          <button
+                            type="button"
+                            class="btn btn-primary ml-1"
+                            data-bs-dismiss="modal"
+                            onclick="updateEventInServer()"
+                            id="updateButton"
+                            th:data-username="${#authentication.name}"
+                            style="display: none"
+                          >
+                            <i class="bx bx-check d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">수정</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="card-content"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script th:src="@{/assets/js/bootstrap.js}"></script>
+    <script th:src="@{/assets/js/app.js}"></script>
+  </body>
 </html>

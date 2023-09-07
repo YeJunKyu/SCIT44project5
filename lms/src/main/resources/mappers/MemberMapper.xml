@@ -43,6 +43,8 @@
             , phone
             , email
             , address
+            , memberphoto
+            , photopath
             ,
             CASE
             WHEN gender = 'male' THEN '남성'
