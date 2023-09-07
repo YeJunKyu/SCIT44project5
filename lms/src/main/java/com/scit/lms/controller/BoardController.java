@@ -26,12 +26,6 @@ public class BoardController {
         return "boardView/manage/manage";
     }
 
-    // 과제 페이지 이동
-    @GetMapping("homework")
-    public String homework() {
-        return "boardView/homework/homework";
-    }
-
     // 강의 페이지 이동
     @GetMapping("lecture")
     public String lecture() {
