@@ -7,10 +7,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-
+    @Value("${upload.path}")
+    private String uploadPath;
+    @Value("${memberphoto.path}")
+    private String memberphotoPath;
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/memberphoto/**")
-                .addResourceLocations("file:///c:/lms/uploadFile/memberphoto/");
+        registry.addResourceHandler(uploadPath)
+                .addResourceLocations(memberphotoPath);
     }
 }
