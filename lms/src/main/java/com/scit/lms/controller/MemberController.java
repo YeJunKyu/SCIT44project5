@@ -135,6 +135,8 @@ public class MemberController {
 
         }
 
+        log.debug("업로드", upload);
+        log.debug("업로드패스", uploadPath);
         member.setMemberid(user.getUsername());
         log.debug("멤버2:{}", member);
 
@@ -183,14 +185,18 @@ public class MemberController {
 
         if (upload != null && !upload.isEmpty()) {
             String savedfile=FileService.saveFile(upload, uploadPath);
-            member.setMemberphoto(upload.getOriginalFilename());
             member.setMemberphoto(savedfile);
+            member.setPhotopath(uploadPath);
+
 
         }
 
 
         member.setMemberid(user.getUsername());
         log.debug("멤버2:{}", member);
+
+        log.debug("업로드: {}", upload);
+        log.debug("업로드패스: {}", uploadPath);
 
         service.memberphoto(member);
         model.addAttribute("user", member);
