@@ -1,0 +1,44 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.scit.lms.dao.ScheduleDAO">
+
+    <select id="list" resultType="Schedule">
+        select
+            eventid,
+            title,
+            note,
+            to_char(startdate, 'YYYY-MM-DD HH24:MI:SS') startdate,
+            to_char(enddate, 'YYYY-MM-DD HH24:MI:SS') enddate,
+            allday,
+            color,
+            textcolor,
+            memberid
+        from
+            lms_schedule
+    </select>
+
+    <insert id="insert" parameterType="Schedule">
+        insert into
+            lms_schedule
+        values
+            (lms_schedule_seq.nextval
+        , #{title}
+        , #{note}
+        , TO_DATE(#{startdate}, 'YYYY-MM-DD HH24:MI:SS')
+        , TO_DATE(#{enddate}, 'YYYY-MM-DD HH24:MI:SS')
+        , #{allday}
+        , #{color}
+        , #{textcolor}
+        , #{memberid})
+    </insert>
+
+    <delete id="delete">
+        delete from
+            lms_schedule
+        where
+            eventid=#{eventid}
+    </delete>
+
+</mapper>
