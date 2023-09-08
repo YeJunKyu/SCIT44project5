@@ -20,7 +20,7 @@
                 });
                 //문제 추가
                 $(document).on("click", "#qPlus", function () {
-                    let cardId = "card-" + Date.now(); // 현재 시간을 이용한 고유한 ID 생성
+                    let cardId = Date.now(); // 현재 시간을 이용한 고유한 ID 생성
                     // console.log(cardId);
                     let questionCount = $(".card").length; // 현재까지 생성된 문제 개수 계산
                     let currentQuestionNumber = questionCount; // 해당 문제의 번호
@@ -54,7 +54,7 @@
                                 <div class="col-md-2">
                                     <label class="d-flex align-items-center">
                                         <span class="col-md-3">배점</span>
-                                        <input type="number" name="points" class="form-control"/>
+                                        <input type="number" name="points" class="form-control" required/>
                                     </label>
                                 </div>
                                 <button id="qDelete" class="btn btn-outline-primary btn-sm icon">
@@ -115,15 +115,12 @@
                             return `
                                 <div id="shortAnswerTarget"></div>
                                 <section>
-                                    <input type="text" class="form-control" placeholder="정답 입력"/>
+                                    <input type="text" class="form-control" placeholder="정답 입력" required/>
                                 </section>
                             `;
                         case "4": // 장문형
                             return `
                                 <div id="longAnswerTarget"></div>
-                                <section>
-                                    <textarea class="form-control" rows="5"></textarea>
-                                </section>
                             `;
                         case "5": // 파일첨부형
                             return `
@@ -144,7 +141,7 @@
                         <div>
                             <label class="d-flex align-items-center">
                             <input type="radio" class="form-check-input m-lg-1 optionCount" name="${cardId}-answer" value="${value}" />
-                            <input type="text" class="form-control" />
+                            <input type="text" class="form-control" required/>
                             </label>
                         </div>
                         <button class="btn btn-outline-primary btn-sm icon deleteOption">
@@ -175,7 +172,7 @@
                         <div>
                             <label class="d-flex align-items-center">
                             <input type="checkbox" class="form-check-input m-lg-1 optionCount" name="${cardId}-answer" value="${value}" />
-                            <input type="text" class="form-control"/>
+                            <input type="text" class="form-control" required/>
                             </label>
                         </div>
                         <button class="btn btn-outline-primary btn-sm icon deleteMultiOption">
@@ -243,9 +240,9 @@
             // 문제 저장
             function submitForm() {
                 // 시험 정보 부분
-                let testname;
-                let testdate;
-                let testlimit;
+                let testname = document.getElementById("testname").value;
+                let testdate = document.getElementById("testdate").value;
+                let testlimit = document.getElementById("testlimit").value;
 
                 // 문제 데이터 배열 생성
                 let questionDataArray = [];
@@ -315,26 +312,30 @@
 
                 });
                 questionDataArray = questionDataArray.filter(function(question) {
-                    return question.qid !== undefined; // id가 undefined인 객체를 필터링하여 제거함.
+                    return question.qid !== undefined; // qid가 undefined인 객체를 필터링하여 제거함.
                 });
 
                 console.log(questionDataArray);
+
                 // AJAX 요청 전송
                 $.ajax({
-                    url: "/test/submitTest",
+                    url: "submitTest",
                     type: "POST",
-                    contentType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "text",
                     data: JSON.stringify({
                         testname: testname,
                         testdate: testdate,
                         testlimit: testlimit,
                         questionDataArray: questionDataArray
                     }),
-                    success: function (response) {
+                    success: function (url) {
                         alert("요청이 완료되었습니다.");
+                        console.log(url);
+                        window.location.href = "/lms/test";
                     },
                     error: function (e) {
-                        alert(JSON.stringify(e));
+                        console.log(JSON.stringify(e));
                     },
                 });
             }
@@ -376,7 +377,7 @@
                                         <div class="col-md-8">
                                             <h4 class="card-title">시험명</h4>
                                             <div class="form-group input-group-lg">
-                                                <input type="text" class="form-control" name="testname"/>
+                                                <input type="text" class="form-control" id="testname"/>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
@@ -388,13 +389,13 @@
                                         <div class="col-md-6">
                                             <h4 class="card-title">시험일시</h4>
                                             <div class="form-group input-group">
-                                                <input type="datetime-local" name="testdate" class="form-control" id="testdate"/>
+                                                <input type="datetime-local" id="testdate" class="form-control"/>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <h4 class="card-title">마감일시</h4>
                                             <div class="form-group input-group">
-                                                <input type="datetime-local" name="testlimit" class="form-control" id="testlimit"/>
+                                                <input type="datetime-local" id="testlimit" class="form-control"/>
                                             </div>
                                         </div>
                                     </div>
