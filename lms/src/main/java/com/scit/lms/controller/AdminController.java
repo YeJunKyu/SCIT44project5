@@ -12,6 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
@@ -220,7 +221,7 @@ public class AdminController {
 	}
 
 	//시험비중등록폼
-	@GetMapping("InsertRatio")
+	@GetMapping("InsertBigRatio")
 	public String InsertRation(Model model){
 
 
@@ -232,16 +233,157 @@ public class AdminController {
 	//시험비중등록대분류
 
 	@PostMapping("InsertBigRatio")
-	public String InsertBigRatio()
-	{
+	public String InsertBigRatio(@RequestParam("categoryname[]") String[] categoryname,
+								 @RequestParam("ratio[]") Double[] ratio,
+								 String divname
+			)
+	{	log.debug("컨트롤러확인:{}",categoryname.length);
+		ArrayList<PrimaryRatio> primaryRatios = new ArrayList<>();
+		for(int i = 0;i<categoryname.length;i++){
+			if(!categoryname[i].isEmpty() && ratio[i] != 0.00) {
+				PrimaryRatio primaryRatio = new PrimaryRatio();
+				primaryRatio.setCategoryname(categoryname[i]);
+				primaryRatio.setRatio(ratio[i]);
+				primaryRatio.setDivname(divname);
+				primaryRatios.add(primaryRatio);
+			}
+		}
+		log.debug("비중배열확인:{}",primaryRatios);
+		for (PrimaryRatio primaryRatio : primaryRatios) {
+			service.insertBigRatio(primaryRatio);
+		}
+		log.debug("비중등록확인:{}",primaryRatios);
+		return "redirect:/admin/InsertBigRatio";
+	}
+	
+	//대분류 등록후 중분류 이동
+	@GetMapping("InsertMiddleRatio")
+	public String InsertMiddleRatio(Model model){
+			log.debug("컨트롤러 확인:{}","okay");
+			ArrayList<PrimaryRatio>  primaryRatio = service.ReadBigRatio();
+			log.debug("대분류데이터:{}",primaryRatio);
+			model.addAttribute("pri",primaryRatio);
+
+			return "adminView/InsertMiddleRatio";
+		}
+
+	//시험비중등록 중분류
+	@PostMapping("InsertMiddleRatio")
+	public String InsertMiddleRatio(int parent_id,
+			@RequestParam("categoryname[]") String[] categoryname,
+									@RequestParam("ratio[]") Double[] ratio,
+									String divname){
+		log.debug("컨트롤러 확인:{},{}",parent_id,categoryname);
+		ArrayList<PrimaryRatio> primaryRatios = new ArrayList<>();
+		for(int i = 0;i<categoryname.length;i++){
+			if(!categoryname[i].isEmpty() && ratio[i] != 0.00) {
+				PrimaryRatio primaryRatio = new PrimaryRatio();
+				primaryRatio.setParent_id(parent_id);
+				primaryRatio.setCategoryname(categoryname[i]);
+				primaryRatio.setRatio(ratio[i]);
+				primaryRatio.setDivname(divname);
+				primaryRatios.add(primaryRatio);
+			}
+		}
+
+		log.debug("비중배열확인:{}",primaryRatios);
+		for (PrimaryRatio primaryRatio : primaryRatios) {
+			service.InsertMiddleRatio(primaryRatio);
+		}
+		log.debug("비중등록확인:{}",primaryRatios);
 
 		return "redirect:/admin/InsertMiddleRatio";
 	}
 
-	@GetMapping("InsertMiddleRatio")
-	public String InsertMiddleRatio(){
-
-			return "adminView/InsertMiddleRatio";
+	//시험등록소분류 폼
+	@GetMapping("InsertSmallRatio")
+	public String InsertSmallRatio(Model model){
+		log.debug("컨트롤러 확인:{}","okay");
+		ArrayList<PrimaryRatio>  primaryRatio = service.ReadMiddleRatio();
+		log.debug("중분류데이터:{}",primaryRatio);
+		model.addAttribute("pri",primaryRatio);
+		
+		return "adminView/InsertSmallRatio";
+	}
+	
+	//시험등록소분류
+	@PostMapping("InsertSmallRatio")
+	public String InsertSmallRatio(int parent_id,
+									@RequestParam("categoryname[]") String[] categoryname,
+									@RequestParam("ratio[]") Double[] ratio,
+									String divname){
+		log.debug("컨트롤러 확인:{},{}",parent_id,categoryname);
+		ArrayList<PrimaryRatio> primaryRatios = new ArrayList<>();
+		for(int i = 0;i<categoryname.length;i++){
+			if(!categoryname[i].isEmpty() && ratio[i] != 0.00) {
+				PrimaryRatio primaryRatio = new PrimaryRatio();
+				primaryRatio.setParent_id(parent_id);
+				primaryRatio.setCategoryname(categoryname[i]);
+				primaryRatio.setRatio(ratio[i]);
+				primaryRatio.setDivname(divname);
+				primaryRatios.add(primaryRatio);
+			}
 		}
+
+		log.debug("비중배열확인:{}",primaryRatios);
+		for (PrimaryRatio primaryRatio : primaryRatios) {
+			service.InsertMiddleRatio(primaryRatio);
+		}
+		log.debug("비중등록확인:{}",primaryRatios);
+
+		return "redirect:/admin/InsertSmallRatio";
+	}
+	
+	//시험조회
+	@GetMapping("ReadTestList")
+	public String ReadTestList(Model model)
+	{
+		log.debug("시험조회1:{}","확인");
+		ArrayList<PrimaryRatio> bigList = service.ReadTestBigList();
+		ArrayList<PrimaryRatio> middleList = service.ReadTestMiddleList();
+		ArrayList<PrimaryRatio> smallList = service.ReadTestSmallList();
+		log.debug("시험조회2:{}",bigList);
+		log.debug("시험조회3:{}",middleList);
+		log.debug("시험조회4:{}",smallList);
+		model.addAttribute("bigList",bigList);
+		model.addAttribute("midList",middleList);
+		model.addAttribute("smList",smallList);
+
+
+		return "adminView/ReadTestList";
+	}
+
+	//시험종목,비중수정
+	@PostMapping("updateTestList")
+	public String updateTestList(@RequestParam Map<String, String> formData){
+		log.debug("데이터수:{},데이터:{}",formData.size(),formData);
+		ArrayList<PrimaryRatio> primaryRatios = new ArrayList<>();
+
+		for (Map.Entry<String, String> entry : formData.entrySet()) {
+			if (entry.getKey().startsWith("selectedCheckbox")) {
+				int categoryId = Integer.parseInt(entry.getValue());
+
+				String categoryName = formData.get("categoryname" + categoryId);
+				Double ratioValue = Double.parseDouble(formData.get("ratio" + categoryId));
+				String divName = formData.get("divname" + categoryId);
+
+				if (categoryName != null && ratioValue != null && divName != null) {
+					PrimaryRatio primaryRatio = new PrimaryRatio();
+					primaryRatio.setCategory_id(categoryId);
+					primaryRatio.setCategoryname(categoryName);
+					primaryRatio.setRatio(ratioValue);
+					primaryRatio.setDivname(divName);
+					primaryRatios.add(primaryRatio);
+					log.debug("담은데이터확인:{}",primaryRatios);
+				}
+			}
+		}
+		log.debug("데이터확인:{}",primaryRatios);
+		for (PrimaryRatio primaryRatio : primaryRatios) {
+			service.updateTestList(primaryRatio);
+		}
+		log.debug("수정확인:{}",primaryRatios);
+		return "redirect:/admin/ReadTestList";
+	}
 
 }

@@ -70,8 +70,8 @@ public class AdminServiceImple implements AdminService {
 	}
 
 	@Override
-	public int InsertBigRatio(PrimaryRatio primaryRatio) {
-		return dao.InsertBigRatio(primaryRatio);
+	public void insertBigRatio(PrimaryRatio primaryRatio) {
+		dao.insertBigRatio(primaryRatio);
 	}
 
 	@Override
@@ -79,5 +79,38 @@ public class AdminServiceImple implements AdminService {
 		return dao.selectOneCategory(categoryname);
 	}
 
+	@Override
+	public ArrayList<PrimaryRatio>  ReadBigRatio() {
+		return dao.ReadBigRatio();
+	}
 
+	@Override
+	public void InsertMiddleRatio(PrimaryRatio primaryRatio) {
+		dao.InsertMiddleRatio(primaryRatio);
+	}
+
+	@Override
+	public ArrayList<PrimaryRatio> ReadMiddleRatio() {
+		return dao.ReadMiddleRatio();
+	}
+
+	@Override
+	public ArrayList<PrimaryRatio> ReadTestBigList() {
+		return dao.ReadTestBigList();
+	}
+
+	@Override
+	public ArrayList<PrimaryRatio> ReadTestMiddleList() {
+		return dao.ReadTestMiddleList();
+	}
+
+	@Override
+	public ArrayList<PrimaryRatio> ReadTestSmallList() {
+		return dao.ReadTestSmallList();
+	}
+
+	@Override
+	public void updateTestList(PrimaryRatio primaryRatio) {
+		dao.updateTestList(primaryRatio);
+	}
 }

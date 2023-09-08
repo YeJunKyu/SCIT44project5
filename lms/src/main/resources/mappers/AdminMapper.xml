@@ -131,14 +131,62 @@
     </insert>
     
 <!--    시험비중등록폼 대분류 등록-->
-<insert id="InsertBigRatio" parameterType="PrimaryRatio">
-    insert into primary_ratio_category(category_id,categoryname,ratio,divname)
-    values(primary_ratio_category_seq.nextval,#{categoryname},#{ratio},#{divname})
+<insert id="insertBigRatio" parameterType="PrimaryRatio">
+    INSERT INTO primary_ratio_category(category_id, categoryname, ratio, divname)
+    VALUES (primary_ratio_category_seq.NEXTVAL, #{categoryname}, #{ratio}, #{divname})
+
 </insert>
 <!--    대분류 등록이후 다음폼조회-->
-    <select id="selectOneCategory" parameterType="String" resultType="PrimaryRatio">
+    <select id="ReadBigRatio" parameterType="String" resultType="PrimaryRatio">
         select category_id,
         categoryname,
-        divname FROM primary_ratio_category WHERE categoryname = #{categoryname}
+        divname FROM primary_ratio_category WHERE divname = '대분류'
     </select>
+
+    <!--    시험비중등록폼 중분류 등록-->
+    <insert id="InsertMiddleRatio" parameterType="PrimaryRatio">
+        INSERT INTO primary_ratio_category(category_id, parent_id,categoryname, ratio, divname)
+        VALUES (primary_ratio_category_seq.NEXTVAL, #{parent_id}, #{categoryname}, #{ratio}, #{divname})
+
+    </insert>
+
+<!--    시험비중등록폼 소분류-->
+    <select id="ReadMiddleRatio" parameterType="String" resultType="PrimaryRatio">
+        select category_id,
+        categoryname,
+        divname FROM primary_ratio_category WHERE divname = '중분류'
+    </select>
+
+<!--    시험조회:대분류-->
+    <select id="ReadTestBigList" resultType="PrimaryRatio">
+        select * from primary_ratio_category
+        where divname = '대분류'
+        order by category_id
+
+    </select>
+
+    <!--    시험조회:중분류-->
+    <select id="ReadTestMiddleList" resultType="PrimaryRatio">
+        select * from primary_ratio_category
+        where divname = '중분류'
+        order by category_id
+
+    </select>
+
+    <!--    시험조회:소분류-->
+    <select id="ReadTestSmallList" resultType="PrimaryRatio">
+        select * from primary_ratio_category
+        where divname = '소분류'
+        order by category_id
+
+    </select>
+
+<!--    시험종목비중수정-->
+    <update id="updateTestList" parameterType="PrimaryRatio">
+        update primary_ratio_category
+        set categoryname = #{categoryname},
+        ratio = #{ratio},
+        divname = #{divname}
+        where category_id = #{category_id}
+    </update>
 </mapper>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원 인증</title>
+    
+    <link rel="stylesheet" th:href="@{/assets/css/main/app.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main/app-dark.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main/lms.css}" />
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.svg}" type="image/x-icon">
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png">
+    
+<link rel="stylesheet" th:href="@{/assets/extensions/simple-datatables/style.css}">
+<link rel="stylesheet" th:href="@{/assets/css/pages/simple-datatables.css}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script th:src="@{/privatejs/sidebarLoader.js}"></script>
+<script>
+
+    function insertchk(){
+
+            if(confirm('등록하시겠습니까?')){
+                return true;
+        }
+            return false;
+        }
+
+   document.querySelector('form').addEventListener('submit', function(e) {
+    const checkboxes = document.querySelectorAll('input[name="category_id"]');
+
+    checkboxes.forEach((checkbox, index) => {
+        if (!checkbox.checked) {
+            const row = checkbox.closest('tr');
+            row.querySelectorAll('input[type="text"]').forEach(input => {
+                input.value = ""; // input 값을 빈 문자열로 설정합니다.
+            });
+        }
+    });
+});
+
+
+</script>
+
+</head>
+
+<body>
+    <div id="app">
+        <div id="sidebar-placeholder"></div>
+        <div id="main">
+            <header class="mb-3">
+                <a href="#" class="burger-btn d-block d-xl-none">
+                    <i class="bi bi-justify fs-3"></i>
+                </a>
+            </header>
+            
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3>시험 조회 및 수정</h3>
+                <p class="text-subtitle text-muted">시험종목명이나 반영비율을 수정해주세요.</p>
+            </div>
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                    <ol class="breadcrumb">
+
+
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <section class="section">
+        <div class="card">
+            <div class="card-header">
+                대분류
+            </div>
+            <div class="card-body">
+                <form th:action="@{updateTestList}" method="post">
+                    <table class="table table-striped" id="table1">
+                        <thead>
+
+                        <tr>
+                            <th>선택</th>
+                            <th>시험코드</th>
+                            <th>상위코드</th>
+                            <th>시험종목</th>
+                            <th>반영비율</th>
+                            <th>분류</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="bigtest : ${bigList}">
+                            <td><input type="checkbox" th:name="'selectedCheckbox' + ${bigtest.category_id}" th:value="${bigtest.category_id}"></td>
+                            <td th:text="${bigtest.category_id}"></td>
+                            <td th:text="${bigtest?.parent_id}"></td>
+                            <td>
+                                <input type="text" th:name="'categoryname' + ${bigtest.category_id}" th:value="${bigtest.categoryname}">
+                            </td>
+                            <td>
+                                [[${bigtest.ratio}]]<select th:name="'ratio' + ${bigtest.category_id}">
+                                <option value="0.00">0%</option>
+                                <option value="0.05">5%</option><option value="0.10">10%</option><option value="0.15">15%</option>
+                                <option value="0.20">20%</option><option value="0.25">25%</option> <option value="0.30">30%</option>
+                                <option value="0.35">35%</option><option value="0.40">40%</option><option value="0.45">45%</option>
+                                <option value="0.50">50%</option><option value="0.55">55%</option><option value="0.60">60%</option>
+                                <option value="0.65">65%</option><option value="0.70">70%</option><option value="0.75">75%</option>
+                                <option value="0.80">80%</option><option value="0.85">85%</option><option value="0.90">90%</option>
+                                <option value="0.95">95%</option><option value="1.00">100%</option>
+                            </select>
+                            </td>
+                            <td>
+                                [[${bigtest.divname}]]
+                                <select th:name="'divname' + ${bigtest.category_id}">
+                                    <option value="대분류">대분류</option>
+                                    <option value="중분류">중분류</option>
+                                    <option value="소분류">소분류</option>
+                                </select>
+
+                            </td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                    <input type="submit" value="저장">
+
+                </form>
+
+            </div>
+            <div class="card-header">
+                중분류
+            </div>
+
+
+            <div class="card-body">
+                <form th:action="@{updateTestList}" method="post">
+                    <table class="table table-striped" id="table3">
+                        <thead>
+
+                        <tr>
+                            <th>선택</th>
+                            <th>시험코드</th>
+                            <th>상위코드</th>
+                            <th>시험종목</th>
+                            <th>반영비율</th>
+                            <th>분류</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        <tr th:each="midtest : ${midList}">
+                            <td><input type="checkbox" th:name="'selectedCheckbox' + ${midtest.category_id}" th:value="${midtest.category_id}"></td>
+                            <td th:text="${midtest.category_id}"></td>
+                            <td th:text="${midtest?.parent_id}"></td>
+                            <td>
+                                <input type="text" th:name="'categoryname' + ${midtest.category_id}" th:value="${midtest.categoryname}">
+                            </td>
+                            <td>
+                                [[${midtest.ratio}]]<select th:name="'ratio' + ${midtest.category_id}">
+                                    <option value="0.00">0%</option>
+                                    <option value="0.05">5%</option><option value="0.10">10%</option><option value="0.15">15%</option>
+                                    <option value="0.20">20%</option><option value="0.25">25%</option> <option value="0.30">30%</option>
+                                    <option value="0.35">35%</option><option value="0.40">40%</option><option value="0.45">45%</option>
+                                    <option value="0.50">50%</option><option value="0.55">55%</option><option value="0.60">60%</option>
+                                    <option value="0.65">65%</option><option value="0.70">70%</option><option value="0.75">75%</option>
+                                    <option value="0.80">80%</option><option value="0.85">85%</option><option value="0.90">90%</option>
+                                    <option value="0.95">95%</option><option value="1.00">100%</option>
+                                </select>
+
+                            </td>
+                            <td>
+                                [[${midtest.divname}]]
+                                <select th:name="'divname' + ${midtest.category_id}">
+                                    <option value="대분류">대분류</option>
+                                    <option value="중분류">중분류</option>
+                                    <option value="소분류">소분류</option>
+                                </select>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <input type="submit" value="저장">
+
+                </form>
+
+            </div>
+
+            <div class="card-header">
+                소분류
+            </div>
+            <div class="card-body">
+                <form th:action="@{updateTestList}" method="post">
+                    <table class="table table-striped" id="table2">
+                        <thead>
+
+                        <tr>
+                            <th>선택</th>
+                            <th>시험코드</th>
+                            <th>상위코드</th>
+                            <th>시험종목</th>
+                            <th>반영비율</th>
+                            <th>분류</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="smtest : ${smList}">
+                            <td><input type="checkbox" th:name="'selectedCheckbox' + ${smtest.category_id}" th:value="${smtest.category_id}"></td>
+                            <td th:text="${smtest.category_id}"></td>
+                            <td th:text="${smtest?.parent_id}"></td>
+                            <td>
+                                <input type="text" th:name="'categoryname' + ${smtest.category_id}" th:value="${smtest.categoryname}">
+                            </td>
+                            <td>
+                                [[${smtest.ratio}]]<select th:name="'ratio' + ${smtest.category_id}">
+                                <option value="0.00">0%</option>
+                                <option value="0.05">5%</option><option value="0.10">10%</option><option value="0.15">15%</option>
+                                <option value="0.20">20%</option><option value="0.25">25%</option> <option value="0.30">30%</option>
+                                <option value="0.35">35%</option><option value="0.40">40%</option><option value="0.45">45%</option>
+                                <option value="0.50">50%</option><option value="0.55">55%</option><option value="0.60">60%</option>
+                                <option value="0.65">65%</option><option value="0.70">70%</option><option value="0.75">75%</option>
+                                <option value="0.80">80%</option><option value="0.85">85%</option><option value="0.90">90%</option>
+                                <option value="0.95">95%</option><option value="1.00">100%</option>
+                            </select>
+                            </td>
+                            <td>
+                                [[${smtest.divname}]]
+                                <select th:name="'divname' + ${smtest.category_id}">
+                                    <option value="대분류">대분류</option>
+                                    <option value="중분류">중분류</option>
+                                    <option value="소분류">소분류</option>
+                                </select>
+                            </td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                    <input type="submit" value="저장">
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </section>
+</div>
+
+
+        </div>
+    </div>
+    <script th:src="@{/assets/js/bootstrap.js}"></script>
+    <script th:src="@{/assets/js/app.js}"></script>
+    
+<script th:src="@{/assets/extensions/simple-datatables/umd/simple-datatables-1.js}"></script>
+<script th:src="@{/assets/js/pages/simple-datatables.js}"></script>
+
+</body>
+
+</html>

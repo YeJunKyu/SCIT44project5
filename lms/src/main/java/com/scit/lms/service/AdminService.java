@@ -30,7 +30,21 @@ public interface AdminService {
 
     ArrayList<PrimaryRatio> AllRatios();
 
-    int InsertBigRatio(PrimaryRatio primaryRatio);
+    void insertBigRatio(PrimaryRatio primaryRatio);
 
     PrimaryRatio selectOneCategory(String categoryname);
+
+    ArrayList<PrimaryRatio>  ReadBigRatio();
+
+    void InsertMiddleRatio(PrimaryRatio primaryRatio);
+
+    ArrayList<PrimaryRatio> ReadMiddleRatio();
+
+    ArrayList<PrimaryRatio> ReadTestBigList();
+
+    ArrayList<PrimaryRatio> ReadTestMiddleList();
+
+    ArrayList<PrimaryRatio> ReadTestSmallList();
+
+    void updateTestList(PrimaryRatio primaryRatio);
 }
