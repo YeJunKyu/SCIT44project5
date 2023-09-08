@@ -13,7 +13,7 @@ public interface TestDAO {
     ArrayList<Test> testList();
 
     // 테스트 등록
-    void submitTest(Test test);
+    int submitTest(Test test);
     // 문제 등록
 //    void submitQuestion(Question question);
 }

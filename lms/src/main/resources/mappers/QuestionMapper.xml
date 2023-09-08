@@ -1,0 +1,50 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.scit.lms.dao.QuestionDAO">
+    <!--문제 등록-->
+    <insert id="submitQuestion" parameterType="Question">
+        <selectKey keyProperty="qid" resultType="int" order="AFTER">
+            SELECT lms_question_seq.CURRVAL FROM DUAL
+        </selectKey>
+        insert into lms_question (
+        testid, qid, contents, points, type
+        <if test="originalfile != null">
+            , originalfile, savedfile
+        </if>
+        ) values (
+        #{testid}, lms_question_seq.nextval, #{contents}, #{points}, #{type}
+        <if test="originalfile != null">
+            , #{originalfile}, #{savedfile}
+        </if>
+        )
+    </insert>
+
+    <!--문제의 보기 및 답안 등록-->
+<!--    <insert id="submitOptions" parameterType="Option">-->
+<!--        insert into lms_q_options (-->
+<!--            qid, value, content, checked-->
+<!--        ) values-->
+<!--        <foreach collection="list" item="options" separator=" ">-->
+<!--            (#{options.qid}, #{options.value}, #{options.content}, #{options.checked})-->
+<!--        </foreach>-->
+<!--    </insert>-->
+
+    <insert id="submitOptions" parameterType="Option">
+        INSERT ALL
+        <foreach collection="list" item="options" separator=" ">
+            INTO lms_q_options (qid, value, content
+            <if test="options.checked != null">
+               , checked
+            </if>
+            )
+            VALUES (#{options.qid}, #{options.value}, #{options.content}
+            <if test="options.checked != null">
+                , #{options.checked}
+            </if>
+            )
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+</mapper>

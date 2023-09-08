@@ -21,9 +21,8 @@ public class TestServiceImpl implements TestService{
     }
 
     // 테스트 등록
-//    @Override
-//    public void submitTest(Test test, Question question) {
-//        dao.submitTest(test);
-//        dao.submitQuestion(question);
-//    }
+    @Override
+    public int submitTest(Test test) {
+        return dao.submitTest(test);
+    }
 }

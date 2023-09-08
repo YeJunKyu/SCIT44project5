@@ -103,3 +103,49 @@ create table lms_schedule (
 
 --일정 테이블 시퀀스
 create sequence lms_schedule_seq;
+
+
+
+--시험 테이블 (임시 테이블입니다)
+create table lms_test (
+    testid  number primary key,
+    testname    varchar2(500),
+    categoryid number, -- 분류 고유번호
+    testdate date,
+    testlimit date
+);
+
+--시험 테이블 시퀀스
+create sequence lms_test_seq;
+
+--문제 테이블
+create table lms_question (
+    testid number,
+    qid number primary key,
+    contents varchar2(1000),
+    points number,
+    type number,
+    originalfile varchar2(500),
+    savedfile varchar2(500),
+
+    constraint fk_lms_questions foreign key (testid)
+        references lms_test(testid)
+);
+
+--문제 테이블 시퀀스
+create sequence lms_question_seq;
+
+
+--문제 테이블의 보기 및 정답 테이블
+CREATE TABLE lms_q_options (
+    qid NUMBER,
+    value NUMBER,
+    content VARCHAR2(500),
+    checked VARCHAR2(50),
+
+    CONSTRAINT pk_lms_q_options PRIMARY KEY (qid, value),
+
+    CONSTRAINT fk_lms_q_options FOREIGN KEY (qid)
+        REFERENCES lms_question(qid)
+        ON DELETE CASCADE
+);

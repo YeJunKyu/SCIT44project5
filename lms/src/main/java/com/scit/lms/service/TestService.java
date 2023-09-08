@@ -11,6 +11,6 @@ public interface TestService {
     ArrayList<Test> testList();
 
     // 테스트 등록
-//    void submitTest(Test test, Question question);
+    int submitTest(Test test);
 
 }
