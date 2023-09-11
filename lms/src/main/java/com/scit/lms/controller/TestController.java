@@ -28,9 +28,9 @@ public class TestController {
     // 시험 페이지 이동
     @GetMapping("")
     public String test(Model model) {
-//        ArrayList<Test> test = service.testList();
-////
-//        model.addAttribute("test", test);
+        ArrayList<Test> test = testService.testList();
+        model.addAttribute("test", test);
+
         return "boardView/test/test";
     }
     // 시험 문제 생성
@@ -46,38 +46,51 @@ public class TestController {
         String testdate = requestObject.getTestdate().replace("T", " ");
         String testlimit = requestObject.getTestlimit().replace("T", " ");
 
+        // 시험 등록
         Test test = new Test();
         test.setTestname(testname);
         test.setTestdate(testdate);
         test.setTestlimit(testlimit);
         int testid = testService.submitTest(test);
-        log.debug("testID : {}", testid);
-        
+//        log.debug("testID : {}", testid);
+
+        // 문제 배열 추출
         Question[] questions = requestObject.getQuestionDataArray();
 
+        // 문제 배열 등록
         for (Question q: questions) {
             Question question = new Question();
             question.setTestid(test.getTestid());
             question.setContents(q.getContents());
             question.setPoints(q.getPoints());
             question.setType(q.getType());
-            int qid = questionService.submitQuestion(question);
-            log.debug("qid : {}", qid);
+            questionService.submitQuestion(question);
 
-            List<Option> options = new ArrayList<>();
-            for (Option optionData: q.getOptions()) {
-                Option option = new Option();
-                option.setQid(question.getQid());
-                option.setValue(optionData.getValue());
-                option.setContent(optionData.getContent());
-                option.setChecked(optionData.getChecked());
-                options.add(option);
+
+            // 타입이 1, 2, 3인 경우만 option 및 answer 등록
+            if(q.getOptions() != null && !q.getOptions().isEmpty() && (q.getType() == 1 || q.getType() == 2 || q.getType() == 3)) {
+                List<Option> options = new ArrayList<>();
+                for (Option optionData: q.getOptions()) {
+                    if(optionData.getValue() != null) {
+                        Option option = new Option();
+                        option.setQid(question.getQid());
+                        option.setValue(optionData.getValue());
+                        option.setContent(optionData.getContent());
+                        option.setChecked(optionData.getChecked());
+//                        log.debug("옵션 {}, {}, {}, {}", option.getQid(), option.getValue(), option.getContent(), option.getChecked());
+                        options.add(option);
+                    }
+                }
+//                log.debug("qid : {}, options : {}", question.getQid(), options);
+
+                // optoin 등록
+                questionService.submitOptions(options);
+
+                // answer 갱신
+                questionService.updateAnswer();
+
             }
-            log.debug("qid : {}, options : {}", question.getQid(), options);
-
-            questionService.submitOptions(options);
         }
-
         return "boardView/test/test";
     }
 }

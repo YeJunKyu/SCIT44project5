@@ -125,6 +125,7 @@ create table lms_question (
     contents varchar2(1000),
     points number,
     type number,
+    answer varchar2(500),
     originalfile varchar2(500),
     savedfile varchar2(500),
 
@@ -139,7 +140,7 @@ create sequence lms_question_seq;
 --문제 테이블의 보기 및 정답 테이블
 CREATE TABLE lms_q_options (
     qid NUMBER,
-    value NUMBER,
+    value VARCHAR2(500),
     content VARCHAR2(500),
     checked VARCHAR2(50),
 

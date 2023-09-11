@@ -21,25 +21,23 @@
         )
     </insert>
 
-    <!--문제의 보기 및 답안 등록-->
-<!--    <insert id="submitOptions" parameterType="Option">-->
-<!--        insert into lms_q_options (-->
-<!--            qid, value, content, checked-->
-<!--        ) values-->
-<!--        <foreach collection="list" item="options" separator=" ">-->
-<!--            (#{options.qid}, #{options.value}, #{options.content}, #{options.checked})-->
-<!--        </foreach>-->
-<!--    </insert>-->
 
+    <!--문제의 보기 및 답안 등록-->
     <insert id="submitOptions" parameterType="Option">
         INSERT ALL
         <foreach collection="list" item="options" separator=" ">
-            INTO lms_q_options (qid, value, content
+            INTO lms_q_options (qid, value
+            <if test="options.content != null">
+                , content
+            </if>
             <if test="options.checked != null">
                , checked
             </if>
             )
-            VALUES (#{options.qid}, #{options.value}, #{options.content}
+            VALUES (#{options.qid}, #{options.value}
+            <if test="options.content != null">
+                , #{options.content}
+            </if>
             <if test="options.checked != null">
                 , #{options.checked}
             </if>
@@ -47,4 +45,20 @@
         </foreach>
         SELECT * FROM dual
     </insert>
+
+    <update id="updateAnswer">
+        UPDATE lms_question q
+        SET q.answer = (
+            SELECT LISTAGG(o.value, ',') WITHIN GROUP (ORDER BY o.value)
+        FROM lms_q_options o
+        WHERE o.qid = q.qid
+          AND o.checked = 'true'
+            )
+        WHERE EXISTS (
+            SELECT 1
+            FROM lms_q_options o
+            WHERE o.qid = q.qid
+          AND o.checked = 'true'
+            )
+    </update>
 </mapper>
