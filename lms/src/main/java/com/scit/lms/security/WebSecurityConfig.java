@@ -16,6 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
  * Security 설정
  */
 @Configuration
+
 public class WebSecurityConfig {
     @Autowired
     private DataSource dataSource;
@@ -76,5 +77,7 @@ public class WebSecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
+
+
 
 }
