@@ -16,4 +16,8 @@ public interface MemberService {
 
     //사진 업데이트
     public int memberphoto(Member member);
+
+    boolean pwcheck(Member member);
+
+    int deleteMember(Member member);
 }

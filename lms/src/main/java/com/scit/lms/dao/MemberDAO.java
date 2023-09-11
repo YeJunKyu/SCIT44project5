@@ -16,4 +16,8 @@ public interface MemberDAO {
     public int memberUpdate(Member member);
 
     public int memberphoto(Member member);
+
+    String pwcheck(Member member);
+
+    int deleteMember(Member member);
 }

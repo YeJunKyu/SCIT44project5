@@ -101,6 +101,7 @@ public class MemberController {
         return "memberView/updateForm";
     }
 
+    //회원정보 수정
     @PostMapping("memberUpdate")
     public String memberUpdate(@AuthenticationPrincipal UserDetails user, Model model, Member member
             , MultipartFile upload
@@ -211,6 +212,30 @@ public class MemberController {
         return "memberView/memberInfo";
     }
 
+    //회원 탈퇴전 비밀번호확인
+    @GetMapping("deleteMember")
+    public String deleteMember() {
+        return "memberView/deleteMember";
+    }
+
+
+    @ResponseBody
+    @PostMapping("checkPassword")
+    public boolean checkPassword(Member member){
+        log.debug("!!!!:{}", member);
+        boolean result = service.pwcheck(member);
+        log.debug("????:{}", member);
+
+        log.debug("확인결과:{}", result);
+        return result;
+    }
+    @PostMapping("deleteMember")
+    public int deleteMember(Member member){
+        log.debug("멤버삭제하러감:{}", member);
+        int n = service.deleteMember(member);
+
+        return n;
+    }
 
 
 }

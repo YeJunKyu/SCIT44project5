@@ -78,4 +78,31 @@ public class MemberServiceImpl implements MemberService {
 		int n = dao.memberphoto(member);
         return n;
     }
+
+
+//비밀번호확인
+	@Override
+	public boolean pwcheck(Member member){
+		String inputpw = member.getMemberpw();
+
+		log.debug("입력비번 : {}", inputpw);
+		String originpw = dao.pwcheck(member);
+		log.debug("원래비번 : {}", originpw);
+
+		boolean matches = passwordEncoder.matches(inputpw, originpw);
+		log.debug("매치결과 : {}", matches);
+
+		return matches;
+	}
+
+
+	@Override
+	public int deleteMember(Member member){
+		log.debug("삭제할회원이름:{}", member.getMembername());
+		log.debug("삭제할회원아이디:{}", member.getMemberid());
+
+		int n = dao.deleteMember(member);
+
+		return n;
+	}
 }
