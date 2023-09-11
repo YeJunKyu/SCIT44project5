@@ -113,4 +113,9 @@ public class AdminServiceImple implements AdminService {
 	public void updateTestList(PrimaryRatio primaryRatio) {
 		dao.updateTestList(primaryRatio);
 	}
+
+	@Override
+	public void InsertStudentAttendance(ArrayList<Attendance> attendances) {
+		dao.InsertStudentAttendance(attendances);
+	}
 }

@@ -386,4 +386,51 @@ public class AdminController {
 		return "redirect:/admin/ReadTestList";
 	}
 
+
+	//출결 등록 폼
+	@GetMapping("InsertStudentAttendance")
+	public String InsertStudentAttendance(Model model){
+		log.debug("출결멤버1:{}","확인");
+		ArrayList<Member> list = service.selectAll();
+
+		log.debug("출결멤버2:{}",list);
+		model.addAttribute("list",list);
+		return "adminView/InsertStudentAttendance";
+	}
+	
+	//출결 등록
+	@PostMapping("InsertStudentAttendance")
+	public String InsertStudentAttendance(@RequestParam("att_type[]") String[] att_type,
+										  @RequestParam("att_permission[]") String[] att_permission,
+										  String att_date,
+										  @RequestParam("memberid") ArrayList<String> memberids){
+		log.debug("컨트롤러확인1:{}",memberids);
+		ArrayList<Attendance> attendances = new ArrayList<>();
+		log.debug("컨트롤러확인2:{}",attendances);
+
+		for (int i = 0 ; i < memberids.size() ; i++) {
+			Attendance attendance = new Attendance();
+			attendance.setMemberid(memberids.get(i));
+			attendance.setAtt_date(att_date);
+			attendance.setAtt_type(att_type[i]);
+
+			attendance.setAtt_permission(att_permission[i]);
+			log.debug("출석정보확인:{}",attendance);
+			attendances.add(attendance);
+		}
+		log.debug("컨트롤러 확인3:{}",attendances);
+		service.InsertStudentAttendance(attendances);
+		log.debug("출결등록:{}",attendances);
+
+
+
+		return "redirect:/admin/InsertStudentAttendance";
+	}
+
+	//출결 조회 및 수정폼
+	@GetMapping("ReadStudentAttendance")
+	public String ReadStudentAttendance(Model model){
+
+		return "adminView/ReadStudentAttendance";
+	}
 }

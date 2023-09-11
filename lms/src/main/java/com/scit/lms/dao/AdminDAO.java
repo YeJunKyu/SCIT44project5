@@ -49,4 +49,6 @@ public interface AdminDAO {
     ArrayList<PrimaryRatio> ReadTestSmallList();
 
     void updateTestList(PrimaryRatio primaryRatio);
+
+    void InsertStudentAttendance(ArrayList<Attendance> attendances);
 }

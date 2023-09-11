@@ -149,3 +149,14 @@ CREATE TABLE lms_q_options (
         REFERENCES lms_question(qid)
         ON DELETE CASCADE
 );
+
+--출석 테이블
+create table attendance(
+    attnum number primary key,
+    memberid	varchar2(20) references lms_member(memberid) ON DELETE CASCADE,
+    att_date date,
+    att_type varchar2(100),
+    att_comment varchar2(100),
+    att_permission varchar2(100)
+
+);

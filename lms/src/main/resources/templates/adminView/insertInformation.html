@@ -96,12 +96,12 @@
                         <form th:action="@{insertInformation}" method="post" onsubmit="return insertchk()">
                             <table class="table table-striped" id="table1">
                                 <thead>
-                                <tr>
+
                                     <h3>링크 선택시 개인정보 등록창 이동</h3>
-                                </tr>
-                                <tr>
+
+
                                     <input type="checkbox" id="selectAll"> 모두 선택
-                                </tr>
+
                                 <tr>
                                     <th>선택</th>
                                     <th>아이디</th>
@@ -213,7 +213,7 @@
 <script th:src="@{/assets/js/bootstrap.js}"></script>
 <script th:src="@{/assets/js/app.js}"></script>
 
-<script th:src="@{/assets/extensions/simple-datatables/umd/simple-datatables-1.js}"></script>
+<script th:src="@{/assets/extensions/simple-datatables/umd/simple-datatables.js}"></script>
 <script th:src="@{/assets/js/pages/simple-datatables.js}"></script>
 
 </body>

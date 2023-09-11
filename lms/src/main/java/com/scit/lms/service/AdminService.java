@@ -47,4 +47,6 @@ public interface AdminService {
     ArrayList<PrimaryRatio> ReadTestSmallList();
 
     void updateTestList(PrimaryRatio primaryRatio);
+
+    void InsertStudentAttendance(ArrayList<Attendance> attendances);
 }

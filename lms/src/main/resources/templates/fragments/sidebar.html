@@ -100,11 +100,20 @@
                             </ul>
                         </li>
 
-                        <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
-                            <a href="#" class="sidebar-link">
+                        <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
+                            <a href="" class="sidebar-link">
                                 <i class="bi bi-stack"></i>
                                 <span>출결관리</span>
                             </a>
+                            <ul class="submenu">
+                                <li class="submenu-item">
+                                    <a th:href="@{/admin/ReadStudentAttendance}">출결조회 및 수정</a>
+                                </li>
+                                <li class="submenu-item">
+                                    <a th:href="@{/admin/InsertStudentAttendance}">출결등록</a>
+                                </li>
+
+                            </ul>
                         </li>
 
                         <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
