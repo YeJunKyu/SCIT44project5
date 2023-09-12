@@ -27,4 +27,10 @@ public class QuestionServiceImpl implements QuestionService{
     public void submitOptions(List<Option> options) {
         dao.submitOptions(options);
     }
+
+    // 문제 테이블의 정답 갱신
+    @Override
+    public void updateAnswer() {
+        dao.updateAnswer();
+    }
 }

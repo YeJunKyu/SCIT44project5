@@ -124,7 +124,7 @@
                             `;
                         case "5": // 파일첨부형
                             return `
-                                ...
+                                <div id="fileAttachTarget"></div>
                             `;
                     }
                 }
@@ -288,18 +288,16 @@
                             return;
                         }
                         options.push({
-                            value: 1,
-                            content: answerInputValue,
+                            value: answerInputValue,
+                            checked: "true"
                         });
                     } else if (type === "4") { // 서술형인 경우
                         let answerTextareaValue = $("#" + cardId + " textarea.form-control").val();
                         if (!answerTextareaValue) { // 선택지 내용이 없을 경우 options 배열에 빈 객체 추가하지 않음
                             return;
                         }
-                        options.push({
-                            value: 1,
-                            content: answerTextareaValue
-                        });
+                    } else if (type === "5") { // 첨부파일인 경우
+                        let fileAttachValue = $("#" + cardId + " ")
                     }
 
                     questionDataArray.push({
