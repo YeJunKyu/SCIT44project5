@@ -17,58 +17,66 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script th:src="@{/privatejs/sidebarLoader.js}"></script>
 
-<script type="text/javascript">
-    function delete(){
+<script type="text/javascript" th:inline="javascript">
+<!--    function deleteConfirm(){-->
+<!--        let recheck = confirm("모든 정보를 삭제합니다.");-->
+
+<!--        return recheck ? "member/deleteMember" : "memberView/memberInfo";-->
+<!--    }-->
+
+
+    function deleteConfirm(){
         let recheck = confirm("모든 정보를 삭제합니다.");
 
         if(recheck){
             console.log("checked");
-            return "member/deleteMember"
+            location.href = "goDeleteMember";
         } else{
             console.log("canceled");
-            return "memberView/memberInfo";
+            location.href = "information";
         }
     }
 
 
-    $(document).ready(function () {
-        $("form").on("submit", function (event) {
-            checkPassword(event);
-        })
-    })
 
-    function checkPassword()
-        event.preventDefault()
-        alert("1")
+<!--    $(document).ready(function () {-->
+<!--        $("form").on("submit", function (event) {-->
+<!--            checkPassword(event);-->
+<!--        })-->
+<!--    })-->
 
-        let id = ${"#memberid"}.val()
-        let pw = $("#memberpw").val()
+<!--    function checkPassword()-->
+<!--        event.preventDefault()-->
+<!--        alert("1")-->
 
-        $.ajax(
-            url:'checkPassword'
-            data: {memberid: id, memberpw: pw}
-            dataType: 'json'
-            type:'post'
-            success:function(result)
-                alert("2")
-                console.log("result : " + result)
-                console.log("result : " + JSON.stringify(result))
+<!--        let id = ${"#memberid"}.val()-->
+<!--        let pw = $("#memberpw").val()-->
 
-                let recheck = confirm("모든 정보를 삭제합니다.")
+<!--        $.ajax(-->
+<!--            url:'checkPassword'-->
+<!--            data: {memberid: id, memberpw: pw}-->
+<!--            dataType: 'json'-->
+<!--            type:'post'-->
+<!--            success:function(result)-->
+<!--                alert("2")-->
+<!--                console.log("result : " + result)-->
+<!--                console.log("result : " + JSON.stringify(result))-->
 
-                if(recheck)
-                    console.log("checked")
-                    $("form").submit()
-                } else
-                    console.log("canceled")
-                    return "memberView/memberInfo"
-                            }
+<!--                let recheck = confirm("모든 정보를 삭제합니다.")-->
 
-            error:function()
-                alert("실패")
+<!--                if(recheck)-->
+<!--                    console.log("checked")-->
+<!--                    $("form").submit()-->
+<!--                } else-->
+<!--                    console.log("canceled")-->
+<!--                    return "memberView/memberInfo"-->
+<!--                            }-->
 
-        })
-        return true
+<!--            error:function()-->
+<!--                alert("실패")-->
+
+<!--        })-->
+<!--        return true-->
 
 </script>
 </head>
@@ -111,28 +119,44 @@
                                         </div>
                                         <div class="form-group has-icon-left">
                                             <label for="memberpw">비밀번호</label>
-                                            <div class="position-relative">
+                                            <div class="position-relative" th:if="${result != true}">
                                                 <input type="password" class="form-control"
                                                         id="memberpw" name="memberpw" placeholder="비밀번호를 입력해 주세요">
                                                 <div class="form-control-icon">
                                                     <i class="bi bi-shield-lock-fill"></i>
                                                 </div>
                                             </div>
+<!--                                            <div class="position-relative" th:if="${result == true}">-->
+<!--                                                <input type="password" class="form-control"-->
+<!--                                                       id="checkedMemberpw" name="memberpw" placeholder="ㅁ" readonly>-->
+<!--                                                <div class="form-control-icon">-->
+<!--                                                    <i class="bi bi-shield-lock-fill"></i>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
                                         </div>
 
 
                                     </div>
 
                                     <div class="col-12 d-flex justify-content-end">
-                                        <input type="submit" value="확인" class="btn btn-primary me-1 mb-1"
-                                               onsubmit="checkPassword()">
-                                        <a th:href="@{/member/information}"
-                                                class="btn btn-light-secondary me-1 mb-1">돌아가기</a>
-                                        <div>
-                                            <p>비밀번호가 확인되었습니다.</p>
-                                            <a th:href="@{/member/deleteMember}"
-                                               class="btn btn-light-secondary me-1 mb-1">링크삭제</a>
-                                            <input type="button" value="버튼삭제" onclick="delete()">
+                                        <div th:if="${result == null}">
+                                            <input type="submit" value="확인" class="btn btn-primary me-1 mb-1">
+                                            <a th:href="@{/member/information}"
+                                               class="btn btn-light-secondary me-1 mb-1">돌아가기</a>
+                                        </div>
+                                        <div th:if="${result == false}">
+                                            <p th:text="${msg}"></p>
+
+                                            <input type="submit" value="확인" class="btn btn-primary me-1 mb-1">
+                                            <a th:href="@{/member/information}"
+                                               class="btn btn-light-secondary me-1 mb-1">돌아가기</a>
+                                        </div>
+
+                                        <div th:if="${result == true}">
+                                            <p th:text="${msg}"></p>
+                                            <input type="button" value="삭제" onclick="deleteConfirm()">
+                                            <a th:href="@{/member/information}"
+                                               class="btn btn-light-secondary me-1 mb-1">돌아가기</a>
                                         </div>
 
                                     </div>

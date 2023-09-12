@@ -15,10 +15,12 @@ import com.scit.lms.domain.Member;
 import com.scit.lms.service.MemberService;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.thymeleaf.spring5.context.IThymeleafBindStatus;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.UUID;
 
 //회원정보 관련 콘트롤러
@@ -212,29 +214,42 @@ public class MemberController {
         return "memberView/memberInfo";
     }
 
-    //회원 탈퇴전 비밀번호확인
+    //회원 탈퇴전 비밀번호확인 폼으로 이동
     @GetMapping("deleteMember")
     public String deleteMember() {
         return "memberView/deleteMember";
     }
 
 
-    @ResponseBody
+    //비밀번호 확인
     @PostMapping("checkPassword")
-    public boolean checkPassword(Member member){
+    public String checkPassword(Member member, Model model, @AuthenticationPrincipal UserDetails user) {
         log.debug("!!!!:{}", member);
         boolean result = service.pwcheck(member);
         log.debug("????:{}", member);
 
         log.debug("확인결과:{}", result);
-        return result;
+
+        if(result){
+            model.addAttribute("msg", "확인되었습니다.");
+            model.addAttribute("result", result);
+            return "memberView/deleteMember";
+        } else {
+            model.addAttribute("msg", "비밀번호가 틀렸습니다.");
+            model.addAttribute("result", result);
+            return "memberView/deleteMember";
+        }
     }
-    @PostMapping("deleteMember")
-    public int deleteMember(Member member){
+
+    //멤버삭제
+    @GetMapping("goDeleteMember")
+    public String deleteMember(Member member, @AuthenticationPrincipal UserDetails user){
+        member.setMemberid(user.getUsername());
+
         log.debug("멤버삭제하러감:{}", member);
         int n = service.deleteMember(member);
 
-        return n;
+        return "redirect:/";
     }
 
 
