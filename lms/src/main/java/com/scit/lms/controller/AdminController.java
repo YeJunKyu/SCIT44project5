@@ -391,35 +391,44 @@ public class AdminController {
 	@GetMapping("InsertStudentAttendance")
 	public String InsertStudentAttendance(Model model){
 		log.debug("출결멤버1:{}","확인");
-		ArrayList<Member> list = service.selectAll();
-
+		ArrayList<StudentsAll> list = service.selectAllAttendance();
 		log.debug("출결멤버2:{}",list);
+		log.debug("멤버수:{}",list.size());
 		model.addAttribute("list",list);
 		return "adminView/InsertStudentAttendance";
 	}
 	
 	//출결 등록
 	@PostMapping("InsertStudentAttendance")
-	public String InsertStudentAttendance(@RequestParam("att_type[]") String[] att_type,
-										  @RequestParam("att_permission[]") String[] att_permission,
-										  String att_date,
-										  @RequestParam("memberid") ArrayList<String> memberids){
-		log.debug("컨트롤러확인1:{}",memberids);
+	public String InsertStudentAttendance(@RequestParam Map<String, String> allParams){
+		log.debug("데이터:{}",allParams);
 		ArrayList<Attendance> attendances = new ArrayList<>();
-		log.debug("컨트롤러확인2:{}",attendances);
 
-		for (int i = 0 ; i < memberids.size() ; i++) {
-			Attendance attendance = new Attendance();
-			attendance.setMemberid(memberids.get(i));
-			attendance.setAtt_date(att_date);
-			attendance.setAtt_type(att_type[i]);
+		for (String key : allParams.keySet()) {
+			if (key.startsWith("att_type")) {
+				String memberId = key.replace("att_type", "");
 
-			attendance.setAtt_permission(att_permission[i]);
-			log.debug("출석정보확인:{}",attendance);
-			attendances.add(attendance);
+				Attendance attendance = new Attendance();
+				attendance.setMemberid(memberId);
+				attendance.setAtt_type(allParams.get(key));
+				attendance.setAtt_date(allParams.get("att_date"));
+
+				// permission 처리
+				String permissionKey = memberId + "-permission";
+				log.debug("key확인:{}",permissionKey);
+				if (allParams.containsKey(permissionKey)) {
+					attendance.setAtt_permission(allParams.get(permissionKey));
+				} else {
+					attendance.setAtt_permission(null);  // 혹은 다른 기본값 설정
+				}
+				log.debug("출결데이터:{}",attendance);
+				attendances.add(attendance);
+			}
 		}
-		log.debug("컨트롤러 확인3:{}",attendances);
-		service.InsertStudentAttendance(attendances);
+		log.debug("출결확인:{}",attendances);
+		for (Attendance attendance : attendances) {
+			service.InsertStudentAttendance(attendance); // 실제 등록 로직
+		}
 		log.debug("출결등록:{}",attendances);
 
 

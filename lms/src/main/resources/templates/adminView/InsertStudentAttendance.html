@@ -29,52 +29,54 @@
 
 
     $(document).ready(function() {
+        // 체크박스 선택 시 다른 체크박스 해제 기능
+        $('.att-checkbox').on('change', function() {
+            if ($(this).prop('checked')) {
+                // 현재 체크박스가 선택된 경우 해당 행의 다른 체크박스의 선택을 모두 해제합니다.
+                $(this).closest('tr').find('.att-checkbox').not(this).prop('checked', false);
+            }
+        });
 
-     $('input[name="att_type"]').on('change', function() {
-        if ($(this).prop('checked')) {
-            // 현재 체크박스가 선택된 경우 해당 행의 다른 체크박스의 선택을 모두 해제합니다.
-            $(this).closest('tr').find('input[name="att_type"]').not(this).prop('checked', false);
-        }
-    });
+        $(".approve").change(function() {
+            const memberId = $(this).closest("tr").find(".hidden-member-id").val();
+            const $roleSelection = $(this).closest("tr").find(".role-selection");
 
-     $(".approve").change(function() {
-        const memberId = $(this).closest("tr").find(".hidden-member-id").val();
-        const $roleSelection = $(this).closest("tr").find(".role-selection");
+            if ($(this).prop("checked")) {
+                $(this).closest("tr").find(".deny").prop("checked", false); // 거부 체크 해제
+                $roleSelection.show(); // 직책 선택란 표시
+            } else {
+                $roleSelection.hide(); // 직책 선택란 숨기기
+            }
+        });
 
-        if ($(this).prop("checked")) {
-            $(this).closest("tr").find(".deny").prop("checked", false); // 거부 체크 해제
+        $(".deny").change(function() {
+            if ($(this).prop("checked")) {
+                $(this).closest("tr").find(".approve").prop("checked", false); // 승인 체크 해제
+                $(this).closest("tr").find(".role-selection").hide(); // 직책 선택란 숨기기
+            }
+        });
 
-            $roleSelection.show(); // 직책 선택란 표시
-        } else {
-            $roleSelection.hide(); // 직책 선택란 숨기기
-        }
-    });
-
-    $(".deny").change(function() {
-        if ($(this).prop("checked")) {
-            $(this).closest("tr").find(".approve").prop("checked", false); // 승인 체크 해제
-            $(this).closest("tr").find(".role-selection").hide(); // 직책 선택란 숨기기
-        }
-    });
         // "모두 선택" 체크박스 클릭 이벤트 핸들러
-    $('.select-all-column').click(function() {
-        var isChecked = $(this).prop('checked');
-        var column = $(this).data('column');
-        $('.select-all-column').not(this).prop('checked', false);
-        $('input[data-column="' + column + '"]').prop('checked', isChecked);
-        $('input[data-column]').not('input[data-column="' + column + '"]').prop('checked', false);
-    });
+        $('.select-all-column').click(function() {
+            var isChecked = $(this).prop('checked');
+            var column = $(this).data('column');
+            $('.select-all-column').not(this).prop('checked', false);
+            $('input[data-column="' + column + '"]').prop('checked', isChecked);
+            $('input[data-column]').not('input[data-column="' + column + '"]').prop('checked', false);
+        });
 
-    // 개별 체크박스 클릭 이벤트 핸들러
-    $('input[type="checkbox"]').click(function() {
-        var column = $(this).data('column');
-
-        if ($('input[data-column="' + column + '"]:checked').length == $('input[data-column="' + column + '"]').length) {
-            $('#select-all-' + column).prop('checked', true);
-        } else {
-            $('#select-all-' + column).prop('checked', false);
-        }
-    });
+        // 개별 체크박스 클릭 이벤트 핸들러
+        $('.att-checkbox').click(function() {
+            var column = $(this).data('column');
+            // 해당 행의 다른 체크박스들 해제
+            $(this).closest('tr').find('.att-checkbox').not(this).prop('checked', false);
+            // 해당 행에 다른 체크박스가 선택되어있지 않으면 "모두 선택" 체크박스도 해제
+            if ($('input[data-column="' + column + '"]:checked').length == $('input[data-column="' + column + '"]').length) {
+                $('#select-all-' + column).prop('checked', true);
+            } else {
+                $('#select-all-' + column).prop('checked', false);
+            }
+        });
     });
 
 
@@ -149,26 +151,26 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="member : ${list}" th:if="${member.rolename == 'ROLE_student' and member.enabled == true}">
-                                    <td><input type="checkbox" name="att_type[]" data-column="attendance" value="출석"></td>
-                                    <td><input type="checkbox" name="att_type[]" data-column="absence" value="결석"></td>
-                                    <td><input type="checkbox" name="att_type[]" data-column="halfabsence" value="1/2결석"></td>
-                                    <td><input type="checkbox" name="att_type[]" data-column="late" value="지각"></td>
-                                    <td><input type="checkbox" name="att_type[]" data-column="out" value="외출"></td>
-                                    <td><input type="checkbox" name="att_type[]" data-column="leave" value="조퇴"></td>
+                                <tr th:each="member : ${list}" th:if="${member.member.rolename == 'ROLE_student' and member.member.enabled == true}">
+                                    <td><input type="checkbox" class="att-checkbox" th:name="'att_type' + ${member.member.memberid}" data-column="attendance" value="출석"></td>
+                                    <td><input type="checkbox" class="att-checkbox" th:name="'att_type' + ${member.member.memberid}" data-column="absence" value="결석"></td>
+                                    <td><input type="checkbox" class="att-checkbox" th:name="'att_type' + ${member.member.memberid}" data-column="halfabsence" value="1/2결석"></td>
+                                    <td><input type="checkbox" class="att-checkbox" th:name="'att_type' + ${member.member.memberid}" data-column="late" value="지각"></td>
+                                    <td><input type="checkbox" class="att-checkbox" th:name="'att_type' + ${member.member.memberid}" data-column="out" value="외출"></td>
+                                    <td><input type="checkbox" class="att-checkbox" th:name="'att_type' + ${member.member.memberid}" data-column="leave" value="조퇴"></td>
 
-                                    <td><input type="checkbox" name="att_permission[]" value="O" class="approve">O
-                                        <input type="checkbox" name="att_permission[]" value="X" class="deny">X</td>
+                                    <td><input type="radio" th:name="${member.member.memberid} + '-' + 'permission'" value="O"> O
+                                        <input type="radio" th:name="${member.member.memberid} + '-' + 'permission'" value="X"> X</td>
 
-                                    <td><input type="hidden" name="memberid" th:value="${member.memberid}" readonly>[[${member.memberid}]]</td>
-                                    <td th:text="${member.membername}"></td>
-                                    <td th:if="${member.gender == 'male'}">
+                                    <td>[[${member.member.memberid}]]</td>
+                                    <td th:text="${member.member.membername}"></td>
+                                    <td th:if="${member.member.gender == 'male'}">
                                         남성</td>
-                                    <td th:if="${member.gender == 'female'}">
+                                    <td th:if="${member.member.gender == 'female'}">
                                         여성</td>
 
 
-                                    <td th:if="${member.rolename == 'ROLE_student'}">
+                                    <td th:if="${member.member.rolename == 'ROLE_student'}">
                                         학생
                                     </td>
 

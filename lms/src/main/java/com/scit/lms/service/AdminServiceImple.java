@@ -25,6 +25,11 @@ public class AdminServiceImple implements AdminService {
 	}
 
 	@Override
+	public ArrayList<StudentsAll> selectAllAttendance() {
+		return dao.selectAllAttendance();
+	}
+
+	@Override
 	public void update(Member member) {
 		dao.update(member);
 	}
@@ -115,7 +120,9 @@ public class AdminServiceImple implements AdminService {
 	}
 
 	@Override
-	public void InsertStudentAttendance(ArrayList<Attendance> attendances) {
+	public void InsertStudentAttendance(Attendance attendances) {
 		dao.InsertStudentAttendance(attendances);
 	}
+
+
 }

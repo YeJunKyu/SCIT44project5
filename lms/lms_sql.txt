@@ -160,3 +160,5 @@ create table attendance(
     att_permission varchar2(100)
 
 );
+--출석시퀀스
+create sequence attendance_seq;

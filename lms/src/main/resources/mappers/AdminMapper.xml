@@ -189,4 +189,28 @@
         divname = #{divname}
         where category_id = #{category_id}
     </update>
+
+    <!-- 출결등록폼조회 -->
+    <select id="selectAllAttendance" resultType="StudentsAll">
+        select
+        m.memberid as "member.memberid",
+        m.membername as "member.membername", <!-- 이 부분이 잘못되어 있었으므로 수정합니다. -->
+        m.gender as "member.gender",
+        m.rolename as "member.rolename",
+        m.enabled as "member.enabled",
+        a.att_type as "attendance.att_type" <!-- 필드명을 "att.att_type"에서 "attendance.att_type"으로 변경하였습니다. StudentsAll 클래스에 맞게 -->
+        from lms_member m
+        left join attendance a on m.memberid = a.memberid
+        where a.att_type is null
+    </select>
+
+<!--    출결등록다중인설트-->
+    <insert id="InsertStudentAttendance" parameterType="Attendance">
+        INSERT INTO attendance (attnum, memberid, att_date, att_type
+        <if test="att_permission != null">, att_permission</if>
+        )
+        VALUES (attendance_seq.NEXTVAL, #{memberid}, #{att_date}, #{att_type}
+        <if test="att_permission != null">, #{att_permission}</if>
+        )
+    </insert>
 </mapper>

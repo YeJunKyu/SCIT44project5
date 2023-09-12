@@ -10,7 +10,7 @@ public interface AdminService {
 
     ArrayList<Member> selectAll();
 
-
+    ArrayList<StudentsAll> selectAllAttendance();
 
     void update(Member member);
 
@@ -48,5 +48,6 @@ public interface AdminService {
 
     void updateTestList(PrimaryRatio primaryRatio);
 
-    void InsertStudentAttendance(ArrayList<Attendance> attendances);
+    void InsertStudentAttendance(Attendance attendance);
+
 }
