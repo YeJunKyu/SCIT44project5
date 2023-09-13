@@ -13,4 +13,6 @@ public interface TestService {
     // 테스트 등록
     int submitTest(Test test);
 
+    // 테스트 정보 조회
+    Test selectTest(int testid);
 }

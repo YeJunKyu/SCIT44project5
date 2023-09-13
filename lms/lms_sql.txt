@@ -106,11 +106,12 @@ create sequence lms_schedule_seq;
 
 
 
---시험 테이블 (임시 테이블입니다)
+--시험 테이블
 create table lms_test (
     testid  number primary key,
     testname    varchar2(500),
     categoryid number, -- 분류 고유번호
+    totalpoints number, -- 시험 총점
     testdate date,
     testlimit date
 );
@@ -122,6 +123,7 @@ create sequence lms_test_seq;
 create table lms_question (
     testid number,
     qid number primary key,
+    papernum number,
     contents varchar2(1000),
     points number,
     type number,

@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -33,4 +34,17 @@ public class QuestionServiceImpl implements QuestionService{
     public void updateAnswer() {
         dao.updateAnswer();
     }
+
+    // 시험지 문제 전체 조회
+    @Override
+    public ArrayList<Question> selectQuestions(int testnum) {
+        return dao.selectQuestions(testnum);
+    }
+
+    // 문제에 해당하는 보기 조회
+    @Override
+    public ArrayList<Option> selectOptions(long qid) {
+        return dao.selectOptions(qid);
+    }
+
 }

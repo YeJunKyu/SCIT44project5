@@ -25,4 +25,10 @@ public class TestServiceImpl implements TestService{
     public int submitTest(Test test) {
         return dao.submitTest(test);
     }
+
+    // 테스트 정보 조회
+    @Override
+    public Test selectTest(int testid) {
+        return dao.selectTest(testid);
+    }
 }
