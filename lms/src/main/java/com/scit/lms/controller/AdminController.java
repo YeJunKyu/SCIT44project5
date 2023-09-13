@@ -439,7 +439,58 @@ public class AdminController {
 	//출결 조회 및 수정폼
 	@GetMapping("ReadStudentAttendance")
 	public String ReadStudentAttendance(Model model){
-
+		log.debug("출결멤버1:{}","확인");
+		ArrayList<StudentsAll> list = service.ReadStudentAttendance();
+		log.debug("출결멤버2:{}",list);
+		log.debug("멤버수:{}",list.size());
+		model.addAttribute("list",list);
 		return "adminView/ReadStudentAttendance";
 	}
+	
+	//출결조회 날짜선택조회기능
+	@ResponseBody
+	@GetMapping("SelectDateAttendance")
+	public ArrayList<StudentsAll> SelectDateAttendance(String selectedDate){
+		log.debug("선택날짜확인:{}",selectedDate);
+		ArrayList<StudentsAll> list = service.SelectDateAttendance(selectedDate);
+		log.debug("날짜출결:{}",list);
+		return list;
+	}
+
+	// 출결 수정
+	@PostMapping("UpdateStudentAttendance")
+	public String UpdateStudentAttendance(@RequestParam Map<String, String> allParams){
+		log.debug("수정할 데이터:{}", allParams);
+		ArrayList<Attendance> attendancesToUpdate = new ArrayList<>();
+
+		for (String key : allParams.keySet()) {
+			if (key.startsWith("att_type")) {
+				String memberId = key.substring("att_type".length());
+
+				Attendance attendance = new Attendance();
+				attendance.setMemberid(memberId);
+				attendance.setAtt_type(allParams.get(key));
+				attendance.setAtt_date(allParams.get("att_date"));
+
+				// permission 처리
+				String permissionKey = memberId + "-permission";
+				log.debug("key확인:{}", permissionKey);
+				if (allParams.containsKey(permissionKey)) {
+					attendance.setAtt_permission(allParams.get(permissionKey));
+				} else {
+					attendance.setAtt_permission(null);  // 혹은 다른 기본값 설정
+				}
+				log.debug("수정할 출결 데이터:{}", attendance);
+				attendancesToUpdate.add(attendance);
+			}
+		}
+		log.debug("수정을 위한 출결 확인:{}", attendancesToUpdate);
+		for (Attendance attendance : attendancesToUpdate) {
+			service.UpdateStudentAttendance(attendance); // 실제 수정 로직
+		}
+		log.debug("출결 수정 완료:{}", attendancesToUpdate);
+
+		return "redirect:/admin/ReadStudentAttendance";
+	}
+
 }

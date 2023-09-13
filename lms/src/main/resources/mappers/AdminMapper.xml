@@ -213,4 +213,47 @@
         <if test="att_permission != null">, #{att_permission}</if>
         )
     </insert>
+
+<!--    출결조회(수정)폼-->
+    <select id="ReadStudentAttendance" resultType="StudentsAll">
+        select
+        m.memberid as "member.memberid",
+        m.membername as "member.membername", <!-- 이 부분이 잘못되어 있었으므로 수정합니다. -->
+        m.gender as "member.gender",
+        m.rolename as "member.rolename",
+        m.enabled as "member.enabled",
+        a.att_type as "attendance.att_type", <!-- 필드명을 "att.att_type"에서 "attendance.att_type"으로 변경하였습니다. StudentsAll 클래스에 맞게 -->
+        a.att_permission as "attendance.att_permission",
+        a.att_comment as "attendance.att_comment",
+        TO_CHAR(a.att_date, 'YYYY-MM-DD') as "attendance.att_date"
+        from lms_member m
+        left join attendance a on m.memberid = a.memberid
+
+    </select>
+
+<!--    출결조회 날짜별조회-->
+    <select id="SelectDateAttendance" parameterType="String" resultType="StudentsAll">
+        select
+        m.memberid as "member.memberid",
+        m.membername as "member.membername", <!-- 이 부분이 잘못되어 있었으므로 수정합니다. -->
+        m.gender as "member.gender",
+        m.rolename as "member.rolename",
+        m.enabled as "member.enabled",
+        a.att_type as "attendance.att_type", <!-- 필드명을 "att.att_type"에서 "attendance.att_type"으로 변경하였습니다. StudentsAll 클래스에 맞게 -->
+        a.att_permission as "attendance.att_permission",
+        a.att_comment as "attendance.att_comment",
+        TO_CHAR(a.att_date, 'YYYY-MM-DD') as "attendance.att_date"
+        from lms_member m
+        left join attendance a on m.memberid = a.memberid
+        where TO_CHAR(a.att_date, 'YYYY-MM-DD') = #{selectedDate}
+    </select>
+
+<!--    출결수정-->
+    <update id="UpdateStudentAttendance" parameterType="Attendance">
+        update attendance
+        set att_date = #{att_date},
+        att_type = #{att_type}
+        <if test="att_permission != null">, att_permission = #{att_permission}</if>
+        where memberid = #{memberid}
+    </update>
 </mapper>

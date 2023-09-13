@@ -54,4 +54,10 @@ public interface AdminDAO {
     void InsertStudentAttendance(Attendance attendances);
 
     ArrayList<StudentsAll> selectAllAttendance();
+
+    ArrayList<StudentsAll> ReadStudentAttendance();
+
+    ArrayList<StudentsAll> SelectDateAttendance(String selectedDate);
+
+    void UpdateStudentAttendance(Attendance attendance);
 }

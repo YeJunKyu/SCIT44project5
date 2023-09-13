@@ -124,5 +124,20 @@ public class AdminServiceImple implements AdminService {
 		dao.InsertStudentAttendance(attendances);
 	}
 
+	@Override
+	public ArrayList<StudentsAll> ReadStudentAttendance() {
+		return dao.ReadStudentAttendance();
+	}
+
+	@Override
+	public ArrayList<StudentsAll> SelectDateAttendance(String selectedDate) {
+		return dao.SelectDateAttendance(selectedDate);
+	}
+
+	@Override
+	public void UpdateStudentAttendance(Attendance attendance) {
+		dao.UpdateStudentAttendance(attendance);
+	}
+
 
 }

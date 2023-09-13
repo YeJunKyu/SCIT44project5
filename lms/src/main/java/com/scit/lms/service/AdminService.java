@@ -50,4 +50,9 @@ public interface AdminService {
 
     void InsertStudentAttendance(Attendance attendance);
 
+    ArrayList<StudentsAll> ReadStudentAttendance();
+
+    ArrayList<StudentsAll> SelectDateAttendance(String selectedDate);
+
+    void UpdateStudentAttendance(Attendance attendance);
 }

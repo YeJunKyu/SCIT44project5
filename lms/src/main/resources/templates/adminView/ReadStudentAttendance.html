@@ -1,10 +1,254 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>출결 조회 및 수정</title>
+
+    <link rel="stylesheet" th:href="@{/assets/css/main/app.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main/app-dark.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main/lms.css}" />
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.svg}" type="image/x-icon">
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png">
+
+    <link rel="stylesheet" th:href="@{/assets/extensions/simple-datatables/style.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/pages/simple-datatables.css}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script th:src="@{/privatejs/sidebarLoader.js}"></script>
+    <script>
+
+        function insertchk()
+        {
+
+		if(confirm('등록하시겠습니까?'))
+		{
+			return true;
+	}
+		return false;
+    }
+
+
+    $(document).ready(function()
+    {
+      bindCheckboxEvents();
+    $("#searchDay").on('change', function()
+    {
+        var selectedDate = $(this).val();
+
+        $.ajax
+        (
+        {
+            url: '/lms/admin/SelectDateAttendance', // 서버의 API 경로로 수정해야 합니다.
+            type: 'GET',
+            data: {
+                selectedDate: selectedDate
+            },
+            dataType: 'json',
+            success: function(data) {
+                updateTable(data);
+            },
+            error: function(error) {
+                console.error("Error fetching data: ", error);
+            }
+        }
+        );
+    }
+    );
+
+    function updateTable(data)
+    {
+        var tbody = $("#table1 tbody");
+        tbody.empty();
+
+        $.each(data, function(index, member)
+        {
+            // 데이터의 구조와 필드명에 따라 적절하게 수정해야 합니다.
+            if(member.member.rolename == 'ROLE_student' && member.member.enabled == true) {
+                var row = `
+                    <tr>
+                        <td><input type="checkbox" class="att-checkbox" name="att_type${member.member.memberid}" data-column="attendance" value="출석"></td>
+                        <td><input type="checkbox" class="att-checkbox" name="att_type${member.member.memberid}" data-column="absence" value="결석"></td>
+                        <td><input type="checkbox" class="att-checkbox" name="att_type${member.member.memberid}" data-column="halfabsence" value="1/2결석"></td>
+                        <td><input type="checkbox" class="att-checkbox" name="att_type${member.member.memberid}" data-column="late" value="지각"></td>
+                        <td><input type="checkbox" class="att-checkbox" name="att_type${member.member.memberid}" data-column="out" value="외출"></td>
+                        <td><input type="checkbox" class="att-checkbox" name="att_type${member.member.memberid}" data-column="leave" value="조퇴"></td>
+                        <td>
+                            <input type="radio" name="${member.member.memberid}-permission" value="O"> O
+                            <input type="radio" name="${member.member.memberid}-permission" value="X"> X
+                        </td>
+                        <td>${member.member.memberid}</td>
+                        <td>${member.member.membername}</td>
+                        <td>${member.attendance.att_type}</td>
+                        <td>${member.attendance.att_permission}</td>
+                        <td>${member.attendance.att_date}</td>
+                    </tr>
+                `;
+                tbody.append(row);
+            }
+        }
+        );
+bindCheckboxEvents();
+    }
+
+        function bindCheckboxEvents()
+        {
+    // "모두 선택" 체크박스 클릭 이벤트 핸들러
+    $('.select-all-column').off('click').on('click', function()
+    {
+        var isChecked = $(this).prop('checked');
+        var column = $(this).data('column');
+        $('.select-all-column').not(this).prop('checked', false);
+        $('input[data-column="' + column + '"]').prop('checked', isChecked);
+        $('input[data-column]').not('input[data-column="' + column + '"]').prop('checked', false);
+    }
+    );
+
+    // 개별 체크박스 클릭 이벤트 핸들러
+    $('.att-checkbox').off('click').on('click', function()
+     {
+        var column = $(this).data('column');
+        // 해당 행의 다른 체크박스들 해제
+        $(this).closest('tr').find('.att-checkbox').not(this).prop('checked', false);
+        // 해당 행에 다른 체크박스가 선택되어있지 않으면 "모두 선택" 체크박스도 해제
+        if ($('input[data-column="' + column + '"]:checked').length == $('input[data-column="' + column + '"]').length) {
+            $('#select-all-' + column).prop('checked', true);
+        } else {
+            $('#select-all-' + column).prop('checked', false);
+        }
+    }
+    );
+}
+
+    }
+    );
+
+
+    </script>
+
 </head>
+
 <body>
+<div id="app">
+    <div id="sidebar-placeholder"></div>
+    <div id="main">
+        <header class="mb-3">
+            <a href="#" class="burger-btn d-block d-xl-none">
+                <i class="bi bi-justify fs-3"></i>
+            </a>
+        </header>
+
+        <div class="page-heading">
+            <div class="page-title">
+                <div class="row">
+                    <div class="col-12 col-md-6 order-md-1 order-last">
+                        <h3>출결 조회 및 수정</h3>
+                        <p class="text-subtitle text-muted">학생의 출결현황을 조회 및 수정할수있습니다.</p>
+                    </div>
+                    <div class="col-12 col-md-6 order-md-2 order-first">
+                        <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                            <ol class="breadcrumb">
+
+
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <section class="section">
+                <div class="card">
+                    <div class="card-header">
+                        학생 목록
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{UpdateStudentAttendance}" method="post">
+                            <table class="table table-striped" id="table1">
+                                <thead>
+                                검색날짜선택
+                                <input type="date" style="width : 15%; font-size: 12px;" id="searchDay" class="form-control form-control-xl">
+
+                                변경날짜선택
+                                <input type="date" style="width : 15%; font-size: 12px;" id="birth" name="att_date" class="form-control form-control-xl">
+
+                                <!--                                    <div>-->
+                                <!--                                        <i class="bi bi-calendar-event"></i>-->
+                                <!--                                    </div>-->
+
+                                <div>
+                                    <!-- "모두 선택" 체크박스들 -->
+                                    <input type="checkbox" id="select-all-attendance" class="select-all-column" data-column="attendance" > 출석 모두 선택
+                                    <input type="checkbox" id="select-all-absence" class="select-all-column" data-column="absence"> 결석 모두 선택
+                                    <input type="checkbox" id="select-all-halfabsence" class="select-all-column" data-column="halfabsence"> 1/2결석 모두 선택
+                                    <input type="checkbox" id="select-all-late" class="select-all-column" data-column="late"> 지각 모두 선택
+                                    <input type="checkbox" id="select-all-out" class="select-all-column" data-column="out"> 외출 모두 선택
+                                    <input type="checkbox" id="select-all-leave" class="select-all-column" data-column="leave"> 조퇴 모두 선택
+
+                                </div>
+                                <tr>
+                                    <th>출석</th>
+                                    <th>결석</th>
+                                    <th>1/2결석</th>
+                                    <th>지각</th>
+                                    <th>외출</th>
+                                    <th>조퇴</th>
+                                    <th>사전연락유무</th>
+                                    <th>아이디</th>
+                                    <th>이름</th>
+                                    <th>상태</th>
+                                    <th>사전연락</th>
+                                    <th>날짜</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="member : ${list}" th:if="${member.member.rolename == 'ROLE_student' and member.member.enabled == true}">
+                                    <td><input type="checkbox" class="att-checkbox" th:name="'att_type' + ${member.member.memberid}" data-column="attendance" value="출석"></td>
+                                    <td><input type="checkbox" class="att-checkbox" th:name="'att_type' + ${member.member.memberid}" data-column="absence" value="결석"></td>
+                                    <td><input type="checkbox" class="att-checkbox" th:name="'att_type' + ${member.member.memberid}" data-column="halfabsence" value="1/2결석"></td>
+                                    <td><input type="checkbox" class="att-checkbox" th:name="'att_type' + ${member.member.memberid}" data-column="late" value="지각"></td>
+                                    <td><input type="checkbox" class="att-checkbox" th:name="'att_type' + ${member.member.memberid}" data-column="out" value="외출"></td>
+                                    <td><input type="checkbox" class="att-checkbox" th:name="'att_type' + ${member.member.memberid}" data-column="leave" value="조퇴"></td>
+
+                                    <td><input type="radio" th:name="${member.member.memberid} + '-' + 'permission'" value="O"> O
+                                        <input type="radio" th:name="${member.member.memberid} + '-' + 'permission'" value="X"> X</td>
+
+                                    <td>[[${member.member.memberid}]]</td>
+                                    <td th:text="${member.member.membername}"></td>
+                                    <td th:text="${member.attendance.att_type}">
+                                        </td>
+
+
+
+                                    <td th:text="${member.attendance.att_permission}">
+
+                                    </td>
+                                    <td th:text="${member.attendance.att_date}">
+
+                                    </td>
+
+                                </tr>
+
+                                </tbody>
+                            </table>
+                            <input type="submit" value="편집">
+
+                        </form>
+
+                    </div>
+                </div>
+
+            </section>
+        </div>
+
+
+    </div>
+</div>
+<script th:src="@{/assets/js/bootstrap.js}"></script>
+<script th:src="@{/assets/js/app.js}"></script>
+
+<script th:src="@{/assets/extensions/simple-datatables/umd/simple-datatables-1.js}"></script>
+<script th:src="@{/assets/js/pages/simple-datatables.js}"></script>
 
 </body>
+
 </html>
