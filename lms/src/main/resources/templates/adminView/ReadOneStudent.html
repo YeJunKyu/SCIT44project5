@@ -1,18 +1,70 @@
 <!DOCTYPE html>
 <html xmlns:th="http://thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>학생개인정보</title>
+    <link rel="stylesheet" th:href="@{/assets/css/main/app.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main/app-dark.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main/lms.css}" />
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.svg}" type="image/x-icon">
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png">
+
+    <link rel="stylesheet" th:href="@{/assets/extensions/simple-datatables/style.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/pages/simple-datatables.css}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 <h1>학생개인정보</h1>
 
-<table>
-<tr>
-<td></td>
+<table class="table table-striped" id="table1">
+    <tr>
+        <th>아이디</th>
+        <th>이름</th>
+        <th>생년월일</th>
+        <th>성별</th>
+        <th>주소</th>
+        <th>학교</th>
+        <th>전공</th>
+        <th>졸업여부</th>
+        <th>과정</th>
+        <th>일본어분반</th>
+        <th>IT분반</th>
+        <th>일어자격증</th>
+        <th>IT자격증</th>
+        <th>기타자격</th>
+        <th>내정회사</th>
+        <th>해외경력 및 취업경험</th>
+        <th>학원과정졸업여부</th>
+    </tr>
 
-</tr>
+    <tr>
+        <td th:text="${student.member.memberid}"></td>
+        <td th:text="${student.member.membername}"></td>
+        <td th:text="${student.member.birthday}"></td>
+        <td th:text="${student.member.gender}"></td>
+        <td th:text="${student.member.address}"></td>
+        <td th:text="${student.student.school}"></td>
+        <td th:text="${student.student.major}"></td>
+        <td th:text="${student.student.graduation}"></td>
+        <td th:text="${student.student.curriculum}"></td>
+        <td th:text="${student.jpCategory.jpclassname}"></td>
+        <td th:text="${student.itCategory.itclassname}"></td>
+        <td th:text="${student.studentInfo?.certi_jpname}"></td>
+        <td th:text="${student.studentInfo?.certi_name}"></td>
+        <td th:text="${student.studentInfo?.note}"></td>
+        <td th:text="${student.studentInfo?.company}"></td>
+        <td th:text="${student.studentInfo?.experience}"></td>
+        <td th:text="${student.studentInfo?.scitgraduation}"></td>
+ </tr>
+
+
+
+
 </table>
+
+<script th:src="@{/assets/extensions/simple-datatables/umd/simple-datatables-1.js}"></script>
+<script th:src="@{/assets/js/pages/simple-datatables.js}"></script>
+
 </body>
 </html>
