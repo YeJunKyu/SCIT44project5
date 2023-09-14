@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SCIT LMS</title>
+
+    <link rel="stylesheet" th:href="@{/assets/css/main/app.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/main/app-dark.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/main/lms.css}" />
+    <link
+      rel="shortcut icon"
+      th:href="@{/assets/images/logo/favicon.svg}"
+      type="image/x-icon"
+    />
+    <link
+      rel="shortcut icon"
+      th:href="@{/assets/images/logo/favicon.png}"
+      type="image/png"
+    />
+    <link rel="stylesheet" th:href="@{/assets/css/shared/iconly.css}" />
+
+    <style>
+      .table-responsive {
+        text-align: center;
+      }
+    </style>
+
+    <script th:src="@{/assets/js/jquery-3.6.0.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+    <script>
+      $(document).ready(function () {
+        let subjectSelector = document.getElementById("subjectSelector");
+        let classSelector = document.getElementById("classSelector");
+
+        // 페이지 로드 됐을 때와 select box의 값이 변경될 때 실행되는 함수
+        function updateClassesBasedOnSubject() {
+          const jpClasses = document.querySelectorAll(".jpclass");
+          const itClasses = document.querySelectorAll(".itclass");
+
+          let subject = subjectSelector.value;
+
+          jpClasses.forEach((c) => (c.style.display = "none"));
+          itClasses.forEach((c) => (c.style.display = "none"));
+
+          if (subject === "일본어") {
+            jpClasses.forEach((c) => (c.style.display = "block"));
+          } else if (subject === "IT") {
+            itClasses.forEach((c) => (c.style.display = "block"));
+          }
+        }
+
+        // 페이지 로드 시 바로 함수를 한 번 호출
+        updateClassesBasedOnSubject();
+
+        // select box 값이 변경될 때마다 함수 호출
+        subjectSelector.addEventListener("change", updateClassesBasedOnSubject);
+      });
+
+      function check() {
+        let start = document.getElementById("hw_start").value;
+        let end = document.getElementById("hw_end").value;
+        let t = document.getElementById("hw_title").value;
+        let c = document.getElementById("hw_contents").value;
+
+        if (start >= end) {
+          Swal.fire({
+            icon: "error",
+            title: "제출 기간을 확인해주세요.",
+            text: "시작일은 종료일보다 빨리 설정되어야 합니다!",
+          });
+          return false;
+        }
+        if (t.length < 5) {
+          Swal.fire({
+            icon: "error",
+            title: "제목을 입력해주세요",
+            text: "제목을 5자 이상 입력해주세요",
+          });
+          return false;
+        }
+        if (c.length < 10) {
+          Swal.fire({
+            icon: "error",
+            title: "내용을 입력해주세요",
+            text: "내용을 10자 이상 입력해주세요",
+          });
+          return false;
+        }
+        return true;
+      }
+    </script>
+  </head>
+
+  <body>
+    <div id="app">
+      <div th:replace="~{/fragments/sidebar.html :: sidebarFrag}"></div>
+    </div>
+    <div id="main">
+      <header class="mb-3">
+        <a href="#" class="burger-btn d-block d-xl-none">
+          <i class="bi bi-justify fs-3"></i>
+        </a>
+      </header>
+
+      <div class="page-heading">
+        <div class="page-title">
+          <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+              <p class="text-subtitle text-muted"></p>
+            </div>
+            <div class="col-12 col-md-6 order-md-2 order-first">
+              <nav
+                aria-label="breadcrumb"
+                class="breadcrumb-header float-start float-lg-end"
+              >
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item">
+                    <a th:href="@{/main}">메인</a>
+                  </li>
+                  <li class="breadcrumb-item">
+                    <a th:href="@{/homework}">과제</a>
+                  </li>
+                  <li class="breadcrumb-item active" aria-current="page">
+                    과제 조회
+                  </li>
+                </ol>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table head options start -->
+      <section class="section">
+        <div class="row" id="table-head">
+          <div class="col-12">
+            <div class="card">
+              <div class="card">
+                <div class="card-header">
+                  <h3>과제 수정</h3>
+                </div>
+                <div class="card-content">
+                  <div class="card-body">
+                    <form
+                      th:action="@{/homework/update}"
+                      method="post"
+                      enctype="multipart/form-data"
+                      onsubmit="return check()"
+                      class="form form-horizontal"
+                    >
+                      <div class="form-body">
+                        <div class="row">
+                          <div class="col-md-2">
+                            <label>카테고리</label>
+                          </div>
+                          <div
+                            class="col-md-10 form-group"
+                            style="display: flex"
+                          >
+                            <select name="hw_curriculum" class="form-select">
+                              <option
+                                th:each="curriculum : ${curriculum}"
+                                th:value="${curriculum}"
+                                th:text="${curriculum}"
+                                th:selected="${curriculum} == ${hw.hw_curriculum}"
+                              ></option>
+                            </select>
+                            <select
+                              name="hw_subject"
+                              class="form-select"
+                              id="subjectSelector"
+                            >
+                              <option value="해당없음">해당없음</option>
+                              <option
+                                value="일본어"
+                                th:selected="${hw.hw_subject} == '일본어'"
+                              >
+                                일본어
+                              </option>
+                              <option
+                                value="IT"
+                                th:selected="${hw.hw_subject} == 'IT'"
+                              >
+                                IT
+                              </option>
+                            </select>
+                            <select
+                              name="hw_class"
+                              class="form-select"
+                              id="classSelector"
+                            >
+                              <option value="해당없음">해당없음</option>
+                              <option
+                                th:each="class : ${jpclass}"
+                                th:value="${class}"
+                                th:text="${class}"
+                                class="jpclass"
+                                style="display: none"
+                                th:selected="${class} == ${hw.hw_class}"
+                              ></option>
+                              <option
+                                th:each="class : ${itclass}"
+                                th:value="${class}"
+                                th:text="${class}"
+                                class="itclass"
+                                style="display: none"
+                                th:selected="${class} == ${hw.hw_class}"
+                              ></option>
+                            </select>
+                          </div>
+
+                          <div class="col-md-2">
+                            <label>제출 기간</label>
+                          </div>
+                          <div
+                            class="col-md-10 form-group"
+                            style="display: flex"
+                          >
+                            <input
+                              type="datetime-local"
+                              name="hw_start"
+                              id="hw_start"
+                              class="form-control"
+                              th:value="${hw.hw_start}"
+                            />
+                            <i class="bi bi-dash"></i>
+                            <input
+                              type="datetime-local"
+                              name="hw_end"
+                              id="hw_end"
+                              class="form-control"
+                              th:value="${hw.hw_end}"
+                            />
+                          </div>
+
+                          <div class="col-md-2">
+                            <label>제목</label>
+                          </div>
+                          <div class="col-md-10 form-group">
+                            <input
+                              name="hw_title"
+                              id="hw_title"
+                              class="form-control"
+                              th:value="${hw.hw_title}"
+                            />
+                          </div>
+
+                          <div class="col-md-2">
+                            <label>내용</label>
+                          </div>
+                          <div class="col-md-10 form-group">
+                            <textarea
+                              name="hw_contents"
+                              id="hw_contents"
+                              class="form-control"
+                              rows="5"
+                              th:text="${hw.hw_contents}"
+                            ></textarea>
+                          </div>
+
+                          <div class="col-md-2">
+                            <label>첨부파일</label>
+                          </div>
+                          <div class="col-md-10 form-group">
+                            <div class="mb-3">
+                              <input
+                                type="file"
+                                name="upload"
+                                class="form-control"
+                                id="formFile"
+                                multiple
+                              />
+                            </div>
+                          </div>
+
+                          <input
+                            type="hidden"
+                            th:value="${hw.hw_num}"
+                            name="hw_num"
+                          />
+                          <input
+                            type="hidden"
+                            th:value="${hw.originalfile}"
+                            name="originalfile"
+                          />
+                          <input
+                            type="hidden"
+                            th:value="${hw.savedfile}"
+                            name="savedfile"
+                          />
+                          <div class="col-sm-12 d-flex justify-content-end">
+                            <button
+                              type="submit"
+                              class="btn btn-primary me-1 mb-1"
+                            >
+                              확인
+                            </button>
+                            <button
+                              type="button"
+                              class="btn btn-light-secondary me-1 mb-1"
+                            >
+                              <a
+                                th:href="@{/homework/read(hw_num=${hw.hw_num})}"
+                                >취소</a
+                              >
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Table head options end -->
+    </div>
+
+    <script th:src="@{/assets/js/bootstrap.js}"></script>
+    <script th:src="@{/assets/js/app.js}"></script>
+  </body>
+</html>

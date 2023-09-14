@@ -14,6 +14,7 @@ public interface TestDAO {
 
     // 테스트 등록
     int submitTest(Test test);
-    // 문제 등록
-//    void submitQuestion(Question question);
+
+    // 테스트 정보 조회
+    Test selectTest(int testid);
 }

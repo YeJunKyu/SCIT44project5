@@ -14,8 +14,6 @@
     <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png">
     <link rel="stylesheet" th:href="@{/assets/css/shared/iconly.css}">
 
-    <script th:src="@{/privatejs/sidebarLoader.js}"></script>
-
     <style>
         .table-responsive {
             text-align: center;
@@ -65,7 +63,7 @@
                                 <table class="col-12" id="notice">
                                     <tr>
                                         <td colspan="2">
-                                            <h3 th:text="${notice.noticetitle}"></h3>
+                                            <h2 th:text="${notice.noticetitle}"></h2>
                                         </td>
                                     </tr>
                                     <tr>
@@ -88,7 +86,11 @@
                                     <tr th:if="${notice.originalfile} != null">
                                         <th>첨부파일</th>
                                         <td>
-                                            <a th:href="@{/notice/download(noticenum=${notice.noticenum})}" th:text="${notice.originalfile}"></a>
+                                            <ul>
+                                                <li th:each="file : ${notice.originalfile.split(',')}">
+                                                    <a th:href="@{/notice/download(noticenum=${notice.noticenum},filename=${file})}" th:text="${file}"></a>
+                                                </li>
+                                            </ul>
                                         </td>
                                     </tr>
                                 </table>

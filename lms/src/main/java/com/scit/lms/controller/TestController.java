@@ -61,6 +61,7 @@ public class TestController {
         for (Question q: questions) {
             Question question = new Question();
             question.setTestid(test.getTestid());
+            question.setPapernum(q.getPapernum());
             question.setContents(q.getContents());
             question.setPoints(q.getPoints());
             question.setType(q.getType());
@@ -92,5 +93,30 @@ public class TestController {
             }
         }
         return "boardView/test/test";
+    }
+
+    // 시험지 문제 전체 조회
+    @GetMapping("viewTest")
+    public String viewTest(@RequestParam("testid") int testid, Model model) {
+        // 시험 정보
+        Test test = testService.selectTest(testid);
+
+        // 시험의 문제
+        ArrayList<Question> questions = questionService.selectQuestions(testid);
+
+        // 객관식 유형 문제의 보기
+        ArrayList<Option> allOptions = new ArrayList<>();
+        for (Question q : questions) {
+            int qType = q.getType();
+            if(qType == 1 || qType == 2) {
+                ArrayList<Option> options = questionService.selectOptions(q.getQid());
+                allOptions.addAll(options);
+            }
+        }
+        model.addAttribute("test", test);
+        model.addAttribute("questions", questions);
+        model.addAttribute("options", allOptions);
+
+        return "boardView/test/viewTest";
     }
 }
