@@ -60,4 +60,6 @@ public interface AdminDAO {
     ArrayList<StudentsAll> SelectDateAttendance(String selectedDate);
 
     void UpdateStudentAttendance(Attendance attendance);
+
+    StudentsAll ReadOneStudent(String memberid);
 }

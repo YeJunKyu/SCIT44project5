@@ -101,8 +101,9 @@
                         <tbody>
                         <tr th:each="students : ${students}">
                             <td><input type="checkbox" name="memberid" th:value="${students.member.memberid}"></td>
-                            <td th:text="${students.member.memberid}">
+                            <td><a th:href="@{/admin/ReadOneStudent/{memberid}(memberid=${students.member.memberid})}" th:text="${students.member.memberid}">
 
+                            </a>
                             </td>
 
                             <td th:text="${students.member.membername}">

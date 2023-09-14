@@ -49,10 +49,10 @@
         it.itclassname as "itCategory.itclassname"
         FROM
         lms_member m
-        JOIN lms_student s ON m.memberid = s.memberid
-        JOIN class_jp_category jp ON m.memberid = jp.memberid
-        JOIN class_it_category it ON m.memberid = it.memberid
-        JOIN student_info si ON m.memberid = si.memberid
+        LEFT JOIN lms_student s ON m.memberid = s.memberid
+        LEFT JOIN class_jp_category jp ON m.memberid = jp.memberid
+        LEFT JOIN class_it_category it ON m.memberid = it.memberid
+        LEFT JOIN student_info si ON m.memberid = si.memberid
         where m.rolename = 'ROLE_student'
     </select>
 <!--학생관리 : 과정등록폼-->
@@ -129,7 +129,38 @@
         </foreach>
         SELECT * FROM dual
     </insert>
-    
+
+<!--    학생개인정보조회-->
+    <select id="ReadOneStudent" parameterType="String" resultType="StudentsAll">
+        SELECT
+        m.memberid as "member.memberid",
+        m.membername as "member.membername",
+        m.note as "member.note",
+        TO_CHAR(m.birthday, 'YYYY-MM-DD') as "member.birthday",
+        m.gender as "member.gender",
+        m.address as "member.address",
+        s.school as "student.school",
+        s.major as "student.major",
+        s.graduation as "student.graduation",
+        s.curriculum as "student.curriculum",
+        jp.jpclassname as "jpCategory.jpclassname",
+        it.itclassname as "itCategory.itclassname",
+        si.certi_jpname as "studentInfo.certi_jpname",
+        si.certi_name as "studentInfo.certi_name",
+        si.company as "studentInfo.company",
+        si.note as "studentInfo.note",
+        si.experience as "studentInfo.experience",
+        si.scitgraduation as "studentInfo.scitgraduation",
+        si.originalphoto as "studentInfo.originalphoto",
+        si.savedphoto as "studentInfo.savedphoto"
+        FROM
+        lms_member m
+        LEFT JOIN lms_student s ON m.memberid = s.memberid
+        LEFT JOIN class_jp_category jp ON m.memberid = jp.memberid
+        LEFT JOIN class_it_category it ON m.memberid = it.memberid
+        LEFT JOIN student_info si ON m.memberid = si.memberid
+        where m.rolename = 'ROLE_student' and m.memberid = #{memberid}
+    </select>
 <!--    시험비중등록폼 대분류 등록-->
 <insert id="insertBigRatio" parameterType="PrimaryRatio">
     INSERT INTO primary_ratio_category(category_id, categoryname, ratio, divname)
@@ -256,4 +287,6 @@
         <if test="att_permission != null">, att_permission = #{att_permission}</if>
         where memberid = #{memberid}
     </update>
+
+
 </mapper>

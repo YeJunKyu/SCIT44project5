@@ -139,5 +139,10 @@ public class AdminServiceImple implements AdminService {
 		dao.UpdateStudentAttendance(attendance);
 	}
 
+	@Override
+	public StudentsAll ReadOneStudent(String memberid) {
+		return dao.ReadOneStudent(memberid);
+	}
+
 
 }

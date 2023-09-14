@@ -55,4 +55,6 @@ public interface AdminService {
     ArrayList<StudentsAll> SelectDateAttendance(String selectedDate);
 
     void UpdateStudentAttendance(Attendance attendance);
+
+    StudentsAll ReadOneStudent(String memberid);
 }

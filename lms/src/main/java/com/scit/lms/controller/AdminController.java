@@ -219,6 +219,16 @@ public class AdminController {
 		log.debug("기타정보등록확인:{}",studentAllInfos);
 		return "redirect:/admin/insertInformation";
 	}
+	
+	//학생 개인정보조회
+	@GetMapping("ReadOneStudent/{memberid}")
+	public String ReadOneStudent(@PathVariable String memberid,Model model){
+		log.debug("학생아이디확인:{}",memberid);
+		StudentsAll studentsAll = service.ReadOneStudent(memberid);
+		log.debug("학생정보확인:{}",studentsAll);
+		model.addAttribute("student",studentsAll);
+		return "adminView/ReadOneStudent";
+	}
 
 	//시험비중등록폼
 	@GetMapping("InsertBigRatio")
