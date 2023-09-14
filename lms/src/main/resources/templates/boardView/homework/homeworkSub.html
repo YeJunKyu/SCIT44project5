@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCIT LMS</title>
+
+    <link rel="stylesheet" th:href="@{/assets/css/main/app.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main/app-dark.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main/lms.css}" />
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.svg}" type="image/x-icon">
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png">
+    <link rel="stylesheet" th:href="@{/assets/css/shared/iconly.css}">
+
+    <style>
+        .table-responsive {
+            text-align: center;
+        }
+    </style>
+
+    <script th:src="@{/assets/js/jquery-3.6.0.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+    <script>
+        function check() {
+            let c = document.getElementById("hw_sub_contents").value;
+
+            if (c.length < 5) {
+              Swal.fire({
+                icon: "error",
+                title: "내용을 입력해주세요",
+                text: "내용을 5자 이상 입력해주세요",
+              });
+              return false;
+            }
+            return true;
+        }
+    </script>
+
+</head>
+
+<body>
+<div id="app">
+    <div th:replace="~{/fragments/sidebar.html :: sidebarFrag}"></div>
+</div>
+<div id="main">
+    <header class="mb-3">
+        <a href="#" class="burger-btn d-block d-xl-none">
+            <i class="bi bi-justify fs-3"></i>
+        </a>
+    </header>
+
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <p class="text-subtitle text-muted"></p>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a th:href="@{/main}">메인</a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/homework}">과제</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">과제 제출</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- 제출 등록 -->
+        <section class="hw_sub">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+
+                            <!-- 제출 폼 -->
+                            <form th:action="@{/homework/insertSub}" method="post" enctype="multipart/form-data" onsubmit="return check()">
+                                <div class="form-body">
+                                    <div class="row">
+
+                                        <div class="col-md-2">
+                                            <label>내용</label>
+                                        </div>
+                                        <div class="col-md-10 form-group">
+                                            <textarea name="hw_sub_contents" id="hw_sub_contents" class="form-control" rows="5"></textarea>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <label>첨부파일</label>
+                                        </div>
+                                        <div class="col-md-10 form-group">
+                                            <div class="mb-3">
+                                                <input type="file" name="upload" class="form-control" id="formFile" multiple/>
+                                            </div>
+                                        </div>
+
+                                        <input type="hidden" name="hw_num" th:value="${hw_num}">
+
+
+                                        <!-- 버튼 -->
+                                        <div class="col-sm-12 d-flex justify-content-end">
+                                            <button
+                                                    type="submit"
+                                                    class="btn btn-primary me-1 mb-1"
+                                            >
+                                                제출
+                                            </button>
+                                            <button
+                                                    type="button"
+                                                    class="btn btn-light-secondary me-1 mb-1"
+                                            >
+                                                <a th:href="@{/homework}">취소</a>
+                                            </button>
+                                        </div>
+                                        <!-- 버튼 끝 -->
+                                    </div>
+                                </div>
+                            </form>
+                            <!-- 제출 폼 끝 -->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- 제출 등록 끝 -->
+
+    </div>
+
+</div>
+<script th:src="@{/assets/js/bootstrap.js}"></script>
+<script th:src="@{/assets/js/app.js}"></script>
+
+</body>
+
+</html>

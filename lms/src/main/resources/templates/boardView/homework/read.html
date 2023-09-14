@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCIT LMS</title>
+
+    <link rel="stylesheet" th:href="@{/assets/css/main/app.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main/app-dark.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main/lms.css}" />
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.svg}" type="image/x-icon">
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png">
+    <link rel="stylesheet" th:href="@{/assets/css/shared/iconly.css}">
+
+    <style>
+        .table-responsive {
+            text-align: center;
+        }
+    </style>
+
+    <script th:src="@{/assets/js/jquery-3.6.0.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+    </script>
+
+</head>
+
+<body>
+<div id="app">
+    <div th:replace="~{/fragments/sidebar.html :: sidebarFrag}"></div>
+</div>
+<div id="main">
+    <header class="mb-3">
+        <a href="#" class="burger-btn d-block d-xl-none">
+            <i class="bi bi-justify fs-3"></i>
+        </a>
+    </header>
+
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <p class="text-subtitle text-muted"></p>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a th:href="@{/main}">메인</a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/homework}">과제</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">과제 조회</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- 과제 -->
+        <section class="hw">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+
+                            <!-- 글 내용 -->
+                            <div class="table-responsive">
+                                <table class="col-12" id="notice">
+                                    <tr>
+                                        <td colspan="2">
+                                            <h2 th:text="${hw.hw_title}"></h2>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>작성자</th>
+                                        <td>
+                                            <i class="bi bi-person"></i>
+                                            <span th:text="${hw.memberid}"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>카테고리</th>
+                                        <td>
+                                            <i class="bi bi-folder"></i>
+                                            <span th:text="${hw.hw_curriculum}"></span>
+                                            <span> / </span>
+                                            <span th:text="${hw.hw_subject}"></span>
+                                            <span> / </span>
+                                            <span th:text="${hw.hw_class}"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>제출기간</th>
+                                        <td>
+                                            <i class="bi bi-calendar"></i>
+                                            <span th:text="${hw.hw_start}"></span>
+                                            <span> ~ </span>
+                                            <span th:text="${hw.hw_end}"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <hr>
+                                            <pre th:text="${hw.hw_contents}"></pre>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${hw.originalfile} != null">
+                                        <th>첨부파일</th>
+                                        <td>
+                                            <ul>
+                                                <li th:each="file : ${hw.originalfile.split(',')}">
+                                                    <a th:href="@{/homework/download(hw_num=${hw.hw_num},filename=${file})}" th:text="${file}"></a>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <!-- 글 내용 끝 -->
+
+                            <hr>
+
+                            <!-- 버튼 -->
+                            <div class="row">
+                                <div class="col-12 col-md-6 order-md-1 order-last">
+                                    <div th:if="${#authentication.name} == ${hw.memberid}">
+                                        <a class="btn btn-primary" th:href="@{/homework/update(hw_num=${hw.hw_num})}">수정</a>
+                                        <a class="btn btn-light-secondary" th:href="@{/homework/delete(hw_num=${hw.hw_num})}" onclick="return confirm('삭제하겠습니까?');">삭제</a>
+                                    </div>
+                                    <div sec:authorize="hasAnyRole('ROLE_admin', 'ROLE_student')"
+                                         th:if="${subcount == 0
+                                         and T(java.time.LocalDateTime).now().isAfter(T(java.time.LocalDateTime).parse(hw.hw_start, T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd HH:mm:ss')))}">
+                                        <a class="btn btn-primary" th:href="@{/homework/homeworkSub(hw_num=${hw.hw_num})}">제출</a>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-6 order-md-2 order-first">
+                                    <div class="breadcrumb-header float-start float-lg-end">
+                                        <div class="button">
+                                            <a class="btn btn-outline-primary" th:href="@{/homework}">목록으로</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 버튼 끝 -->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- 과제 끝 -->
+
+        <!-- 제출 글 -->
+        <section class="hw_sub_read" th:each="list:${subList}" th:if="${subcount > 0} and ${#authentication.name} == ${list.memberid}">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+
+                            <!-- 글 내용 -->
+                            <div class="card-content">
+                                <div class="table-responsive">
+                                    <table class="col-12" id="board">
+                                        <tr>
+                                            <th>작성자</th>
+                                            <td>
+                                                <i class="bi bi-person"></i>
+                                                <span th:text="${list.memberid}"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>제출일</th>
+                                            <td>
+                                                <i class="bi bi-calendar"></i>
+                                                <span th:text="${list.hw_sub_inputdate}"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <hr>
+                                                <pre th:text="${list.hw_sub_contents}"></pre>
+                                            </td>
+                                        </tr>
+                                        <tr th:if="${list.originalfile} != null">
+                                            <th>첨부파일</th>
+                                            <td>
+                                                <ul>
+                                                    <li th:each="file : ${list.originalfile.split(',')}">
+                                                        <a th:href="@{/homework/downloadSub(hw_sub_num=${list.hw_sub_num}, filename=${file})}" th:text="${file}"></a>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- 글 내용 끝 -->
+
+                            <hr>
+
+                            <!-- 버튼 -->
+                            <div class="row">
+                                <div class="col-12 col-md-6 order-md-1 order-last">
+                                </div>
+                                <div class="col-12 col-md-6 order-md-2 order-first">
+                                    <div class="breadcrumb-header float-start float-lg-end">
+                                        <div class="button" th:if="${#authentication.name} == ${list.memberid}">
+                                            <a th:href="@{/homework/updateSub(hw_sub_num=${list.hw_sub_num})}" class="btn btn-primary">수정</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 버튼 끝 -->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- 제출 글 끝 -->
+
+        <!-- 제출 리스트 -->
+        <section class="hw_sub_list">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+
+                        <div class="card-body">
+
+                            <!-- 테이블 -->
+                            <div class="card-content">
+                                <div class="table-responsive">
+                                    <table class="table mb-0">
+                                        <thead class="thead-dark">
+                                        <tr>
+                                            <th style="width: 35px"><input type="checkbox" class="form-check-input"></th>
+                                            <th>과정</th>
+                                            <th>과목</th>
+                                            <th>반</th>
+                                            <th>이름</th>
+                                            <th>첨부파일</th>
+                                            <th>제출상황</th>
+                                            <th>제출일</th>
+                                            <th>점수</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody th:each="student:${student}">
+                                        <tr th:if="${student.curriculum == hw.hw_curriculum &&
+                                       ((hw.hw_subject == '일본어' && student.jpclassname == hw.hw_class) ||
+                                       (hw.hw_subject == 'IT' && student.itclassname == hw.hw_class))}">
+                                            <td><input type="checkbox" class="form-check-input"></td>
+                                            <td th:text="${student.curriculum}"></td>
+                                            <td th:text="${hw.hw_subject}"></td>
+                                            <td th:text="${hw.hw_subject == '일본어' ? student.jpclassname : (hw.hw_subject == 'IT' ? student.itclassname : '해당없음')}"></td>
+                                            <td th:text="${student.memberid}"></td>
+                                            <td th:text="${student.originalfile}"></td>
+                                            <td th:text="${student.hw_sub_done == null ? '미제출' : student.hw_sub_done}"></td>
+                                            <td th:text="${student.hw_sub_inputdate}"></td>
+                                            <td th:text="${student.hw_sub_score}"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- 테이블 끝 -->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- 제출 리스트 끝 -->
+
+    </div>
+
+</div>
+<script th:src="@{/assets/js/bootstrap.js}"></script>
+<script th:src="@{/assets/js/app.js}"></script>
+
+</body>
+
+</html>

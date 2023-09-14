@@ -4,4 +4,201 @@
 
 <mapper namespace="com.scit.lms.dao.HomeworkDAO">
 
+    <!-- 학생 리스트 불러오기(커리큘럼) -->
+    <select id="studentList" resultType="Student">
+        select * from lms_student
+    </select>
+
+    <!-- 일본어 분반 불러오기 -->
+    <select id="jpClassList" resultType="JP_category">
+        select * from class_jp_category
+    </select>
+
+    <!-- IT 분반 불러오기 -->
+    <select id="itClassList" resultType="IT_category">
+        select * from class_it_category
+    </select>
+
+    <!-- 과제 등록 -->
+    <insert id="insertHw" parameterType="Homework">
+        insert into lms_homework
+        (
+            hw_num
+            , hw_title
+            , hw_contents
+            , hw_curriculum
+            , hw_subject
+            , hw_class
+            , hw_start
+            , hw_end
+            , memberid
+        <if test="originalfile != null and savedfile != null">
+            , originalfile
+            , savedfile
+        </if>
+        )
+        values
+        (
+            lms_hw_seq.nextval
+            , #{hw_title}
+            , #{hw_contents}
+            , #{hw_curriculum}
+            , #{hw_subject}
+            , #{hw_class}
+            , TO_DATE(#{hw_start}, 'YYYY-MM-DD HH24:MI:SS')
+            , TO_DATE(#{hw_end}, 'YYYY-MM-DD HH24:MI:SS')
+            , #{memberid}
+        <if test="originalfile != null and savedfile != null">
+            , #{originalfile}
+            , #{savedfile}
+        </if>
+        )
+    </insert>
+
+    <!-- 과제 리스트 -->
+    <select id="hwList" resultType="Homework">
+        select
+            *
+        from
+            lms_homework
+        order by
+            hw_num desc
+    </select>
+
+    <!-- 과제 조회 -->
+    <select id="selectHw" resultType="Homework">
+        select
+            *
+        from
+            lms_homework
+        where
+            hw_num=#{hw_num}
+    </select>
+
+    <!-- 과제 수정 -->
+    <update id="updateHw" parameterType="Homework">
+        update lms_homework
+        set
+            hw_title=#{hw_title}
+            , hw_contents=#{hw_contents}
+            , hw_curriculum=#{hw_curriculum}
+            , hw_subject=#{hw_subject}
+            , hw_class=#{hw_class}
+            , hw_inputdate=sysdate
+            , hw_start=TO_DATE(#{hw_start}, 'YYYY-MM-DD HH24:MI:SS')
+            , hw_end=TO_DATE(#{hw_end}, 'YYYY-MM-DD HH24:MI:SS')
+        <if test="originalfile != null and savedfile != null">
+            , originalfile=#{originalfile}
+            , savedfile=#{savedfile}
+        </if>
+        where hw_num=#{hw_num} and memberid=#{memberid}
+    </update>
+
+    <!-- 과제 삭제 -->
+    <delete id="deleteHw" parameterType="Homework">
+        delete from lms_homework where hw_num=#{hw_num} and memberid=#{memberid}
+    </delete>
+
+    <!-- 과제 등록 -->
+    <insert id="insertSub" parameterType="HomeworkSub">
+        insert into lms_homework_submission
+        (
+            hw_sub_num
+            , hw_num
+            , hw_sub_contents
+            , hw_sub_done
+            , memberid
+        <if test="originalfile != null and savedfile != null">
+            , originalfile
+            , savedfile
+        </if>
+        )
+        values
+        (
+            lms_hw_sub_seq.nextval
+            , #{hw_num}
+            , #{hw_sub_contents}
+            , #{hw_sub_done}
+            , #{memberid}
+        <if test="originalfile != null and savedfile != null">
+            , #{originalfile}
+            , #{savedfile}
+        </if>
+        )
+    </insert>
+
+    <!-- 과제 제출 리스트 -->
+    <select id="subList" parameterType="HomeworkSub">
+        select
+            *
+        from
+            lms_homework_submission
+        where
+            hw_num=#{hw_num}
+        order by
+            hw_sub_num desc
+    </select>
+
+    <!-- 제출 카운트 -->
+    <select id="subCount">
+        select count(*) from lms_homework_submission where memberid=#{memberid} and hw_num=#{hw_num}
+    </select>
+
+    <!-- 제출 조회 -->
+    <select id="selectSub" resultType="HomeworkSub">
+        select
+            *
+        from
+            lms_homework_submission
+        where
+            hw_sub_num=#{hw_sub_num}
+    </select>
+
+    <!-- 제출 수정 -->
+    <update id="updateSub">
+        update lms_homework_submission
+        set
+            hw_sub_contents=#{hw_sub_contents}
+            , hw_sub_done=#{hw_sub_done}
+            , hw_sub_inputdate=sysdate
+        <if test="originalfile != null and savedfile != null">
+            , originalfile=#{originalfile}
+            , savedfile=#{savedfile}
+        </if>
+        where hw_sub_num=#{hw_sub_num} and memberid=#{memberid}
+    </update>
+
+    <!-- 과제 학생 리스트 -->
+    <select id="stList" resultType="HomeworkStudent">
+        select
+            s.memberid,
+            s.school,
+            s.major,
+            s.graduation,
+            s.curriculum,
+            jp.jpclassname,
+            jp.jpsubject,
+            it.itclassname,
+            it.itsubject,
+            h.hw_num,
+            h.hw_sub_num,
+            h.hw_sub_contents,
+            h.hw_sub_inputdate,
+            h.hw_sub_done,
+            h.hw_sub_comment,
+            h.hw_sub_score,
+            h.originalfile,
+            h.savedfile
+        from
+            lms_student s
+        left join
+            class_jp_category jp on s.memberid = jp.memberid
+        left join
+            class_it_category it on s.memberid = it.memberid
+        left outer join
+            lms_homework_submission h on s.memberid = h.memberid and h.hw_num = #{hw_num}
+        order by
+            s.memberid
+    </select>
+
 </mapper>

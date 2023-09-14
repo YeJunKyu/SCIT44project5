@@ -25,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -93,14 +94,25 @@ public class NoticeController {
 
     //공지 글 작성
     @PostMapping("write")
-    public String write(@AuthenticationPrincipal UserDetails user
-            , Notice notice
-            , MultipartFile upload) {
+    public String write(
+            @AuthenticationPrincipal UserDetails user,
+            Notice notice,
+            @RequestParam("upload") List<MultipartFile> uploads) {
 
-        if (upload != null && !upload.isEmpty()) {
-            String savedfile = FileService.saveFile(upload, uploadPath);
-            notice.setOriginalfile(upload.getOriginalFilename());
-            notice.setSavedfile(savedfile);
+        if (uploads != null && !uploads.isEmpty()) {
+            List<String> savedFiles = new ArrayList<>();
+            List<String> originalFiles = new ArrayList<>();
+
+            for (MultipartFile upload : uploads) {
+                if (!upload.isEmpty()) {
+                    String savedfile = FileService.saveFile(upload, uploadPath);
+                    savedFiles.add(savedfile);
+                    originalFiles.add(upload.getOriginalFilename());
+                }
+            }
+
+            notice.setOriginalfile(String.join(",", originalFiles));
+            notice.setSavedfile(String.join(",", savedFiles));
         }
 
         notice.setMemberid(user.getUsername());
@@ -135,26 +147,35 @@ public class NoticeController {
 
     //파일 다운로드
     @GetMapping("download")
-    public void download(int noticenum
-            , HttpServletRequest request
-            , HttpServletResponse response) {
+    public void download(
+            @RequestParam("noticenum") int noticenum,
+            @RequestParam("filename") String filename,
+            HttpServletRequest request,
+            HttpServletResponse response) {
 
-        /* log.debug("요청을 보낸 쪽의 아이피: {}",request.getRemoteAddr()); */
+        Notice notice = service.select(noticenum);
 
-        //해당 글의 첨부파일명 확인
-        Notice notice= service.select(noticenum);
+        // 원래 파일 이름과 저장된 파일 이름 분리
+        String[] originalFiles = notice.getOriginalfile().split(",");
+        String[] savedFiles = notice.getSavedfile().split(",");
 
-        //파일의 경로를 이용해서 FileInputStream 객체를 생성
-        String fullPath = uploadPath + "/" + notice.getSavedfile();
-
-        //response를 통해 파일 전송
-        try {
-            response.setHeader("Content-Disposition", " attachment;filename="+ URLEncoder.encode(notice.getOriginalfile(), "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        String selectedSavedFile = null;
+        for (int i = 0; i < originalFiles.length; i++) {
+            if (originalFiles[i].equals(filename)) {
+                selectedSavedFile = savedFiles[i];
+                break;
+            }
         }
 
+        if (selectedSavedFile == null) {
+            // 해당 파일이 없음을 처리 (예: 오류 메시지 반환)
+            return;
+        }
+
+        String fullPath = uploadPath + "/" + selectedSavedFile;
+
         try {
+            response.setHeader("Content-Disposition", " attachment;filename="+ URLEncoder.encode(filename, "UTF-8"));
             FileInputStream in = new FileInputStream(fullPath);
             ServletOutputStream out = response.getOutputStream();
 
@@ -165,8 +186,8 @@ public class NoticeController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
+
 
     //공지 글 수정 폼
     @GetMapping("update")
@@ -183,19 +204,24 @@ public class NoticeController {
     @PostMapping("update")
     public String update(Notice notice
             , @AuthenticationPrincipal UserDetails user
-            , MultipartFile upload) {
+            , @RequestParam("upload") List<MultipartFile> uploads) {
 
         log.debug("공지: {}", notice);
 
-        if(notice.getOriginalfile() != null && !notice.getOriginalfile().isEmpty() && upload != null && !upload.isEmpty()) {
-            String fullPath = uploadPath + "/" + notice.getSavedfile();
-            FileService.deleteFile(fullPath);
-        }
+        if (uploads != null && !uploads.isEmpty()) {
+            List<String> savedFiles = new ArrayList<>();
+            List<String> originalFiles = new ArrayList<>();
 
-        if (upload != null && !upload.isEmpty()) {
-            String savedfile=FileService.saveFile(upload, uploadPath);
-            notice.setOriginalfile(upload.getOriginalFilename());
-            notice.setSavedfile(savedfile);
+            for (MultipartFile upload : uploads) {
+                if (!upload.isEmpty()) {
+                    String savedfile = FileService.saveFile(upload, uploadPath);
+                    savedFiles.add(savedfile);
+                    originalFiles.add(upload.getOriginalFilename());
+                }
+            }
+
+            notice.setOriginalfile(String.join(",", originalFiles));
+            notice.setSavedfile(String.join(",", savedFiles));
         }
 
         notice.setMemberid(user.getUsername());
@@ -215,8 +241,13 @@ public class NoticeController {
             return "redirect:/notice";
         }
         if (notice.getSavedfile() != null && !notice.getSavedfile().isEmpty()) {
-            String fullPath = uploadPath + "/" + notice.getSavedfile();
-            FileService.deleteFile(fullPath);
+            // 쉼표를 기준으로 파일 이름들을 분리
+            String[] savedFiles = notice.getSavedfile().split(",");
+
+            for(String savedFile : savedFiles) {
+                String fullPath = uploadPath + "/" + savedFile;
+                FileService.deleteFile(fullPath);
+            }
         }
 
         notice.setMemberid(user.getUsername());

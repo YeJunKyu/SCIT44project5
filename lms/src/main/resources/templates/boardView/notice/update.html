@@ -14,7 +14,7 @@
     <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png">
     <link rel="stylesheet" th:href="@{/assets/css/shared/iconly.css}">
 
-    <script th:src="@{/privatejs/sidebarLoader.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 
     <style>
         .table-responsive {
@@ -28,11 +28,19 @@
             let c = document.getElementById('noticecontents').value;
 
             if(t.length<5) {
-                alert("제목을 입력하세요.");
+                Swal.fire({
+                  icon: 'error',
+                  title: '제목을 입력해주세요',
+                  text: '제목을 5자 이상 입력해주세요',
+                })
                 return false;
             }
             if(c.length<5) {
-                alert("내용을 입력하세요.");
+                Swal.fire({
+                  icon: 'error',
+                  title: '내용을 입력해주세요',
+                  text: '내용을 10자 이상 입력해주세요',
+                })
                 return false;
             }
         }
@@ -111,7 +119,7 @@
                                             </div>
                                             <div class="col-md-10 form-group">
                                                 <div class="mb-3">
-                                                    <input type="file" name="upload" class="form-control" id="formFile">
+                                                    <input type="file" name="upload" class="form-control" id="formFile" multiple>
                                                 </div>
                                             </div>
                                             <input type="hidden" th:value="${notice.noticenum}" name="noticenum">
@@ -119,7 +127,7 @@
                                             <input type="hidden" th:value="${notice.savedfile}" name="savedfile">
                                             <div class="col-sm-12 d-flex justify-content-end">
                                                 <button type="submit" class="btn btn-primary me-1 mb-1">확인</button>
-                                                <button type="reset" class="btn btn-light-secondary me-1 mb-1"><a th:href="@{/notice/read(noticenum=${notice.noticenum})}">취소</a></button>
+                                                <button type="button" class="btn btn-light-secondary me-1 mb-1"><a th:href="@{/notice/read(noticenum=${notice.noticenum})}">취소</a></button>
                                             </div>
                                         </div>
                                     </div>
