@@ -144,5 +144,65 @@ public class AdminServiceImple implements AdminService {
 		return dao.ReadOneStudent(memberid);
 	}
 
+	@Override
+	public void updateCurriculum(StudentsAll studentsAll) {
+		dao.updateCurriculum(studentsAll);
+	}
+
+	@Override
+	public void updatejpClass(StudentsAll studentsAll) {
+		dao.updatejpClass(studentsAll);
+	}
+
+	@Override
+	public void updateitClass(StudentsAll studentsAll) {
+		dao.updateitClass(studentsAll);
+	}
+
+	@Override
+	public void updateInformation(StudentsAll studentsAll) {
+		dao.updateInformation(studentsAll);
+	}
+
+	@Override
+	public void insertOneCurriculum(StudentsAll studentsAll) {
+		dao.insertOneCurriculum(studentsAll);
+	}
+
+	@Override
+	public void insertOneitClass(StudentsAll studentsAll) {
+		dao.insertOneitClass(studentsAll);
+	}
+
+	@Override
+	public void insertOnejpClass(StudentsAll studentsAll) {
+		dao.insertOnejpClass(studentsAll);
+	}
+
+	@Override
+	public void insertOneInformation(StudentsAll studentsAll) {
+		dao.insertOneInformation(studentsAll);
+	}
+
+	@Override
+	public Student selectOneStudent(String memberid) {
+		return dao.selectOneStudent(memberid);
+	}
+
+	@Override
+	public JP_category selectOnejpCategory(String memberid) {
+		return dao.selectOnejpCategory(memberid);
+	}
+
+	@Override
+	public IT_category selectOneitCategory(String memberid) {
+		return dao.selectOneitCategory(memberid);
+	}
+
+	@Override
+	public StudentInfo selectOneStudentInfo(String memberid) {
+		return dao.selectOneStudentInfo(memberid);
+	}
+
 
 }

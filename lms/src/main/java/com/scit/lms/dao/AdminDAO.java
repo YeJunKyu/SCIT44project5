@@ -62,4 +62,28 @@ public interface AdminDAO {
     void UpdateStudentAttendance(Attendance attendance);
 
     StudentsAll ReadOneStudent(String memberid);
+
+    void updateInformation(StudentsAll studentsAll);
+
+    void updateitClass(StudentsAll studentsAll);
+
+    void updatejpClass(StudentsAll studentsAll);
+
+    void updateCurriculum(StudentsAll studentsAll);
+
+    void insertOneCurriculum(StudentsAll studentsAll);
+
+    void insertOneitClass(StudentsAll studentsAll);
+
+    void insertOnejpClass(StudentsAll studentsAll);
+
+    void insertOneInformation(StudentsAll studentsAll);
+
+    Student selectOneStudent(String memberid);
+
+    JP_category selectOnejpCategory(String memberid);
+
+    IT_category selectOneitCategory(String memberid);
+
+    StudentInfo selectOneStudentInfo(String memberid);
 }

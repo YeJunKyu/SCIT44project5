@@ -161,6 +161,92 @@
         LEFT JOIN student_info si ON m.memberid = si.memberid
         where m.rolename = 'ROLE_student' and m.memberid = #{memberid}
     </select>
+<!--개인정보 과정조회-->
+<select id="selectOneStudent" parameterType="String"
+resultType="Student">
+select * from lms_student
+    where memberid = #{member.memberid}
+</select>
+    
+<!--    개인정보 분반조회-->
+    <select id="selectOnejpCategory" parameterType="String"
+            resultType="JP_category">
+        select * from class_jp_category
+        where memberid = #{member.memberid}
+    </select>
+    <select id="selectOneitCategory" parameterType="String"
+            resultType="IT_category">
+        select * from class_it_category
+        where memberid = #{member.memberid}
+    </select>
+    
+<!--    개인정보 기타정보조회-->
+    <select id="selectOneStudentInfo" parameterType="String"
+            resultType="StudentInfo">
+        select * from student_info
+        where memberid = #{member.memberid}
+    </select>
+
+<!--    개인정보 수정 : 과정-->
+<update id="updateCurriculum" parameterType="StudentsAll">
+        update lms_student set school = #{student.school},
+    major = #{student.major},
+    graduation = #{student.graduation},
+    curriculum = #{student.curriculum}
+    where memberid = #{member.memberid}
+</update>
+<!--개인정보 수정 : 분반-->
+    <update id="updateitClass" parameterType="StudentsAll">
+        update class_it_category set itclassname = #{itCategory.itclassname}
+        where memberid = #{member.memberid}
+    </update>
+    <update id="updatejpClass" parameterType="StudentsAll">
+        update class_jp_category set jpclassname = #{jpCategory.jpclassname}
+        where memberid = #{member.memberid}
+    </update>
+<!--    개인정보 수정 : 기타정보-->
+    <update id="updateInformation" parameterType="StudentsAll">
+        update student_info set certi_jpname = #{studentInfo.certi_jpname},
+        certi_name = #{studentInfo.certi_name},
+        note = #{studentInfo.note},
+        company = #{studentInfo.company},
+        experience = #{studentInfo.experience},
+        scitgraduation = #{studentInfo.scitgraduation}
+        where memberid = #{member.memberid}
+    </update>
+
+<!--    개인정보 등록 : 과정-->
+<insert id="insertOneCurriculum" parameterType="StudentsAll">
+    insert into lms_student(memberid,school, major, graduation, curriculum)
+    values(#{member.memberid},
+    #{student.school},
+    #{student.major},
+    #{student.graduation},
+    #{student.curriculum})
+
+</insert>
+<!--    개인정보 등록 : 분반-->
+    <insert id="insertOneitClass" parameterType="StudentsAll">
+    insert into class_it_category(memberid,itclassname)
+        values(#{member.memberid},#{itCategory.itclassname})
+    </insert>
+    <insert id="insertOnejpClass" parameterType="StudentsAll">
+    insert into class_jp_category(memberid,jpclassname)
+        values(#{member.memberid},#{jpCategory.jpclassname})
+    </insert>
+<!--    개인정보 등록 : 기타정보-->
+    <insert id="insertOneInformation" parameterType="StudentsAll">
+    insert into student_info(memberid,certi_jpname,certi_name,note,
+        company,experience,scitgraduation)
+        values(#{member.memberid},
+          #{studentInfo.certi_jpname},
+          #{studentInfo.certi_name},
+          #{studentInfo.note},
+          #{studentInfo.company},
+         #{studentInfo.experience},
+         #{studentInfo.scitgraduation})
+    </insert>
+    
 <!--    시험비중등록폼 대분류 등록-->
 <insert id="insertBigRatio" parameterType="PrimaryRatio">
     INSERT INTO primary_ratio_category(category_id, categoryname, ratio, divname)
