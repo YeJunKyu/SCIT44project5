@@ -13,9 +13,18 @@
     <link rel="stylesheet" th:href="@{/assets/extensions/simple-datatables/style.css}">
     <link rel="stylesheet" th:href="@{/assets/css/pages/simple-datatables.css}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+
+        input[type="text"] {
+            width: 50px;
+        }
+    </style>
+    </style>
 </head>
 <body>
 <h1>학생개인정보</h1>
+<form th:action="@{/admin/updateInformation}" method="post">
+
 
 <table class="table table-striped" id="table1">
     <tr>
@@ -30,7 +39,7 @@
         <th>과정</th>
         <th>일본어분반</th>
         <th>IT분반</th>
-        <th>일어자격증</th>
+        <th>공인어학자격증</th>
         <th>IT자격증</th>
         <th>기타자격</th>
         <th>내정회사</th>
@@ -39,29 +48,131 @@
     </tr>
 
     <tr>
-        <td th:text="${student.member.memberid}"></td>
-        <td th:text="${student.member.membername}"></td>
-        <td th:text="${student.member.birthday}"></td>
-        <td th:text="${student.member.gender}"></td>
-        <td th:text="${student.member.address}"></td>
-        <td th:text="${student.student.school}"></td>
-        <td th:text="${student.student.major}"></td>
-        <td th:text="${student.student.graduation}"></td>
-        <td th:text="${student.student.curriculum}"></td>
-        <td th:text="${student.jpCategory.jpclassname}"></td>
-        <td th:text="${student.itCategory.itclassname}"></td>
-        <td th:text="${student.studentInfo?.certi_jpname}"></td>
-        <td th:text="${student.studentInfo?.certi_name}"></td>
-        <td th:text="${student.studentInfo?.note}"></td>
-        <td th:text="${student.studentInfo?.company}"></td>
-        <td th:text="${student.studentInfo?.experience}"></td>
-        <td th:text="${student.studentInfo?.scitgraduation}"></td>
+        <td>
+            <input type="hidden" name="member.memberid" th:value="${student.member?.memberid}" readonly>
+            [[${student.member?.memberid}]]
+        </td>
+        <td th:text="${student.member?.membername}"></td>
+        <td th:text="${student.member?.birthday}"></td>
+        <td th:if="${student.member?.gender == 'female'}">여성</td>
+        <td th:if="${student.member?.gender == 'male'}">남성</td>
+        <td th:text="${student.member?.address}"></td>
+        <td>
+            <input type="text" name="student.school" th:value="${student.student?.school}">
+            [[${student.student?.school}]]
+        </td>
+        <td>
+            <input type="text" name="student.major" th:value="${student.student?.major}">
+            [[${student.student?.major}]]
+        </td>
+        <td th:if="${student.student?.graduation == '0'}">
+            <select name="student.graduation">
+                <option value="0">재학중</option>
+                <option value="1">졸업</option>
+
+            </select>
+            재학중
+        </td>
+        <td th:if="${student.student?.graduation == '1'}">
+            <select name="student.graduation">
+                <option value="1">졸업</option>
+                <option value="0">재학중</option>
+
+            </select>
+            졸업
+        </td>
+        <td>
+            <select name="student.curriculum">
+                <option th:value="${student.student?.curriculum}" th:text="${student.student.curriculum}"></option>
+                <option th:each="i: ${#numbers.sequence(1, 100)}" th:value="'SCIT' + ${i} + '기'" th:text="'SCIT' + ${i} + '기'"></option>
+            </select>
+            [[${student.student.curriculum}]]
+        </td>
+        <td>
+            <select name="jpCategory.jpclassname">
+                <option th:value="${student.jpCategory?.jpclassname}" th:text="${student.jpCategory?.jpclassname}"></option>
+                <option value="기본">해당없음</option>
+                <option value="A">A반</option>
+                <option value="B">B반</option>
+                <option value="C">C반</option>
+                <option value="D">D반</option>
+                <option value="E">E반</option>
+                <option value="F">F반</option>
+                <option value="G">G반</option>
+                <option value="H">H반</option>
+                <option value="I">I반</option>
+                <option value="J">J반</option>
+            </select>
+            [[${student.jpCategory?.jpclassname}]]
+        </td>
+        <td>
+            <select name="itCategory.itclassname">
+                <option th:value="${student.itCategory?.itclassname}" th:text="${student.itCategory?.itclassname}"></option>
+                <option value="기본">해당없음</option>
+                <option value="A">A반</option>
+                <option value="B">B반</option>
+                <option value="C">C반</option>
+                <option value="D">D반</option>
+                <option value="E">E반</option>
+                <option value="F">F반</option>
+                <option value="G">G반</option>
+                <option value="H">H반</option>
+                <option value="I">I반</option>
+                <option value="J">J반</option>
+            </select>
+            [[${student.itCategory?.itclassname}]]
+        </td>
+        <td>
+            <select name="studentInfo.certi_jpname">
+                <option th:value="${student.studentInfo?.certi_jpname}" th:text="${student.studentInfo?.certi_jpname}"></option>
+                <option value="미보유">미보유</option>
+                <option value="JLPT N1">JLPT N1</option>
+                <option value="JLPT N2">JLPT N2</option>
+                <option value="JLPT N3">JLPT N3</option>
+                <option value="JLPT N4">JLPT N4</option>
+                <option value="JLPT N5">JLPT N5</option>
+            </select>
+            [[${student.studentInfo?.certi_jpname}]]
+        </td>
+        <td>
+            <select name="studentInfo.certi_name">
+                <option th:value="${student.studentInfo?.certi_name}" th:text="${student.studentInfo?.certi_name}"></option>
+                <option value="미보유">미보유</option>
+                <option value="정보처리기사 필기">정보처리기사 필기</option>
+                <option value="정보처리기사">정보처리기사</option>
+                <option value="정보처리산업기사 필기">정보처리산업기사 필기</option>
+                <option value="정보처리산업기사">정보처리산업기사</option>
+            </select>
+            [[${student.studentInfo?.certi_name}]]
+        </td>
+        <td>
+            <input type="text" name="studentInfo.note" th:value="${student.studentInfo?.note}">
+        </td>
+        <td>
+            <input type="text" name="studentInfo.company" th:value="${student.studentInfo?.company}">
+        </td>
+        <td>
+            <input type="text" name="studentInfo.experience" th:value="${student.studentInfo?.experience}">
+        </td>
+        <td>
+            <select name="studentInfo.scitgraduation">
+                <option th:value="${student.studentInfo?.scitgraduation}" th:text="${student.studentInfo?.scitgraduation}"></option>
+                <option value="미수료">미수료</option>
+                <option value="수료">수료</option>
+            </select>
+            [[${student.studentInfo?.scitgraduation}]]
+        </td>
  </tr>
 
 
 
 
 </table>
+<input type="submit" value="편집">
+</form>
+<br>
+<a th:href="@{/main}">메인</a><br>
+<a th:href="@{/admin/studentManager}">학생정보</a>
 
 <script th:src="@{/assets/extensions/simple-datatables/umd/simple-datatables-1.js}"></script>
 <script th:src="@{/assets/js/pages/simple-datatables.js}"></script>

@@ -1,5 +1,8 @@
 package com.scit.lms.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -228,6 +231,69 @@ public class AdminController {
 		log.debug("학생정보확인:{}",studentsAll);
 		model.addAttribute("student",studentsAll);
 		return "adminView/ReadOneStudent";
+	}
+
+	//학생개인정보수정
+	@PostMapping("updateInformation")
+	public String updateInformation(StudentsAll studentsAll) throws Exception
+	{log.debug("개인정보수정컨트롤러:{}",studentsAll);
+	Student student = service.selectOneStudent(studentsAll.getMember().getMemberid());
+	log.debug("학생확인:{}",student);
+	JP_category jpCategory = service.selectOnejpCategory(studentsAll.getMember().getMemberid());
+		log.debug("카테고리확인:{}",jpCategory);
+	IT_category itCategory = service.selectOneitCategory(studentsAll.getMember().getMemberid());
+		log.debug("카테고리확인:{}",itCategory);
+	StudentInfo studentInfo = service.selectOneStudentInfo(studentsAll.getMember().getMemberid());
+		log.debug("기타정보확인:{}",studentInfo);
+
+		if(student != null){
+			service.updateCurriculum(studentsAll);
+			log.debug("개인정보수정확인1:{}",studentsAll);
+		}
+
+
+		if(jpCategory != null){
+			service.updatejpClass(studentsAll);
+			log.debug("개인정보수정확인2:{}", studentsAll);
+		}
+
+		if(itCategory != null) {
+			service.updateitClass(studentsAll);
+			log.debug("개인정보수정확인3:{}",studentsAll);
+		}
+
+		if(studentInfo != null){
+			service.updateInformation(studentsAll);
+			log.debug("개인정보수정확인4:{}",studentsAll);
+
+		}
+
+
+		if(student == null){
+			service.insertOneCurriculum(studentsAll);
+			log.debug("개인정보등록확인1:{}",studentsAll);
+		}
+
+		if(itCategory == null){
+			service.insertOneitClass(studentsAll);
+			log.debug("개인정보등록확인2:{}",studentsAll);
+		}
+
+		if(jpCategory == null){
+			service.insertOnejpClass(studentsAll);
+			log.debug("개인정보등록확인3:{}",studentsAll);
+		}
+		if(studentInfo == null){
+			service.insertOneInformation(studentsAll);
+			log.debug("개인정보등록확인4:{}",studentsAll);
+		}
+
+
+			String encodedMemberId = URLEncoder.encode(studentsAll.getMember().getMemberid(), StandardCharsets.UTF_8.toString());
+
+
+
+		return "redirect:/admin/studentManager/";
 	}
 
 	//시험비중등록폼
