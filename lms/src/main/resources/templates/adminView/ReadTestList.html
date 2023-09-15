@@ -18,27 +18,69 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script th:src="@{/privatejs/sidebarLoader.js}"></script>
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        let totalRatios = {};
 
-    function insertchk(){
-
-            if(confirm('등록하시겠습니까?')){
-                return true;
-        }
-            return false;
-        }
-
-   document.querySelector('form').addEventListener('submit', function(e) {
-    const checkboxes = document.querySelectorAll('input[name="category_id"]');
-
-    checkboxes.forEach((checkbox, index) => {
-        if (!checkbox.checked) {
+        // 동일한 상위코드를 가진 모든 비중을 합산
+        checkboxes.forEach((checkbox) => {
             const row = checkbox.closest('tr');
-            row.querySelectorAll('input[type="text"]').forEach(input => {
-                input.value = ""; // input 값을 빈 문자열로 설정합니다.
-            });
+            const parentId = row.querySelector('td:nth-child(3)').innerText.trim();
+            const selectedRatio = parseFloat(row.querySelector('select').value);
+
+            if (!totalRatios[parentId]) {
+                totalRatios[parentId] = 0;
+            }
+
+            if (checkbox.checked || (row.dataset.checked && row.dataset.checked == "true")) {
+                totalRatios[parentId] += selectedRatio;
+            }
+        });
+
+        console.log(totalRatios);
+
+        // 합계가 100%가 아닌 상위코드 확인
+        for (let parentId in totalRatios) {
+            if (totalRatios[parentId] != 1.0) {
+                e.preventDefault();
+                alert('비중의 합계가 100%가 되어야 합니다. 다시 확인해 주세요.');
+                return;
+            }
         }
+
+        // 체크되지 않은 항목의 값을 빈 문자열로 설정
+        checkboxes.forEach((checkbox) => {
+            if (!checkbox.checked) {
+                const row = checkbox.closest('tr');
+                row.querySelectorAll('input[type="text"]').forEach(input => {
+                    input.value = "";
+                });
+            }
+        });
     });
 });
+
+        function insertchk(){
+
+                if(confirm('등록하시겠습니까?')){
+                    return true;
+            }
+                return false;
+            }
+
+<!--       document.querySelector('form').addEventListener('submit', function(e) {-->
+<!--        const checkboxes = document.querySelectorAll('input[name="category_id"]');-->
+
+<!--        checkboxes.forEach((checkbox, index) => {-->
+<!--            if (!checkbox.checked) {-->
+<!--                const row = checkbox.closest('tr');-->
+<!--                row.querySelectorAll('input[type="text"]').forEach(input => {-->
+<!--                    input.value = ""; // input 값을 빈 문자열로 설정합니다.-->
+<!--                });-->
+<!--            }-->
+<!--        });-->
+<!--    });-->
 
 
 </script>
@@ -60,7 +102,7 @@
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
                 <h3>시험 조회 및 수정</h3>
-                <p class="text-subtitle text-muted">시험종목명이나 반영비율을 수정해주세요.</p>
+                <p class="text-subtitle text-muted">시험종목명이나 반영비율을 수정해주세요.(분류를 잘못설정하여 수정하는경우는 가급적이면 삭제를 권장드립니다.)</p>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
