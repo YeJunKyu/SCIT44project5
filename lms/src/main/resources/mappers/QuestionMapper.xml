@@ -74,6 +74,7 @@
         SELECT *
         FROM lms_q_options
         WHERE qid = #{qid}
+            AND ((SELECT type FROM lms_question where qid = #{qid}) = 1 OR (SELECT type FROM lms_question where qid = #{qid}) = 2)
         ORDER BY value ASC
     </select>
 </mapper>

@@ -67,7 +67,6 @@ public class TestController {
             question.setType(q.getType());
             questionService.submitQuestion(question);
 
-
             // 타입이 1, 2, 3인 경우만 option 및 answer 등록
             if(q.getOptions() != null && !q.getOptions().isEmpty() && (q.getType() == 1 || q.getType() == 2 || q.getType() == 3)) {
                 List<Option> options = new ArrayList<>();
@@ -104,15 +103,14 @@ public class TestController {
         // 시험의 문제
         ArrayList<Question> questions = questionService.selectQuestions(testid);
 
-        // 객관식 유형 문제의 보기
+        // 객관식 유형 문제의 보기 가져오기
         ArrayList<Option> allOptions = new ArrayList<>();
         for (Question q : questions) {
-            int qType = q.getType();
-            if(qType == 1 || qType == 2) {
-                ArrayList<Option> options = questionService.selectOptions(q.getQid());
-                allOptions.addAll(options);
-            }
+            ArrayList<Option> options = questionService.selectOptions(q.getQid());
+            allOptions.addAll(options);
         }
+//        log.debug("{}", allOptions);
+
         model.addAttribute("test", test);
         model.addAttribute("questions", questions);
         model.addAttribute("options", allOptions);

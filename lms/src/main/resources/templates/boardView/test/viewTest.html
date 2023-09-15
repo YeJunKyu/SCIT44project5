@@ -1,141 +1,247 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>테스트 - SCIT</title>
-    <link rel="stylesheet" th:href="@{/assets/extensions/choices.js/public/assets/styles/choices.css}" />
+    <head>
+        <meta charset="UTF-8" />
+        <title>테스트 - SCIT</title>
+        <link rel="stylesheet" th:href="@{/assets/extensions/choices.js/public/assets/styles/choices.css}" />
 
-    <link rel="stylesheet" th:href="@{/assets/css/main/app.css}" />
-    <link rel="stylesheet" th:href="@{/assets/css/main/app-dark.css}" />
-    <link rel="stylesheet" th:href="@{/assets/css/main/lms.css}" />
-    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.svg}" type="image/x-icon" />
-    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png" />
-    <script th:src="@{/assets/js/jquery-3.6.0.js}"></script>
-</head>
-<body>
-<div id="app">
-    <div th:replace="/fragments/sidebar.html :: sidebarFrag"></div>
-    <div id="main">
-        <header class="mb-3">
-            <a href="#" class="burger-btn d-block d-xl-none">
-                <i class="bi bi-justify fs-3"></i>
-            </a>
-        </header>
+        <link rel="stylesheet" th:href="@{/assets/css/main/app.css}" />
+        <link rel="stylesheet" th:href="@{/assets/css/main/app-dark.css}" />
+        <link rel="stylesheet" th:href="@{/assets/css/main/lms.css}" />
+        <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.svg}" type="image/x-icon" />
+        <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png" />
+        <script th:src="@{/assets/js/jquery-3.6.0.js}"></script>
+        <script th:inline="javascript">
+            function submitForm() {
+                let dataToSend = [];
 
-        <div class="page-heading">
-            <div class="page-title">
-                <div class="row">
-                    <div class="col-12 col-md-6 order-md-1 order-last">
-                        <h3 th:text="${test.testname}"></h3>
-                        <p class="text-subtitle text-muted">Customize the native &laquo;select&raquo; with custom CSS that changes the element’s initial appearance..</p>
+                // 모든 문제를 루프를 돌며 처리합니다.
+                let questions = document.querySelectorAll(".qPlace");
+                console.log(questions);
+                questions.forEach(function (question) {
+                    let cardId = question.getAttribute("th:value");
+                    let questionType = question.getAttribute("th:case");
+                    let answer = null;
+
+                    // 문제 유형에 따라 값을 추출합니다.
+                    switch (questionType) {
+                        case "1": // 객관식
+                            let selectedOption = question.querySelector('input[name="' + cardId + '-answer"]:checked');
+                            if (selectedOption) {
+                                answer = selectedOption.value;
+                            }
+                            break;
+
+                        case "2": // 객관식 복수 선택형
+                            let selectedOptions = question.querySelectorAll('input[name="' + cardId + '-answer"]:checked');
+                            if (selectedOptions.length > 0) {
+                                answer = [];
+                                selectedOptions.forEach(function (selectedOption) {
+                                    answer.push(selectedOption.value);
+                                });
+                            }
+                            break;
+
+                        case "3": // 단답형
+                            let textAnswer = question.querySelector('input[type="text"].form-control');
+                            if (textAnswer) {
+                                answer = textAnswer.value;
+                            }
+                            break;
+
+                        case "4": // 서술형
+                            let textareaAnswer = question.querySelector("textarea.form-control");
+                            if (textareaAnswer) {
+                                answer = textareaAnswer.value;
+                            }
+                            break;
+
+                        case "5": // 파일 첨부형
+                            // 파일 입력값을 추출하려면 해당 파일 입력 요소에 접근해야 합니다.
+                            // 파일 입력 요소의 ID를 사용하여 접근할 수 있습니다.
+                            let fileInput = document.querySelector("#" + cardId + "-file-input");
+                            if (fileInput) {
+                                // 파일 입력 요소의 처리 방법은 서버 백엔드에 따라 다를 수 있습니다.
+                                // 필요에 따라 파일 업로드 로직을 추가해야 합니다.
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+
+                    // 문제와 답을 데이터 배열에 추가
+                    dataToSend.push({
+                        cardId: cardId,
+                        questionType: questionType,
+                        answer: answer,
+                    });
+                });
+
+                console.log(dataToSend);
+                // // Ajax 요청을 보냅니다.
+                // $.ajax({
+                //     type: 'POST',
+                //     url: '/submit', // 서버의 엔드포인트 URL을 지정하세요.
+                //     contentType: 'application/json',
+                //     data: JSON.stringify(dataToSend),
+                //     success: function(response) {
+                //         // 성공적으로 서버에서 응답을 받았을 때 수행할 작업을 여기에 추가하세요.
+                //     },
+                //     error: function(error) {
+                //         // Ajax 요청이 실패했을 때 수행할 작업을 여기에 추가하세요.
+                //     }
+                // });
+            }
+        </script>
+    </head>
+    <body>
+        <div id="app">
+            <div th:replace="/fragments/sidebar.html :: sidebarFrag"></div>
+            <div id="main">
+                <header class="mb-3">
+                    <a href="#" class="burger-btn d-block d-xl-none">
+                        <i class="bi bi-justify fs-3"></i>
+                    </a>
+                </header>
+
+                <div class="page-heading">
+                    <div class="page-title">
+                        <div class="row">
+                            <div class="col-12 col-md-6 order-md-1 order-last">
+                                <h3 th:text="${test.testname}"></h3>
+                                <p class="text-subtitle text-muted">Customize the native &laquo;select&raquo; with custom CSS that changes the element’s initial appearance..</p>
+                            </div>
+                            <div class="col-12 col-md-6 order-md-2 order-first">
+                                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item"><a th:href="@{/test}">시험</a></li>
+                                        <li class="breadcrumb-item active" aria-current="page">문제등록</li>
+                                    </ol>
+                                </nav>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-12 col-md-6 order-md-2 order-first">
-                        <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a th:href="@{/test}">시험</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">문제등록</li>
-                            </ol>
-                        </nav>
-                    </div>
+                    <form>
+                        <section class="section">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <h4 class="card-title">시험명</h4>
+                                            <div class="form-group input-group-lg">
+                                                <h6 class="card-title" th:text="${test.testname}"></h6>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <h4 class="card-title">총점</h4>
+                                            <span id="totalPoints" th:text="${test.totalpoints}">0</span>점
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h4 class="card-title">시험일시</h4>
+                                            <div class="form-group input-group">
+                                                <span th:text="${test.testdate}"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h4 class="card-title">마감일시</h4>
+                                            <div class="form-group input-group">
+                                                <span th:text="${test.testlimit}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body"></div>
+                            </div>
+                        </section>
+                        <div class="section" id="questions" th:each="q : ${questions}">
+                            <div class="card qPlace" id="cardid" th:value="${q.qid}">
+                                <div class="card-header justify-content-between">
+                                    <div class="d-flex mb-3 align-items-center">
+                                        <h6 class="col-md-8" id="${cardId}-papernum" th:text="${q.papernum}"></h6>
+                                        <div class="col-md-2 icon">
+                                            <input type="file" id="${cardId}-file-input" name="file" style="display: none" />
+                                            <button id="${cardId}-attach-file-btn" class="btn btn-primary btn-sm rounded-pill m-lg-2">파일 첨부</button>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <span th:text="${q.type}"></span>
+                                        </div>
+                                    </div>
+                                    <!--문제 출력 부분-->
+                                    <h6 th:text="${q.contents}"></h6>
+                                </div>
+                                <!--문제 유형별 답 입력 부분-->
+                                <div id="qPlace" class="card-body">
+                                    <div th:switch="${q.type}">
+                                        <!-- 객관식 (q.type == 1) -->
+                                        <div th:case="1">
+                                            <div th:if="${q.qid == o.qid}" th:each="o :${options}">
+                                                <div class="d-flex justify-content-between mb-1 optionItem">
+                                                    <div>
+                                                        <label class="d-flex align-items-center">
+                                                            <input type="radio" class="form-check-input m-lg-1 optionCount" name="${cardId}-answer" value="${value}" />
+                                                            <span th:text="${o.content}"></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- 객관식 복수정답 (q.type == 2) -->
+                                        <div th:case="2">
+                                            <div th:if="${q.qid == o.qid}" th:each="o :${options}">
+                                                <div class="d-flex justify-content-between mb-1 multiOptionItem">
+                                                    <div>
+                                                        <label class="d-flex align-items-center">
+                                                            <input type="checkbox" class="form-check-input m-lg-1 optionCount" name="${cardId}-answer" value="${value}" />
+                                                            <span th:text="${o.content}"></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- 단답형 (q.type == 3) -->
+                                        <div th:case="3">
+                                            <div class="d-flex justify-content-between mb-1">
+                                                <input type="text" class="form-control" />
+                                            </div>
+                                        </div>
+                                        <!-- 서술형 (q.type == 4) -->
+                                        <div th:case="4">
+                                            <div class="d-flex justify-content-between mb-1">
+                                                <textarea class="form-control"></textarea>
+                                            </div>
+                                        </div>
+                                        <!-- 파일 첨부형 (q.type == 5) -->
+                                        <div th:case="5">
+                                            <div class="d-flex justify-content-between mb-1">
+                                                <!-- 파일 첨부형식 -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer d-flex justify-content-between">
+                                    <div class="col-md-2">
+                                        <label class="d-flex align-items-center">
+                                            <span class="col-md-3">배점</span>
+                                            <b><span th:text="${q.points}"></span></b>점
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <section class="d-flex justify-content-between">
+                            <button class="btn btn-primary" type="button" onclick="submitForm();">제출</button>
+                        </section>
+                    </form>
                 </div>
             </div>
-            <form>
-                <section class="section">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <h4 class="card-title">시험명</h4>
-                                    <div class="form-group input-group-lg">
-                                        <h6 class="card-title" th:text="${test.testname}"></h6>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <h4 class="card-title">총점</h4>
-                                    <span id="totalPoints" th:text="${test.totalpoints}">0</span>점
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <h4 class="card-title">시험일시</h4>
-                                    <div class="form-group input-group">
-                                        <span th:text="${test.testdate}"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <h4 class="card-title">마감일시</h4>
-                                    <div class="form-group input-group">
-                                        <span th:text="${test.testlimit}"></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body"></div>
-                    </div>
-                </section>
-                <section class="section" id="questions" th:each="q : ${questions}">
-                    <div class="card" id="${cardId}">
-                        <div class="card-header justify-content-between">
-                            <div class="d-flex mb-3 align-items-center">
-                                <h6 class="col-md-8" id="${cardId}-papernum" th:text="${q.papernum}"></h6>
-                                <div class="col-md-2 icon">
-                                    <input type="file" id="${cardId}-file-input" name="file" style="display: none;">
-                                    <button id="${cardId}-attach-file-btn" class="btn btn-primary btn-sm rounded-pill m-lg-2">파일 첨부</button>
-                                </div>
-                                <div class="col-md-2">
-                                    <span th:text="${q.type}"></span>
-                                </div>
-                            </div>
-                            <!--문제 입력부분-->
-                            <h6 th:text="${q.contents}"></h6>
-                        </div>
-                        <div id="qPlace" class="card-body" th:each="o : ${options}" th:if="${q.qid} == ${o.qid}">
-                            <div th:if="${q.type} == 1">
-                                <div class="d-flex justify-content-between mb-1 optionItem">
-                                    <div>
-                                        <label class="d-flex align-items-center">
-                                            <input type="radio" class="form-check-input m-lg-1 optionCount" name="${cardId}-answer" value="${value}" />
-                                            <span th:text="${o.content}"></span>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div th:if="${q.type} == 2">
-                                <div class="d-flex justify-content-between mb-1 multiOptionItem">
-                                    <div>
-                                        <label class="d-flex align-items-center">
-                                            <input type="checkbox" class="form-check-input m-lg-1 optionCount" name="${cardId}-answer" value="${value}" />
-                                            <span th:text="${o.content}"></span>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--문제 보기 출력 부분-->
-                        </div>
-                        <div class="card-footer d-flex justify-content-between">
-                            <div class="col-md-2">
-                                <label class="d-flex align-items-center">
-                                    <span class="col-md-3">배점</span>
-                                    <b><span th:text="${q.points}"></span></b>점
-                                </label>
-                            </div>
+            <script th:src="@{/assets/js/bootstrap.js}"></script>
+            <script th:src="@{/assets/js/app.js}"></script>
 
-                        </div>
-                    </div>
-                </section>
-                <section class="d-flex justify-content-between">
-
-                    <button class="btn btn-primary" type="button" onclick="submitForm();">제출</button>
-                </section>
-            </form>
+            <script th:src="@{/assets/extensions/choices.js/public/assets/scripts/choices.js}"></script>
+            <script th:src="@{/assets/js/pages/form-element-select.js}"></script>
         </div>
-    </div>
-    <script th:src="@{/assets/js/bootstrap.js}"></script>
-    <script th:src="@{/assets/js/app.js}"></script>
-
-    <script th:src="@{/assets/extensions/choices.js/public/assets/scripts/choices.js}"></script>
-    <script th:src="@{/assets/js/pages/form-element-select.js}"></script>
-</div>
-</body>
-
+    </body>
 </html>
