@@ -4,6 +4,7 @@ import com.scit.lms.domain.Notice;
 import com.scit.lms.util.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,7 @@ import org.thymeleaf.spring5.context.IThymeleafBindStatus;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -159,21 +161,32 @@ public class MemberController {
     }
 
     //비밀번호 변경
+    @ResponseBody
     @PostMapping("changePassword")
-    public String changePassword(Member member, Model model, @AuthenticationPrincipal UserDetails user){
+    public Map<String, String> changePassword(Member member, Model model, @AuthenticationPrincipal UserDetails user){
         boolean result = service.pwcheck(member);
-
+        Map<String, String> response = new HashMap<>();
+        log.debug("가져온정보: {}", member);
         if(result){
-            model.addAttribute("msg", "확인되었습니다.");
+/*            model.addAttribute("msg", "확인되었습니다.");
             model.addAttribute("password", user.getPassword());
             model.addAttribute("result", result);
-            return "memberView/changePassword";
+            return "memberView/changePassword"; */
+            response.put("password", member.getPassword());
+            response.put("result", String.valueOf(result));
+            response.put("msg", "확인되었습니다.");
+            return response;
         } else {
-            model.addAttribute("msg", "비밀번호가 틀렸습니다.");
+/*            model.addAttribute("msg", "비밀번호가 틀렸습니다.");
             model.addAttribute("password", "");
             model.addAttribute("result", result);
-            return "memberView/changePassword";
+            return "memberView/changePassword";   */
+            response.put("password", "");
+            response.put("result", String.valueOf(result));
+            response.put("msg", "비밀번호가 틀렸습니다.");
+            return response;
         }
+
 
 
     }
