@@ -160,8 +160,22 @@ public class MemberController {
 
     //비밀번호 변경
     @PostMapping("changePassword")
-    public String changePassword(){
-        return "memberView/memberInfo";
+    public String changePassword(Member member, Model model, @AuthenticationPrincipal UserDetails user){
+        boolean result = service.pwcheck(member);
+
+        if(result){
+            model.addAttribute("msg", "확인되었습니다.");
+            model.addAttribute("password", user.getPassword());
+            model.addAttribute("result", result);
+            return "memberView/changePassword";
+        } else {
+            model.addAttribute("msg", "비밀번호가 틀렸습니다.");
+            model.addAttribute("password", "");
+            model.addAttribute("result", result);
+            return "memberView/changePassword";
+        }
+
+
     }
 
 

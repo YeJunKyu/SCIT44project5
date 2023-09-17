@@ -14,7 +14,6 @@
     <link rel="stylesheet" th:href="@{/assets/css/shared/iconly.css}">
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script th:src="@{/privatejs/sidebarLoader.js}"></script>
 
     <link rel="stylesheet" th:href="@{/assets/extensions/filepond/filepond.css}">
     <link rel="stylesheet" th:href="@{/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.css}">
@@ -85,6 +84,8 @@
 </head>
 <body>
 <div id="app">
+    <div th:replace="~{/fragments/sidebar.html :: sidebarFrag}"></div>
+</div>
     <div id="sidebar-placeholder"></div>
     <div id="main">
         <div class="page-heading">
@@ -292,9 +293,9 @@
 <!--        </form>-->
 
     </div>
-</div>
 
-
+<script th:src="@{/assets/js/bootstrap.js}"></script>
+<script th:src="@{/assets/js/app.js}"></script>
 
 </body>
 </html>

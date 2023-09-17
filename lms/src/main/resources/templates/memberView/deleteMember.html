@@ -15,7 +15,6 @@
     <link rel="stylesheet" th:href="@{/assets/css/shared/iconly.css}">
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script th:src="@{/privatejs/sidebarLoader.js}"></script>
 
 <script type="text/javascript" th:inline="javascript">
 <!--    function deleteConfirm(){-->
@@ -83,6 +82,8 @@
 
 <body>
 <div id="app">
+    <div th:replace="~{/fragments/sidebar.html :: sidebarFrag}"></div>
+</div>
     <div id="sidebar-placeholder"></div>
     <div id="main">
 
@@ -140,12 +141,13 @@
 
                                     <div class="col-12 d-flex justify-content-end">
                                         <div th:if="${result == null}">
+
                                             <input type="submit" value="확인" class="btn btn-primary me-1 mb-1">
                                             <a th:href="@{/member/information}"
                                                class="btn btn-light-secondary me-1 mb-1">돌아가기</a>
                                         </div>
                                         <div th:if="${result == false}">
-                                            <p th:text="${msg}"></p>
+                                            <code><p th:text="${msg}"></p></code>
 
                                             <input type="submit" value="확인" class="btn btn-primary me-1 mb-1">
                                             <a th:href="@{/member/information}"
@@ -154,7 +156,7 @@
 
                                         <div th:if="${result == true}">
                                             <p th:text="${msg}"></p>
-                                            <input type="button" value="삭제" onclick="deleteConfirm()">
+                                            <input type="button" value="삭제" onclick="deleteConfirm()" class="btn btn-danger">
                                             <a th:href="@{/member/information}"
                                                class="btn btn-light-secondary me-1 mb-1">돌아가기</a>
                                         </div>
@@ -170,10 +172,11 @@
         </div>
 
     </div>
-</div>
 
 
 
+<script th:src="@{/assets/js/bootstrap.js}"></script>
+<script th:src="@{/assets/js/app.js}"></script>
 
 </body>
 </html>

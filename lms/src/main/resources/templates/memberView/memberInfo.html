@@ -15,7 +15,6 @@
     <link rel="stylesheet" th:href="@{/assets/css/shared/iconly.css}">
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script th:src="@{/privatejs/sidebarLoader.js}"></script>
 
 <script>
     $(document).ready(function(){
@@ -58,6 +57,8 @@
 <body>
 
 <div id="app">
+    <div th:replace="~{/fragments/sidebar.html :: sidebarFrag}"></div>
+</div>
     <div id="sidebar-placeholder"></div>
     <div id="main">
 
@@ -174,7 +175,7 @@
                         </form>
 
 
-                        <div style="width: 100px; height: 50px;">
+                        <div style="width: 100px; height: 50px;" th:if="${user.memberphoto != null}">
                             <img th:src="'/lms/memberUpload/' + ${user.memberphoto}" />
                         </div>
 
@@ -220,7 +221,7 @@
 <!--        <a th:href="@{/member/updateForm}">수정</a><input type="button" value="탈퇴"><br>-->
 <!--        <input type="button" value="목록으로" onclick="goBack()">-->
     </div>
-</div>
+
 
 <!--<script src="assets/js/bootstrap.js"></script>-->
 <!--<script src="assets/js/app.js"></script>-->
@@ -228,7 +229,8 @@
 
 <!--<script src="assets/extensions/apexcharts/apexcharts.min.js"></script>-->
 <!--<script src="assets/js/pages/dashboard.js"></script>-->
-
+<script th:src="@{/assets/js/bootstrap.js}"></script>
+<script th:src="@{/assets/js/app.js}"></script>
 
 </body>
 </html>
