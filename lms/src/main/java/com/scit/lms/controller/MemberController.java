@@ -48,7 +48,15 @@ public class MemberController {
 
     //회원가입 처리
     @PostMapping("join")
-    public String join(Member member) {
+    public String join(Member member
+            , @RequestParam("postcode") String postcode
+            , @RequestParam("inputAddress") String inputAddress
+            , @RequestParam("detailAddress") String detailAddress) {
+
+        String fullAddress = "(" + postcode + ") " + inputAddress + " " + detailAddress;
+        log.debug("주소:{}", fullAddress);
+        member.setAddress(fullAddress);
+
         log.debug("회원1:{}", member);
         int n = service.join(member);
         log.debug("회원2:{}", member);
