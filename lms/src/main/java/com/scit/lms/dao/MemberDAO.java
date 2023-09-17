@@ -20,4 +20,6 @@ public interface MemberDAO {
     String pwcheck(Member member);
 
     int deleteMember(Member member);
+
+    int changePW(Member member);
 }

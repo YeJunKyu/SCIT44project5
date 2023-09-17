@@ -248,7 +248,7 @@ public class MemberController {
     }
 
 
-    //비밀번호 확인
+    //비밀번호 (변경전) 확인
     @PostMapping("checkPassword")
     public String checkPassword(Member member, Model model, @AuthenticationPrincipal UserDetails user) {
         log.debug("!!!!:{}", member);
@@ -275,6 +275,22 @@ public class MemberController {
 
         log.debug("멤버삭제하러감:{}", member);
         int n = service.deleteMember(member);
+
+        return "redirect:/";
+    }
+
+    //비밀번호 변경
+    @PostMapping("changePW")
+    public String changePW(@RequestParam("newPWCheck") String newPassword, Member member
+                        , @AuthenticationPrincipal UserDetails user){
+        member.setMemberid(user.getUsername());
+        member.setMemberpw(newPassword);
+        log.debug("새비번:{}", member);
+
+        int n = service.changePW(member);
+
+
+
 
         return "redirect:/";
     }

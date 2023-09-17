@@ -105,4 +105,16 @@ public class MemberServiceImpl implements MemberService {
 
 		return n;
 	}
+
+	@Override
+	public int changePW(Member member){
+
+		String changePW = passwordEncoder.encode(member.getMemberpw());
+		log.debug("암호전:{}", member.getMemberpw());
+		log.debug("암호후:{}", changePW);
+
+		member.setMemberpw(changePW);
+		int n = dao.changePW(member);
+		return n;
+	}
 }

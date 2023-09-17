@@ -20,4 +20,6 @@ public interface MemberService {
     boolean pwcheck(Member member);
 
     int deleteMember(Member member);
+
+    int changePW(Member member);
 }
