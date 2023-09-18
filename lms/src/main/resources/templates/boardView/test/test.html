@@ -10,12 +10,13 @@
         <link rel="stylesheet" th:href="@{/assets/css/main/lms.css}" />
         <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.svg}" type="image/x-icon" />
         <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png" />
-        <script th:src="@{/assets/js/jquery-3.6.0.js}"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script th:src="@{/privatejs/sidebarLoader.js}"></script>
     </head>
 
     <body>
         <div id="app">
-            <div th:replace="/fragments/sidebar.html :: sidebarFrag"></div>
+            <div id="sidebar-placeholder"></div>
             <div id="main">
                 <header class="mb-3">
                     <a href="#" class="burger-btn d-block d-xl-none">
@@ -48,7 +49,7 @@
                                 <div class="card">
                                     <div class="card-header">
                                         <h4 class="card-title">Hoverable rows</h4>
-                                        <button class="btn btn-primary" th:onclick="|window.location.href=`@{/test/create}`|">시험 등록</button>
+                                        <button class="btn btn-primary" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')')}" th:onclick="|window.location.href=`@{/test/create}`|">시험 등록</button>
                                     </div>
                                     <div class="card-content">
                                         <div class="card-body">
