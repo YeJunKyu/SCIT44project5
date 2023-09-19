@@ -22,4 +22,6 @@ public interface MemberDAO {
     int deleteMember(Member member);
 
     int changePW(Member member);
+
+    int checkid(Member member);
 }

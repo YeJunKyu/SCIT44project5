@@ -116,4 +116,14 @@
         where
             memberid=#{memberid}
     </update>
+
+    <!--중복아이디 확인-->
+    <select id="checkid" parameterType="member" resultType="int">
+        select
+            count(memberid)
+        from
+            lms_member
+        where
+            memberid = #{memberid}
+    </select>
 </mapper>

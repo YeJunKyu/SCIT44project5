@@ -7,81 +7,183 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>회원가입</title>
 
+    <link rel="stylesheet" th:href="@{/assets/css/main/app.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main/app-dark.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main/lms.css}" />
+
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script>
-        function execDaumPostcode() {
-            new daum.Postcode({
-                oncomplete: function(data) {
-                    // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+    function checkMemberid(){
+        let id = $("#memberid").val();
+        let pw = $("#memberpw").val();
 
-                    // 각 주소의 노출 규칙에 따라 주소를 조합한다.
-                    // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
-                    var addr = ''; // 주소 변수
-                    var extraAddr = ''; // 참고항목 변수
-
-                    //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
-                    if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
-                        addr = data.roadAddress;
-                    } else { // 사용자가 지번 주소를 선택했을 경우(J)
-                        addr = data.jibunAddress;
-                    }
-
-                    // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
-                    if(data.userSelectedType === 'R'){
-                        // 법정동명이 있을 경우 추가한다. (법정리는 제외)
-                        // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
-                        if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
-                            extraAddr += data.bname;
-                        }
-                        // 건물명이 있고, 공동주택일 경우 추가한다.
-                        if(data.buildingName !== '' && data.apartment === 'Y'){
-                            extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
-                        }
-                        // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
-                        if(extraAddr !== ''){
-                            extraAddr = ' (' + extraAddr + ')';
-                        }
-                        // 조합된 참고항목을 해당 필드에 넣는다.
-                        document.getElementById("extraAddress").value = extraAddr;
-
-                    } else {
-                        document.getElementById("extraAddress").value = '';
-                    }
-
-                    // 우편번호와 주소 정보를 해당 필드에 넣는다.
-                    document.getElementById('postcode').value = data.zonecode;
-                    document.getElementById("inputAddress").value = addr;
-                    // 커서를 상세주소 필드로 이동한다.
-                    document.getElementById("detailAddress").focus();
+        $.ajax({
+            url: "checkMemberid",
+            method: "POST",
+            data: { memberid: id },
+            dataType: "json",
+            success: function (response) {
+                console.log(response);
+                if (response.result === "0") {
+//                    $("#memberid").attr("readonly", "readonly");
+                    $("#memberid").removeClass("form-control is-invalid").addClass("form-control is-valid");
+                    console.log($("#memberid").length);
+                    console.log("성공");
+                    $("#checkid_result").text(response.msg);
+                }else {
+                    console.log("실패");
+                    $("#memberid").addClass("form-control is-invalid");
+                    $("#checkid_result").text(response.msg);
                 }
-            }).open();
-        }
-
-
-        function idFormOpen() {
-          // ID 중복확인 버튼
-          window.open('idcheck','idwin','width=400,height=500'); // member/idcheck 경로의 새창을띄움
-
-
-        }
-
-        function check(){
-            var id = document.getElementById('id').value;
-            var password = document.getElementById('password').value;
-            var password2 = document.getElementById('password2').value;
-
-            if(id.length < 3){
-                alert('아이디는 3글자 이상이어야 합니다.');
-                return false;
+            },
+            error: function (xhr, status, error) {
+                console.error("오류 발생: " + error);
             }
+        });
+    }
 
-            if(password !== password2){
-                alert('비밀번호가 일치하지 않습니다.');
-                return false;
+    function execDaumPostcode() {
+        new daum.Postcode({
+            oncomplete: function(data) {
+                // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                var addr = ''; // 주소 변수
+                var extraAddr = ''; // 참고항목 변수
+
+                //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                    addr = data.roadAddress;
+                } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                    addr = data.jibunAddress;
+                }
+
+                // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+                if(data.userSelectedType === 'R'){
+                    // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                    // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                    if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                        extraAddr += data.bname;
+                    }
+                    // 건물명이 있고, 공동주택일 경우 추가한다.
+                    if(data.buildingName !== '' && data.apartment === 'Y'){
+                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                    }
+                    // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                    if(extraAddr !== ''){
+                        extraAddr = ' (' + extraAddr + ')';
+                    }
+                    // 조합된 참고항목을 해당 필드에 넣는다.
+                    document.getElementById("extraAddress").value = extraAddr;
+
+                } else {
+                    document.getElementById("extraAddress").value = '';
+                }
+
+                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                document.getElementById('postcode').value = data.zonecode;
+                document.getElementById("inputAddress").value = addr;
+                // 커서를 상세주소 필드로 이동한다.
+                document.getElementById("detailAddress").focus();
             }
+        }).open();
+    }
+
+    function passwordCheck(){
+            var pw = document.getElementById('password').value;
+            var pwC = document.getElementById('password2').value;
+
+            if (pw.length >= 6 && pw.length <= 16) {
+                document.getElementById("pwAlert").textContent = "";
+
+                if(pw === pwC){
+                    $("#password").removeClass("form-control is-invalid").addClass("form-control is-valid");
+                    $("#password2").removeClass("form-control is-invalid").addClass("form-control is-valid");
+                }else{
+                    $("#password").addClass("form-control is-invalid");
+                    $("#password2").addClass("form-control is-invalid");
+                }
+            }else{
+                document.getElementById("pwAlert").textContent = "비밀번호: 6~16자의 영문 대/소문자, 숫자, 특수문자를 사용해 주세요.";
+                $("#password").removeClass("form-control is-valid").addClass("form-control is-invalid");
+                $("#password2").removeClass("form-control is-valid").addClass("form-control is-invalid");
+            }
+    }
+
+    function nameCheck() {
+        var name = document.getElementById('name').value;
+        var namePattern = /^[A-Za-z가-힣]+$/; // 이름에 대한 정규식 패턴
+
+        if (namePattern.test(name)) {
+            // 이름이 조건에 맞을 경우
+            $("#name").removeClass("form-control is-invalid").addClass("form-control is-valid");
+
+            document.getElementById("nameAlert").textContent = ""; // 경고 메시지 초기화
+            // 여기에서 다른 작업을 수행하거나, 이름이 유효할 때의 처리를 추가할 수 있습니다.
+        } else {
+            // 이름이 조건에 맞지 않을 경우
+            $("#name").removeClass("form-control is-valid").addClass("form-control is-invalid");
+
+            document.getElementById("nameAlert").textContent = "이름: 한글, 영문 대/소문자를 사용해 주세요. (특수기호, 공백 사용 불가)";
+            // 이외의 처리를 추가할 수 있습니다.
+        }
+    }
+
+    function emailCheck(){
+        var email = document.getElementById('email').value;
+        var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        if (emailPattern.test(email)) {
+            $("#email").removeClass("form-control is-invalid").addClass("form-control is-valid");
+
+            document.getElementById("emailAlert").textContent = ""; // 경고 메시지 초기화
 
             return true;
+        } else {
+            $("#email").removeClass("form-control is-valid").addClass("form-control is-invalid");
+
+            document.getElementById("emailAlert").textContent = "이메일 형식에 맞게 써주세요.";
+            return false;
         }
+    }
+
+    function phoneCheck(){
+        var inputPhone = document.getElementById('phone');
+        var phonePattern = /^(010|011)\d{3,4}\d{4}$/;
+
+        if (phonePattern.test(inputPhone.value)) {
+            $("#phone").removeClass("form-control is-invalid").addClass("form-control is-valid");
+            document.getElementById("phoneAlert").textContent = ""; // 경고 메시지 초기화
+
+            inputPhone.value = inputPhone.value.replace(/(\d{3})(\d{3,4})(\d{4})/, "$1-$2-$3");
+
+
+            return true;
+        } else {
+            $("#phone").removeClass("form-control is-valid").addClass("form-control is-invalid");
+
+            document.getElementById("phoneAlert").textContent = "전화번호를 확인해주세요.";
+            return false;
+        }
+    }
+
+    function idFormOpen() {
+      // ID 중복확인 버튼
+      window.open('idcheck','idwin','width=400,height=500'); // member/idcheck 경로의 새창을띄움
+
+
+    }
+
+
+
+<!--        생년월일 placeholder 왜안돼-->
+<!--        var birthInput = document.getElementById("birth");-->
+<!--        birthInput.addEventListener("focus", function () {-->
+<!--            birthInput.placeholder = "생년월일";-->
+<!--        });-->
     </script>
 
     <link rel="stylesheet" th:href="@{/assets/css/main/app.css}">
@@ -102,38 +204,57 @@
                 <h1 class="auth-title">회원가입</h1>
                 <p class="auth-subtitle mb-5">Input your data to register to our website.</p>
 
-                <form th:action="@{/member/join}" method="post" onsubmit="return check()">
+                <form th:action="@{/member/join}" method="post" onsubmit="return birthCheck()">
                     <div class="form-group position-relative has-icon-left mb-4">
-                        <input type="text" class="form-control form-control-xl" id="id" name="memberid" onclick="idFormOpen()" placeholder="ID" readonly required>
-<!--                        네이버 같이?//입력시에 중복체크하는 텍스트 발생 >>확인 or 사용하기 누르면 넘어가는식
-<input type="button" class="form-control form-control-xl" onclick="idFormOpen()" value="아이디 중복확인">-->
                         <div class="form-control-icon">
                             <i class="bi bi-person-badge"></i>
                         </div>
+                        <div class="input-group">
+                            <input type="text" class="form-control form-control-xl" id="memberid" name="memberid" placeholder="ID" required>
+                            <input class="btn btn-primary" type="button" onclick="checkMemberid()" value="중복확인">
+                        </div>
+<!--                        네이버 같이?//입력시에 중복체크하는 텍스트 발생 >>확인 or 사용하기 누르면 넘어가는식
+<input type="button" class="form-control form-control-xl" onclick="idFormOpen()" value="아이디 중복확인">-->
+
+                            <p id="checkid_result"></p>
                     </div>
+
                     <div class="form-group position-relative has-icon-left mb-4">
-                        <input type="password" id="password" name="memberpw" class="form-control form-control-xl" placeholder="Password" required>
+                        <input type="password" id="password" name="memberpw"
+                               class="form-control form-control-xl" placeholder="Password" required>
                         <div class="form-control-icon">
                             <i class="bi bi-shield-lock"></i>
                         </div>
                     </div>
                     <div class="form-group position-relative has-icon-left mb-4">
-                        <input type="password" id="password2" class="form-control form-control-xl" placeholder="Confirm Password" required>
+                        <input type="password" id="password2" class="form-control form-control-xl" onkeyup="passwordCheck()"
+                               placeholder="Confirm Password" required>
                         <div class="form-control-icon">
                             <i class="bi bi-shield-check"></i>
                         </div>
+                        <code>
+                            <p id="pwAlert"></p>
+                        </code>
                     </div>
                     <div class="form-group position-relative has-icon-left mb-4">
-                        <input type="text" id="name" name="membername" class="form-control form-control-xl" placeholder="Username" required>
+                        <input type="text" id="name" name="membername" class="form-control form-control-xl" onkeyup="nameCheck()"
+                               placeholder="Username" required>
                         <div class="form-control-icon">
                             <i class="bi bi-card-text"></i>
                         </div>
+                        <code>
+                            <p id="nameAlert"></p>
+                        </code>
                     </div>
                     <div class="form-group position-relative has-icon-left mb-4">
-                        <input type="date" id="birth" name="birthday" class="form-control form-control-xl" placeholder="Birth" required>
+                        <input type="date" id="birth" name="birthday" class="form-control form-control-xl"
+                               placeholder="생년월일" required>
                         <div class="form-control-icon">
                             <i class="bi bi-calendar-event"></i>
                         </div>
+                        <code>
+                            <p id="birthAlert"></p>
+                        </code>
                     </div>
                     <div class="form-group position-relative has-icon-left mb-4">
                         <select class="form-control form-control-xl" id="gender" name="gender">
@@ -146,25 +267,40 @@
                         </div>
                     </div>
                     <div class="form-group position-relative has-icon-left mb-4">
-                        <input type="text" id="email" name="email" class="form-control form-control-xl" placeholder="Email" required>
+                        <input type="email" id="email" name="email" class="form-control form-control-xl" onblur="emailCheck()"
+                               placeholder="Email" required>
                         <div class="form-control-icon">
                             <i class="bi bi-envelope"></i>
                         </div>
+                        <code>
+                            <p id="emailAlert"></p>
+                        </code>
                     </div>
                     <div class="form-group position-relative has-icon-left mb-4">
-                        <input type="text" id="phone" name="phone" class="form-control form-control-xl" placeholder="Phone" required>
+                        <input type="text" id="phone" name="phone" class="form-control form-control-xl" onblur="phoneCheck()"
+                               placeholder="Phone" required>
                         <div class="form-control-icon">
                             <i class="bi bi-telephone"></i>
                         </div>
+                        <code>
+                            <p id="phoneAlert"></p>
+                        </code>
                     </div>
-                    <div class="form-group position-relative has-icon-left mb-4">
-                        <input type="text" id="address" name="address" class="form-control form-control-xl" placeholder="Address">
+                    <div id="address" class="form-group position-relative has-icon-left mb-4">
+                        <!--
+                        <input type="text" id="sample" name="address" class="form-control form-control-xl" placeholder="Address">
+                        -->
+                        <div class="form-control form-control-xl">
+                            <div class="input-group">
 
-                        <input type="text" id="postcode" name="postcode" placeholder="우편번호">
-                        <input type="button" onclick="execDaumPostcode()" value="주소 찾기"><br>
-                        <input type="text" id="inputAddress" name="inputAddress" placeholder="주소"><br>
-                        <input type="text" id="detailAddress" name="detailAddress" placeholder="상세주소">
-                        <input type="text" id="extraAddress" name="extraAddress" placeholder="참고항목">
+                                <input class="form-control" style="width:100px; padding-left: 1px;" type="text" id="postcode" name="postcode" placeholder="우편번호">
+                                <input class="btn btn-primary" type="button" onclick="execDaumPostcode()" value="검색"><br>
+                            </div>
+                            <input style="padding-left: 1px;" class="form-control" type="text" id="inputAddress" name="inputAddress" placeholder="주소" required>
+                            <input style="padding-left: 1px;" class="form-control" type="text" id="detailAddress" name="detailAddress" placeholder="상세주소" required>
+                            <input style="padding-left: 1px;" class="form-control" type="text" id="extraAddress" name="extraAddress" placeholder="참고항목" >
+
+                        </div>
                         <div class="form-control-icon">
                             <i class="bi bi-house-door"></i>
                         </div>

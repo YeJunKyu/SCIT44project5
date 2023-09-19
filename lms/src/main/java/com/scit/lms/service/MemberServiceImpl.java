@@ -117,4 +117,12 @@ public class MemberServiceImpl implements MemberService {
 		int n = dao.changePW(member);
 		return n;
 	}
+
+	@Override
+	public int checkid(Member member){
+
+		int n = dao.checkid(member);
+
+		return n;
+	}
 }

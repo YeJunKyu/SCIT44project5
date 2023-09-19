@@ -81,6 +81,23 @@ public class MemberController {
         return "memberView/idcheck";
     }
 
+    //아이디 중복확인(2)
+    @ResponseBody
+    @PostMapping("checkMemberid")
+    public Map<String, String> checkMemberid(Member member, Model model){
+        int result = service.checkid(member);
+        Map<String, String> response = new HashMap<>();
+        log.debug("가져온정보: {}", member);
+        if(result == 1){
+            response.put("result", String.valueOf(result));
+            response.put("msg", "아이디가 중복되었습니다.");
+            return response;
+        } else {
+            response.put("result", String.valueOf(result));
+            response.put("msg", "사용가능한 아이디입니다.");
+            return response;
+        }
+    }
 
     //로그인 폼으로 이동
     @GetMapping("login")
@@ -194,9 +211,6 @@ public class MemberController {
             response.put("msg", "비밀번호가 틀렸습니다.");
             return response;
         }
-
-
-
     }
 
 

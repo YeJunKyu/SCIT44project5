@@ -22,4 +22,6 @@ public interface MemberService {
     int deleteMember(Member member);
 
     int changePW(Member member);
+
+    int checkid(Member member);
 }

@@ -30,6 +30,7 @@ public class WebSecurityConfig {
         .antMatchers("/",
                 "/member/join",
                 "/member/idcheck",
+                "/member/checkMemberid",
                 "/assets/**",
                 "/image/**",
                 "/css/**",
