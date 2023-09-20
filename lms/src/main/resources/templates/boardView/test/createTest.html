@@ -1,444 +1,479 @@
 <!DOCTYPE html>
 <html xmlns:th="http://thymeleaf.org">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>시험문제 작성</title>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>시험문제 작성</title>
 
-        <link rel="stylesheet" th:href="@{/assets/extensions/choices.js/public/assets/styles/choices.css}" />
+    <link rel="stylesheet" th:href="@{/assets/extensions/choices.js/public/assets/styles/choices.css}" />
 
-        <link rel="stylesheet" th:href="@{/assets/css/main/app.css}" />
-        <link rel="stylesheet" th:href="@{/assets/css/main/app-dark.css}" />
-        <link rel="stylesheet" th:href="@{/assets/css/main/lms.css}" />
-        <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.svg}" type="image/x-icon" />
-        <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png" />
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script th:src="@{/privatejs/sidebarLoader.js}"></script>
-        <script>
-            $(document).ready(function () {
-                $("button").on("click", function (e) {
-                    e.preventDefault();
-                });
-                //문제 추가
-                $(document).on("click", "#qPlus", function () {
-                    let cardId = Date.now(); // 현재 시간을 이용한 고유한 ID 생성
-                    // console.log(cardId);
-                    let questionCount = $(".card").length; // 현재까지 생성된 문제 개수 계산
-                    const currentQuestionNumber = questionCount; // 해당 문제의 번호
+    <link rel="stylesheet" th:href="@{/assets/css/main/app.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/main/app-dark.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/main/lms.css}" />
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.svg}" type="image/x-icon" />
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png" />
+    <script th:src="@{/assets/js/jquery-3.6.0.js}"></script>
+    <script th:src="@{/privatejs/sidebarLoader.js}"></script>
+    <script>
+        $(document).ready(function () {
 
-                    let newCard = `
-                        <div class="card" id="${cardId}">
-                            <div class="card-header justify-content-between">
-                                <div class="d-flex mb-3 align-items-center">
-                                    <h6 class="col-md-8" id="${cardId}-papernum">${currentQuestionNumber}</h6>
-                                    <div class="col-md-2 icon">
-                                        <input type="file" id="${cardId}-file-input" name="file" style="display: none;">
-                                        <button id="${cardId}-attach-file-btn" class="btn btn-primary btn-sm rounded-pill m-lg-2">파일 첨부</button>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <select class="form-select type" name="type" data-card-id="${cardId}">
-                                            <option value="1" selected>객관식</option>
-                                            <option value="2">객관식 복수정답</option>
-                                            <option value="3">단답형</option>
-                                            <option value="4">서술형</option>
-                                            <option value="5">파일</option>
-                                        </select>
-                                    </div>
+
+
+            $("button").on("click", function (e) {
+                e.preventDefault();
+            });
+            //문제 추가
+            $(document).on("click", "#qPlus", function () {
+                let cardId = Date.now(); // 현재 시간을 이용한 고유한 ID 생성
+                // console.log(cardId);
+                let questionCount = $(".card").length; // 현재까지 생성된 문제 개수 계산
+                const currentQuestionNumber = questionCount; // 해당 문제의 번호
+
+                let newCard = `
+                    <div class="card" id="${cardId}">
+                        <div class="card-header justify-content-between">
+                            <div class="d-flex mb-3 align-items-center">
+                                <h6 class="col-md-8" id="${cardId}-papernum">${currentQuestionNumber}</h6>
+                                <div class="col-md-2 icon">
+                                    <input type="file" id="${cardId}-file-input" name="file[${currentQuestionNumber}]" style="display: none;">
+                                    <button id
+                                    ="${cardId}-attach-file-btn" class="btn btn-primary btn-sm rounded-pill m-lg-2">파일 첨부</button>
                                 </div>
-                                <!--문제 입력부분-->
-                                <textarea id="taTarget" rows="1" name="contents" class="form-control" placeholder="문제 입력" onkeyup="adjustHeight();"></textarea>
-                            </div>
-                            <div id="qPlace" class="card-body">
-                                <!--문제 보기 출력 부분-->
-                            </div>
-                            <div class="card-footer d-flex justify-content-between">
                                 <div class="col-md-2">
-                                    <label class="d-flex align-items-center">
-                                        <span class="col-md-3">배점</span>
-                                        <input type="number" name="points" class="form-control" required/>
-                                    </label>
+                                    <select class="form-select type" name="type" data-card-id="${cardId}">
+                                        <option value="1" selected>객관식</option>
+                                        <option value="2">객관식 복수정답</option>
+                                        <option value="3">단답형</option>
+                                        <option value="4">서술형</option>
+                                        <option value="5">파일</option>
+                                    </select>
                                 </div>
-                                <button id="qDelete" class="btn btn-outline-primary btn-sm icon">
-                                    <i class="bi bi-trash"></i>
-                                </button>
+                            </div>
+                            <!--문제 입력부분-->
+                            <textarea id="taTarget" rows="1" name="contents" class="form-control" placeholder="문제 입력" onkeyup="adjustHeight();"></textarea>
+                        </div>
+                        <div id="qPlace" class="card-body">
+                            <!--문제 보기 출력 부분-->
+                        </div>
+                        <div class="card-footer d-flex justify-content-between">
+                            <div class="col-md-2">
+                                <label class="d-flex align-items-center">
+                                    <span class="col-md-3">배점</span>
+                                    <input type="number" name="points" class="form-control" required/>
+                                </label>
+                            </div>
+                            <button id="qDelete" class="btn btn-outline-primary btn-sm icon">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                $("#questions").append(newCard); // 새로운 문제 추가
+
+
+                let typeContents = getQuestionTypeContents("1");
+                $("#" + cardId + " #qPlace").html(typeContents);
+
+            });
+            // 문제 제거
+            $(document).on("click", "#qDelete", function (e) {
+                e.preventDefault();
+                let cardId = $(this).closest(".card").attr("id");
+                // console.log(cardId);
+                $("#" + cardId).remove();
+                // 남은 모든 문항들의 순서 업데이트
+                $(".card").each(function (index) {
+                    let currentQuestionNumber = index;
+                    $(this).find("h6").text(`${currentQuestionNumber}`);
+                });
+
+            });
+
+            // 문제 유형 선택
+            $(document).on("change", ".type", function () {
+                let type = $(this).val();
+                let cardId = $(this).data("card-id");
+
+                let typeContents = getQuestionTypeContents(type);
+
+                $("#" + cardId + " #qPlace").html(typeContents);
+            });
+
+            // 문제 유형에 따른 내용 반환 함수
+            function getQuestionTypeContents(type) {
+                switch (type) {
+                    case "1": // 객관식
+                        return `
+                            <div id="optionTarget"></div>
+                            <section class="d-flex justify-content-between">
+                                <button id="plusOption" class="btn btn-primary btn-sm rounded-pill m-lg-2">보기 추가</button>
+                            </section>
+                        `;
+                    case "2": // 객관식 복수정답
+                        return `
+                            <div id="multiOptionTarget"></div>
+                            <section>
+                                <button id="plusMultiOption" class="btn btn-primary btn-sm rounded-pill m-lg-2">보기 추가</button>
+                            </section>
+                        `;
+                    case "3": // 단답형
+                        return `
+                            <div id="shortAnswerTarget"></div>
+                            <section>
+                                <input type="text" class="form-control" placeholder="정답 입력" required/>
+                            </section>
+                        `;
+                    case "4": // 장문형
+                        return `
+                            <div id="longAnswerTarget"></div>
+                        `;
+                    case "5": // 파일첨부형
+                        return `
+                            <div id="fileAttachTarget"></div>
+                        `;
+                }
+            }
+
+            //객관식 보기 추가
+            $(document).on("click", "#plusOption", function (e) {
+                e.preventDefault();
+                let cardId = $(this).closest(".card").attr("id");
+                let optionCount = $("#" + cardId + " .optionItem").length;
+                let value = optionCount + 1;
+
+                $("#" + cardId + " #optionTarget").append(`
+                <div class="d-flex justify-content-between mb-1 optionItem">
+                    <div>
+                        <label class="d-flex align-items-center">
+                        <input type="radio" class="form-check-input m-lg-1 optionCount" name="${cardId}-answer" value="${value}" />
+                        <input type="text" class="form-control" required/>
+                        </label>
+                    </div>
+                    <button class="btn btn-outline-primary btn-sm icon deleteOption">
+                        <i class="bi bi-x"></i>
+                    </button>
+                </div>
+                `);
+            });
+
+            //객관식 보기 제거
+            $(document).on("click", ".deleteOption", function (e) {
+                e.preventDefault();
+                let cardId = $(this).closest(".card").attr("id");
+                $(this).parent().remove(); // 클릭된 버튼의 부모 요소만 제거합니다.
+
+                updateAnswerNumbers(cardId);
+            });
+
+            // 객관식 복수정답 보기 추가
+            $(document).on("click", "#plusMultiOption", function (e) {
+                e.preventDefault();
+                let cardId = $(this).closest(".card").attr("id");
+                let multiOptionCount = $("#" + cardId + " .multiOptionItem").length;
+                let value = multiOptionCount + 1;
+
+                $("#" + cardId + " #multiOptionTarget").append(`
+                <div class="d-flex justify-content-between mb-1 multiOptionItem">
+                    <div>
+                        <label class="d-flex align-items-center">
+                        <input type="checkbox" class="form-check-input m-lg-1 optionCount" name="${cardId}-answer" value="${value}" />
+                        <input type="text" class="form-control" required/>
+                        </label>
+                    </div>
+                    <button class="btn btn-outline-primary btn-sm icon deleteMultiOption">
+                        <i class="bi bi-x"></i>
+                    </button>
+                </div>
+                `);
+            });
+
+            // 객관식 복수정답 보기 제거
+            $(document).on("click", ".deleteMultiOption", function (e) {
+                e.preventDefault();
+                let cardId = $(this).closest(".card").attr("id");
+                $(this).parent().remove(); // 클릭된 버튼의 부모 요소만 제거합니다.
+
+                updateAnswerNumbers(cardId);
+            });
+
+            // 보기 value 번호 조정
+            function updateAnswerNumbers(cardId) {
+                $("#" + cardId + " .optionItem, #" + cardID +" .multiOptioinItem ").each(function(index) {
+                    let currentNumber = index+1;
+                    $(this).find(":input[type='radio'], :input[type='checkbox']").val(currentNumber); // input 요소의 value 값을 업데이트합니다.
+                });
+            }
+
+            // 총점 계산
+            function calculateTotalPoints() {
+                let totalPoints = 0;
+                $('input[name="points"]').each(function() {
+                    totalPoints += parseInt($(this).val()) || 0;
+                });
+
+                // 결과를 표시하는 요소에 업데이트
+                $('#totalPoints').text(totalPoints); // "점"을 추가하여 표시
+            }
+
+            // input 요소가 변경될 때마다 총점 계산 함수 호출
+            $(document).on('input', 'input[name="points"]', calculateTotalPoints);
+
+
+            // 파일 첨부 버튼 클릭 시 파일 선택 다이얼로그 트리거
+            $(document).on("click", "[id$='-attach-file-btn']", function (e) {
+                e.preventDefault();
+
+                let cardId = $(this).closest(".card").attr("id");
+
+                $("#" + cardId + "-file-input").trigger("click");
+            });
+
+            // 파일 선택 시 선택된 파일명 표시
+            $(document).on("change", "[type='file']", function () {
+                let fileName = this.files[0].name;
+                let cardId = $(this).closest(".card").attr("id");
+
+                $("#" + cardId + "-attach-file-btn").text(fileName);
+            });
+        });
+
+
+        function updateAnswerNumbers(cardId) {
+            $("#" + cardId + " .form-check-input").each(function (index) {
+                let currentNumber = index + 1;
+                $(this).attr("name", "answer" + currentNumber); // 보기의 name 속성을 업데이트합니다.
+            });
+        }
+
+        let textEle = $("#taTarget");
+        textEle.on("input", function () {
+            adjustHeight();
+        });
+
+        function adjustHeight() {
+            let textEle = $("#taTarget");
+            textEle[0].style.height = "auto";
+            let textEleHeight = textEle.prop("scrollHeight");
+            textEle.css("height", textEleHeight);
+        }
+
+
+
+
+
+    </script>
+</head>
+
+<body>
+<div id="app">
+    <div id="sidebar-placeholder"></div>
+    <div id="main">
+        <header class="mb-3">
+            <a href="#" class="burger-btn d-block d-xl-none">
+                <i class="bi bi-justify fs-3"></i>
+            </a>
+        </header>
+
+        <div class="page-heading">
+            <div class="page-title">
+                <div class="row">
+                    <div class="col-12 col-md-6 order-md-1 order-last">
+                        <h3>시험문제 작성</h3>
+                        <p class="text-subtitle text-muted">Customize the native &laquo;select&raquo; with custom CSS that changes the element’s initial appearance..</p>
+                    </div>
+                    <div class="col-12 col-md-6 order-md-2 order-first">
+                        <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a th:href="@{/test}">시험</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">문제등록</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <form th:action="@{submitTest}" method="post" enctype="multipart/form-data" onsubmit="submitForm(); return false;">
+                <section class="section">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h4 class="card-title">시험명</h4>
+                                    <div class="form-group input-group-lg">
+                                        <input type="text" class="form-control" id="testname"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <h4 class="card-title">총점</h4>
+                                    <span id="totalPoints">0</span>점
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h4 class="card-title">시험일시</h4>
+                                    <div class="form-group input-group">
+                                        <input type="datetime-local" id="testdate" class="form-control"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h4 class="card-title">마감일시</h4>
+                                    <div class="form-group input-group">
+                                        <input type="datetime-local" id="testlimit" class="form-control"/>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    `;
-
-                    $("#questions").append(newCard); // 새로운 문제 추가
-
-                    let typeContents = getQuestionTypeContents("1");
-                    $("#" + cardId + " #qPlace").html(typeContents);
-
-                });
-                // 문제 제거
-                $(document).on("click", "#qDelete", function (e) {
-                    e.preventDefault();
-                    let cardId = $(this).closest(".card").attr("id");
-                    // console.log(cardId);
-                    $("#" + cardId).remove();
-                    // 남은 모든 문항들의 순서 업데이트
-                    $(".card").each(function (index) {
-                        let currentQuestionNumber = index;
-                        $(this).find("h6").text(`${currentQuestionNumber}`);
-                    });
-
-                });
-
-                // 문제 유형 선택
-                $(document).on("change", ".type", function () {
-                    let type = $(this).val();
-                    let cardId = $(this).data("card-id");
-
-                    let typeContents = getQuestionTypeContents(type);
-
-                    $("#" + cardId + " #qPlace").html(typeContents);
-                });
-
-                // 문제 유형에 따른 내용 반환 함수
-                function getQuestionTypeContents(type) {
-                    switch (type) {
-                        case "1": // 객관식
-                            return `
-                                <div id="optionTarget"></div>
-                                <section class="d-flex justify-content-between">
-                                    <button id="plusOption" class="btn btn-primary btn-sm rounded-pill m-lg-2">보기 추가</button>
-                                </section>
-                            `;
-                        case "2": // 객관식 복수정답
-                            return `
-                                <div id="multiOptionTarget"></div>
-                                <section>
-                                    <button id="plusMultiOption" class="btn btn-primary btn-sm rounded-pill m-lg-2">보기 추가</button>
-                                </section>
-                            `;
-                        case "3": // 단답형
-                            return `
-                                <div id="shortAnswerTarget"></div>
-                                <section>
-                                    <input type="text" class="form-control" placeholder="정답 입력" required/>
-                                </section>
-                            `;
-                        case "4": // 장문형
-                            return `
-                                <div id="longAnswerTarget"></div>
-                            `;
-                        case "5": // 파일첨부형
-                            return `
-                                <div id="fileAttachTarget"></div>
-                            `;
-                    }
-                }
-
-                //객관식 보기 추가
-                $(document).on("click", "#plusOption", function (e) {
-                    e.preventDefault();
-                    let cardId = $(this).closest(".card").attr("id");
-                    let optionCount = $("#" + cardId + " .optionItem").length;
-                    let value = optionCount + 1;
-
-                    $("#" + cardId + " #optionTarget").append(`
-                    <div class="d-flex justify-content-between mb-1 optionItem">
-                        <div>
-                            <label class="d-flex align-items-center">
-                            <input type="radio" class="form-check-input m-lg-1 optionCount" name="${cardId}-answer" value="${value}" />
-                            <input type="text" class="form-control" required/>
-                            </label>
-                        </div>
-                        <button class="btn btn-outline-primary btn-sm icon deleteOption">
-                            <i class="bi bi-x"></i>
-                        </button>
+                        <div class="card-body"></div>
                     </div>
-                    `);
-                });
+                </section>
+                <section class="section" id="questions">
+                    <!--문제 추가될 부분-->
+                </section>
+                <section class="d-flex justify-content-between">
+                    <button id="qPlus" class="btn btn-primary icon">
+                        <i class="bi bi-plus"></i>
+                    </button>
+                    <input class="btn btn-primary" type="submit" value="등록">
+                </section>
+            </form>
+        </div>
+    </div>
 
-                //객관식 보기 제거
-                $(document).on("click", ".deleteOption", function (e) {
-                    e.preventDefault();
-                    let cardId = $(this).closest(".card").attr("id");
-                    $(this).parent().remove(); // 클릭된 버튼의 부모 요소만 제거합니다.
+    <script>
 
-                    updateAnswerNumbers(cardId);
-                });
 
-                // 객관식 복수정답 보기 추가
-                $(document).on("click", "#plusMultiOption", function (e) {
-                    e.preventDefault();
-                    let cardId = $(this).closest(".card").attr("id");
-                    let multiOptionCount = $("#" + cardId + " .multiOptionItem").length;
-                    let value = multiOptionCount + 1;
+        // 문제 저장
+        function submitForm() {
+            console.log("submitForm() 함수가 호출되었습니다.");
+            // 시험 정보 부분
+            let testname = document.getElementById("testname").value;
+            let testdate = document.getElementById("testdate").value;
+            let testlimit = document.getElementById("testlimit").value;
+            let totalpoints = document.getElementById("totalPoints").innerText;
 
-                    $("#" + cardId + " #multiOptionTarget").append(`
-                    <div class="d-flex justify-content-between mb-1 multiOptionItem">
-                        <div>
-                            <label class="d-flex align-items-center">
-                            <input type="checkbox" class="form-check-input m-lg-1 optionCount" name="${cardId}-answer" value="${value}" />
-                            <input type="text" class="form-control" required/>
-                            </label>
-                        </div>
-                        <button class="btn btn-outline-primary btn-sm icon deleteMultiOption">
-                            <i class="bi bi-x"></i>
-                        </button>
-                    </div>
-                    `);
-                });
+            // FormData 객체 생성
+            let formData = new FormData();
 
-                // 객관식 복수정답 보기 제거
-                $(document).on("click", ".deleteMultiOption", function (e) {
-                    e.preventDefault();
-                    let cardId = $(this).closest(".card").attr("id");
-                    $(this).parent().remove(); // 클릭된 버튼의 부모 요소만 제거합니다.
-
-                    updateAnswerNumbers(cardId);
-                });
-
-                // 보기 value 번호 조정
-                function updateAnswerNumbers(cardId) {
-                    $("#" + cardId + " .optionItem, #" + cardID +" .multiOptioinItem ").each(function(index) {
-                        let currentNumber = index+1;
-                        $(this).find(":input[type='radio'], :input[type='checkbox']").val(currentNumber); // input 요소의 value 값을 업데이트합니다.
-                    });
+            // 파일 업로드를 formData에 추가 (originalfile)
+            $(".card").each(function (index) {
+                let cardId = $(this).attr("id");
+                let fileInput = $("#" + cardId + "-file-input")[0];
+                if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+                    return;
                 }
-
-                // 총점 계산
-                function calculateTotalPoints() {
-                    let totalPoints = 0;
-                    $('input[name="points"]').each(function() {
-                        totalPoints += parseInt($(this).val()) || 0;
-                    });
-
-                    // 결과를 표시하는 요소에 업데이트
-                    $('#totalPoints').text(totalPoints); // "점"을 추가하여 표시
+                let papernum = $(this).closest(".card").find("#" + cardId + "-papernum").text();
+                if (fileInput.files.length > 0) {
+                    formData.append(`file[${papernum}]`, fileInput.files[0]);
                 }
-
-                // input 요소가 변경될 때마다 총점 계산 함수 호출
-                $(document).on('input', 'input[name="points"]', calculateTotalPoints);
-
-
-                // 파일 첨부 버튼 클릭 시 파일 선택 다이얼로그 트리거
-                $(document).on("click", "[id$='-attach-file-btn']", function (e) {
-                    e.preventDefault();
-
-                    let cardId = $(this).closest(".card").attr("id");
-
-                    $("#" + cardId + "-file-input").trigger("click");
-                });
-
-                // 파일 선택 시 선택된 파일명 표시
-                $(document).on("change", "[type='file']", function () {
-                    let fileName = this.files[0].name;
-                    let cardId = $(this).closest(".card").attr("id");
-
-                    $("#" + cardId + "-attach-file-btn").text(fileName);
-                });
             });
 
+            // 문제 데이터 배열 생성
+            let questionDataArray = [];
 
-            function updateAnswerNumbers(cardId) {
-                $("#" + cardId + " .form-check-input").each(function (index) {
-                    let currentNumber = index + 1;
-                    $(this).attr("name", "answer" + currentNumber); // 보기의 name 속성을 업데이트합니다.
-                });
-            }
+            // 각 문제마다 데이터 추출 및 구성
+            $(".card").each(function (index) {
+                let cardId = $(this).attr("id");
+                let papernum = $(this).closest(".card").find("#" + cardId + "-papernum").text();
+                let type = $("#" + cardId + " .type").val();
+                let content = $("#" + cardId + " #taTarget").val();
+                let points = $("#" + cardId + " [name='points']").val();
+                let originalfile = $("#" + cardId + "-attach-file-btn").text();
 
-            let textEle = $("#taTarget");
-            textEle.on("input", function () {
-                adjustHeight();
-            });
-
-            function adjustHeight() {
-                let textEle = $("#taTarget");
-                textEle[0].style.height = "auto";
-                let textEleHeight = textEle.prop("scrollHeight");
-                textEle.css("height", textEleHeight);
-            }
-
-
-            // 문제 저장
-            function submitForm() {
-                // 시험 정보 부분
-                let testname = document.getElementById("testname").value;
-                let testdate = document.getElementById("testdate").value;
-                let testlimit = document.getElementById("testlimit").value;
-                let totalpoints = document.getElementById("totalPoints").value;
-
-                // 문제 데이터 배열 생성
-                let questionDataArray = [];
-
-                // 각 문제마다 데이터 추출 및 구성
-                $(".card").each(function(index) {
-                    let cardId = $(this).attr("id");
-                    let papernum = $(this).closest(".card").find("#" + cardId +"-papernum").text();
-                    let type = $("#" + cardId + " .type").val();
-                    let content = $("#" + cardId + " #taTarget").val();
-                    let points = $("#" + cardId + " [name='points']").val();
-
-                    // 선택지 데이터 추출
-                    let options = [];
-                    if (type === "1") { // 객관식인 경우
-                        $("#" + cardId + " .optionItem").each(function() {
-                            let optionValue = $(this).find(".form-check-input").val();
-                            let optionContent = $(this).find(".form-control").val();
-                            if (!optionContent) { // 선택지 내용이 없을 경우 options 배열에 빈 객체 추가하지 않음
-                                return;
-                            }
-                            options.push({
-                                value: optionValue,
-                                content: optionContent,
-                                checked: $(this).find(".form-check-input:checked").length > 0  // 체크 여부 확인 후 추가
-                            });
-                        });
-                    } else if (type === "2") { // 객관식 복수정답인 경우
-                        $("#" + cardId + " .multiOptionItem").each(function() {
-                            let multiOptionValue = $(this).find(".form-check-input").val();
-                            let multiOptionContent = $(this).find(".form-control").val();
-                            if (!multiOptionContent) { // 선택지 내용이 없을 경우 options 배열에 빈 객체 추가하지 않음
-                                return;
-                            }
-                            options.push({
-                                value: multiOptionValue,
-                                content: multiOptionContent,
-                                checked: $(this).find(".form-check-input:checked").length > 0  // 체크 여부 확인 후 추가
-                            });
-                        });
-                    } else if (type === "3") { // 단답형인 경우
-                        let answerInputValue = $("#" + cardId + " .form-control[type='text']").val();
-                        if (!answerInputValue) { // 선택지 내용이 없을 경우 options 배열에 빈 객체 추가하지 않음
+                // 선택지 데이터 추출
+                let options = [];
+                if (type === "1") { // 객관식인 경우
+                    $("#" + cardId + " .optionItem").each(function () {
+                        let optionValue = $(this).find(".form-check-input").val();
+                        let optionContent = $(this).find(".form-control").val();
+                        if (!optionContent) {
                             return;
                         }
                         options.push({
-                            value: answerInputValue,
-                            checked: "true"
+                            value: optionValue,
+                            content: optionContent,
+                            checked: $(this).find(".form-check-input:checked").length > 0
                         });
-                    } else if (type === "4") { // 서술형인 경우
-                        let answerTextareaValue = $("#" + cardId + " textarea.form-control").val();
-                        if (!answerTextareaValue) { // 선택지 내용이 없을 경우 options 배열에 빈 객체 추가하지 않음
+                    });
+                } else if (type === "2") { // 객관식 복수정답인 경우
+                    $("#" + cardId + " .multiOptionItem").each(function () {
+                        let multiOptionValue = $(this).find(".form-check-input").val();
+                        let multiOptionContent = $(this).find(".form-control").val();
+                        if (!multiOptionContent) {
                             return;
                         }
-                    } else if (type === "5") { // 첨부파일인 경우
-                        let fileAttachValue = $("#" + cardId + " ")
-                    }
-
-                    questionDataArray.push({
-                        qid: cardId,
-                        papernum: papernum,
-                        type: type,
-                        contents: content,
-                        points: points,
-                        options: options
+                        options.push({
+                            value: multiOptionValue,
+                            content: multiOptionContent,
+                            checked: $(this).find(".form-check-input:checked").length > 0
+                        });
                     });
+                } else if (type === "3") { // 단답형인 경우
+                    let answerInputValue = $("#" + cardId + " .form-control[type='text']").val();
+                    if (!answerInputValue) {
+                        return;
+                    }
+                    options.push({
+                        value: answerInputValue,
+                        checked: "true"
+                    });
+                }
 
+                questionDataArray.push({
+                    qid: cardId,
+                    papernum: papernum,
+                    type: type,
+                    contents: content,
+                    points: points,
+                    originalfile: originalfile,
+                    options: options
                 });
-                questionDataArray = questionDataArray.filter(function(question) {
-                    return question.qid !== undefined; // qid가 undefined인 객체를 필터링하여 제거함.
-                });
 
-                console.log(questionDataArray);
+            });
+            questionDataArray = questionDataArray.filter(function (question) {
+                return question.qid !== undefined;
+            });
 
-                // AJAX 요청 전송
-                $.ajax({
-                    url: "submitTest",
-                    type: "POST",
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "text",
-                    data: JSON.stringify({
-                        totalpoints: totalpoints,
-                        testname: testname,
-                        testdate: testdate,
-                        testlimit: testlimit,
-                        questionDataArray: questionDataArray
-                    }),
-                    success: function (url) {
-                        alert("요청이 완료되었습니다.");
-                        console.log(url);
-                        window.location.href = "/lms/test";
-                    },
-                    error: function (e) {
-                        console.log(JSON.stringify(e));
-                    },
-                });
-            }
-        </script>
-    </head>
+            let requestData = {
+                testname: testname,
+                testdate: testdate,
+                testlimit: testlimit,
+                totalpoints: totalpoints,
+                questionDataArray : questionDataArray
+            };
 
-    <body>
-        <div id="app">
-            <div id="sidebar-placeholder"></div>
-            <div id="main">
-                <header class="mb-3">
-                    <a href="#" class="burger-btn d-block d-xl-none">
-                        <i class="bi bi-justify fs-3"></i>
-                    </a>
-                </header>
+            // questionDataArray를 formData에 추가
+            formData.append("testname", testname);
+            formData.append("testdate", testdate);
+            formData.append("testlimit", testlimit);
+            formData.append("totalpoints", totalpoints);
+            formData.append("questionDataArray", JSON.stringify(questionDataArray));
+            formData.append("requestData", JSON.stringify(requestData));
 
-                <div class="page-heading">
-                    <div class="page-title">
-                        <div class="row">
-                            <div class="col-12 col-md-6 order-md-1 order-last">
-                                <h3>시험문제 작성</h3>
-                                <p class="text-subtitle text-muted">Customize the native &laquo;select&raquo; with custom CSS that changes the element’s initial appearance..</p>
-                            </div>
-                            <div class="col-12 col-md-6 order-md-2 order-first">
-                                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
-                                    <ol class="breadcrumb">
-                                        <li class="breadcrumb-item"><a th:href="@{/test}">시험</a></li>
-                                        <li class="breadcrumb-item active" aria-current="page">문제등록</li>
-                                    </ol>
-                                </nav>
-                            </div>
-                        </div>
-                    </div>
-                    <form>
-                        <section class="section">
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="row">
-                                        <div class="col-md-8">
-                                            <h4 class="card-title">시험명</h4>
-                                            <div class="form-group input-group-lg">
-                                                <input type="text" class="form-control" id="testname"/>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <h4 class="card-title">총점</h4>
-                                            <span id="totalPoints">0</span>점
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <h4 class="card-title">시험일시</h4>
-                                            <div class="form-group input-group">
-                                                <input type="datetime-local" id="testdate" class="form-control"/>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <h4 class="card-title">마감일시</h4>
-                                            <div class="form-group input-group">
-                                                <input type="datetime-local" id="testlimit" class="form-control"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card-body"></div>
-                            </div>
-                        </section>
-                        <section class="section" id="questions">
-                            <!--문제 추가될 부분-->
-                        </section>
-                        <section class="d-flex justify-content-between">
-                            <button id="qPlus" class="btn btn-primary icon">
-                                <i class="bi bi-plus"></i>
-                            </button>
-                            <button class="btn btn-primary" type="button" onclick="submitForm();">등록</button>
-                        </section>
-                    </form>
-                </div>
-            </div>
-            <script th:src="@{/assets/js/bootstrap.js}"></script>
-            <script th:src="@{/assets/js/app.js}"></script>
+            console.log("FormData contents:", [...formData]);
 
-            <script th:src="@{/assets/extensions/choices.js/public/assets/scripts/choices.js}"></script>
-            <script th:src="@{/assets/js/pages/form-element-select.js}"></script>
-        </div>
-    </body>
+            $.ajax({
+                url: 'submitTest', // 폼의 액션과 동일한 URL로 요청합니다.
+                type: 'POST', // POST 방식으로 요청
+                data: formData, // 위에서 만든 formData 객체를 데이터로 사용
+                contentType: false, // multipart/form-data의 경우 false로 설정해야 합니다.
+                processData: false, // FormData를 사용할 때 이 값을 false로 설정해야 합니다.
+                success: function(response) {
+                    // 서버로부터의 응답을 여기에서 처리합니다. 예: 알림 표시
+                    alert('성공적으로 제출되었습니다.');
+                    window.location.href = "/lms/test";
+                },
+                error: function(err) {
+                    // 요청 중 오류가 발생한 경우 여기에서 처리합니다. 예: 오류 메시지 표시
+                    alert('제출 중 오류가 발생했습니다.');
+                }
+            });
+        }
+    </script>
+    <script th:src="@{/assets/js/bootstrap.js}"></script>
+    <script th:src="@{/assets/js/app.js}"></script>
+
+    <script th:src="@{/assets/extensions/choices.js/public/assets/scripts/choices.js}"></script>
+    <script th:src="@{/assets/js/pages/form-element-select.js}"></script>
+</div>
+</body>
 </html>

@@ -48,9 +48,9 @@ public class QuestionServiceImpl implements QuestionService{
     }
 
     // 문제 하나 조회
-//    @Override
-//    public Question selectOneQuestion(int qid) {
-//        return dao.selectOneQuestion(qid);
-//    }
+    @Override
+    public Question selectOneQuestion(int qid) {
+        return dao.selectOneQuestion(qid);
+    }
 
 }

@@ -12,6 +12,7 @@ public class TestRequestObject {
     String testname;
     String testdate;
     String testlimit;
+    String totalpoints;
     Question[] questionDataArray; // 문제와 보기 및 답안이 담긴 배열
 
 }

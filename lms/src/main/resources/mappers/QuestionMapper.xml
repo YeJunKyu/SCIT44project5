@@ -77,4 +77,10 @@
             AND ((SELECT type FROM lms_question where qid = #{qid}) = 1 OR (SELECT type FROM lms_question where qid = #{qid}) = 2)
         ORDER BY value ASC
     </select>
+
+    <select id="selectOneQuestion" parameterType="int" resultType="Question">
+        SELECT *
+        FROM lms_question
+        WHERE qid = #{qid}
+    </select>
 </mapper>

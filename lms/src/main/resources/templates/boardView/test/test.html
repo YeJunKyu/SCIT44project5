@@ -49,7 +49,7 @@
                                 <div class="card">
                                     <div class="card-header">
                                         <h4 class="card-title">Hoverable rows</h4>
-                                        <button class="btn btn-primary" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')')}" th:onclick="|window.location.href=`@{/test/create}`|">시험 등록</button>
+                                        <button class="btn btn-primary" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')') || #authorization.expression('hasRole(''ROLE_admin'')')}" th:onclick="|window.location.href=`@{/test/create}`|">시험 등록</button>
                                     </div>
                                     <div class="card-content">
                                         <div class="card-body">

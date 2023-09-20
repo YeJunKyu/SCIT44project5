@@ -21,4 +21,7 @@ public interface QuestionService {
 
     // 문제에 해당하는 보기 조회
     ArrayList<Option> selectOptions(long qid);
+
+    // 문제 하나 조회
+    Question selectOneQuestion(int qid);
 }

@@ -10,6 +10,7 @@
             , testname
             , to_char(testdate, 'YYYY-MM-DD HH24:MI') as testdate
             , to_char(testlimit, 'YYYY-MM-DD HH24:MI') as testlimit
+            , totalpoints
         from lms_test
         ORDER BY testid desc
     </select>
@@ -19,12 +20,13 @@
             SELECT lms_test_seq.CURRVAL FROM DUAL
         </selectKey>
         insert into lms_test (
-            testid, testname, testdate, testlimit
+            testid, testname, testdate, testlimit, totalpoints
         ) values (
             lms_test_seq.nextval
             , #{testname}
             , to_date(#{testdate}, 'YYYY-MM-DD HH24:MI')
             , to_date(#{testlimit}, 'YYYY-MM-DD HH24:MI')
+            , #{totalpoints}
         )
     </insert>
 
@@ -32,10 +34,11 @@
     <select id="selectTest" parameterType="int" resultType="Test">
         SELECT
             testid
-             , testname
-             , totalpoints
-             , to_char(testdate, 'YYYY-MM-DD HH24:MI') as testdate
-             , to_char(testlimit, 'YYYY-MM-DD HH24:MI') as testlimit
+            , testname
+            , totalpoints
+            , to_char(testdate, 'YYYY-MM-DD HH24:MI') as testdate
+            , to_char(testlimit, 'YYYY-MM-DD HH24:MI') as testlimit
+            , totalpoints
         FROM lms_test
         WHERE testid = #{testid}
     </select>

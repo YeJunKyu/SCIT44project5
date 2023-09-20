@@ -1,19 +1,26 @@
 package com.scit.lms.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scit.lms.domain.Option;
 import com.scit.lms.domain.Question;
 import com.scit.lms.domain.Test;
 import com.scit.lms.domain.TestRequestObject;
 import com.scit.lms.service.QuestionService;
 import com.scit.lms.service.TestService;
+import com.scit.lms.util.FileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("test")
@@ -25,6 +32,10 @@ public class TestController {
     @Autowired
     QuestionService questionService;
 
+    // 파일 저장 경로
+    @Value("${notice.servlet.multipart.location}")
+    String uploadPath;
+
     // 시험 페이지 이동
     @GetMapping("")
     public String test(Model model) {
@@ -33,6 +44,7 @@ public class TestController {
 
         return "boardView/test/test";
     }
+
     // 시험 문제 생성
     @GetMapping("create")
     public String createTestForm() {
@@ -41,56 +53,88 @@ public class TestController {
 
     // 시험 문제 등록
     @PostMapping("submitTest")
-    public String submitTest(@RequestBody TestRequestObject requestObject) {
-        String testname = requestObject.getTestname();
-        String testdate = requestObject.getTestdate().replace("T", " ");
-        String testlimit = requestObject.getTestlimit().replace("T", " ");
+    public String submitTest(
+            @RequestParam("totalpoints") String totalpoints,
+            @RequestParam("testname") String testname,
+            @RequestParam("testdate") String testdate,
+            @RequestParam("testlimit") String testlimit,
+            @RequestParam("requestData") String requestDataString,
+            @RequestParam Map<String, MultipartFile> fileMap) throws JsonProcessingException {
+        // 문제 배열 추출
+        ObjectMapper objectMapper = new ObjectMapper();
+        TestRequestObject requestObject = objectMapper.readValue(requestDataString, TestRequestObject.class);
+        log.debug("파일확인:{}",requestObject);
+        // requestDataString 대신에 requestObject에서 데이터 추출
 
         // 시험 등록
+
         Test test = new Test();
         test.setTestname(testname);
-        test.setTestdate(testdate);
-        test.setTestlimit(testlimit);
-        int testid = testService.submitTest(test);
-//        log.debug("testID : {}", testid);
+        test.setTestdate(testdate.replace("T", " "));
+        test.setTestlimit(testlimit.replace("T", " "));
+        test.setTotalpoints(String.valueOf(Integer.parseInt(totalpoints)));
+        log.debug("날짜:{}, 제한시간:{}", testdate, testlimit);
 
-        // 문제 배열 추출
-        Question[] questions = requestObject.getQuestionDataArray();
+
+        log.debug("시험:{}", test);
+
+        int testid = testService.submitTest(test);
+        log.debug("시험아이디:{}", testid);
+
+
+
 
         // 문제 배열 등록
-        for (Question q: questions) {
+        // 문제 배열 등록
+        for (Question q: requestObject.getQuestionDataArray()) {
+
+
+            MultipartFile currentFile = fileMap.get("file[" + q.getPapernum() + "]");
+            log.debug("현파일:{}", currentFile);
+
             Question question = new Question();
             question.setTestid(test.getTestid());
             question.setPapernum(q.getPapernum());
             question.setContents(q.getContents());
             question.setPoints(q.getPoints());
             question.setType(q.getType());
+            question.setOptions(q.getOptions());
+
+            // 파일이 있다면 처리합니다.
+            if (currentFile != null && !currentFile.isEmpty()) {
+                String savedfile = FileService.saveFile(currentFile, uploadPath);
+                log.debug("현파일:{}", currentFile.getOriginalFilename());
+                question.setOriginalfile(currentFile.getOriginalFilename());
+                question.setSavedfile(savedfile);
+            } else {
+                log.debug("현파일 없음");
+            }
             questionService.submitQuestion(question);
+            log.debug("문제등록확인:{}", question);
 
             // 타입이 1, 2, 3인 경우만 option 및 answer 등록
-            if(q.getOptions() != null && !q.getOptions().isEmpty() && (q.getType() == 1 || q.getType() == 2 || q.getType() == 3)) {
+            if (q.getOptions() != null && !q.getOptions().isEmpty() && (q.getType() == 1 || q.getType() == 2 || q.getType() == 3)) {
                 List<Option> options = new ArrayList<>();
-                for (Option optionData: q.getOptions()) {
-                    if(optionData.getValue() != null) {
+                for (Option optionData : q.getOptions()) {
+                    if (optionData.getValue() != null) {
                         Option option = new Option();
                         option.setQid(question.getQid());
                         option.setValue(optionData.getValue());
                         option.setContent(optionData.getContent());
                         option.setChecked(optionData.getChecked());
-//                        log.debug("옵션 {}, {}, {}, {}", option.getQid(), option.getValue(), option.getContent(), option.getChecked());
                         options.add(option);
                     }
                 }
-//                log.debug("qid : {}, options : {}", question.getQid(), options);
-
-                // optoin 등록
+                // 옵션 등록
                 questionService.submitOptions(options);
+                log.debug("옵션등록확인:{}", options);
 
-                // answer 갱신
+                // 답변 갱신
                 questionService.updateAnswer();
-
+                log.debug("답변등록확인:{}", "okay");
             }
         }
+
         return "boardView/test/test";
     }
 
@@ -117,4 +161,5 @@ public class TestController {
 
         return "boardView/test/viewTest";
     }
+
 }
