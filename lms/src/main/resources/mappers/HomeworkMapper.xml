@@ -4,34 +4,19 @@
 
 <mapper namespace="com.scit.lms.dao.HomeworkDAO">
 
-    <!-- 학생 리스트 불러오기(커리큘럼) -->
-    <select id="studentList" resultType="Student">
-        select * from lms_student
-    </select>
-
-    <!-- 일본어 분반 불러오기 -->
-    <select id="jpClassList" resultType="JP_category">
-        select * from class_jp_category
-    </select>
-
-    <!-- IT 분반 불러오기 -->
-    <select id="itClassList" resultType="IT_category">
-        select * from class_it_category
-    </select>
-
     <!-- 과제 등록 -->
     <insert id="insertHw" parameterType="Homework">
         insert into lms_homework
         (
-            hw_num
-            , hw_title
-            , hw_contents
-            , hw_curriculum
-            , hw_subject
-            , hw_class
-            , hw_start
-            , hw_end
-            , memberid
+        hw_num
+        , hw_title
+        , hw_contents
+        , hw_curriculum
+        , hw_subject
+        , hw_class
+        , hw_start
+        , hw_end
+        , memberid
         <if test="originalfile != null and savedfile != null">
             , originalfile
             , savedfile
@@ -39,15 +24,15 @@
         )
         values
         (
-            lms_hw_seq.nextval
-            , #{hw_title}
-            , #{hw_contents}
-            , #{hw_curriculum}
-            , #{hw_subject}
-            , #{hw_class}
-            , TO_DATE(#{hw_start}, 'YYYY-MM-DD HH24:MI:SS')
-            , TO_DATE(#{hw_end}, 'YYYY-MM-DD HH24:MI:SS')
-            , #{memberid}
+        lms_hw_seq.nextval
+        , #{hw_title}
+        , #{hw_contents}
+        , #{hw_curriculum}
+        , #{hw_subject}
+        , #{hw_class}
+        , TO_DATE(#{hw_start}, 'YYYY-MM-DD HH24:MI:SS')
+        , TO_DATE(#{hw_end}, 'YYYY-MM-DD HH24:MI:SS')
+        , #{memberid}
         <if test="originalfile != null and savedfile != null">
             , #{originalfile}
             , #{savedfile}
@@ -55,14 +40,193 @@
         )
     </insert>
 
+    <!--학생 이름, 커리큘럼, 일본어 반, IT반 전부 불러오기-->
+    <select id="homeworkCategory" resultType="HomeworkCategory">
+        select
+            s.memberid as "memberid",
+            s.curriculum as "curriculum",
+            jp.jpclassname as "jpclassname",
+            it.itclassname as "itclassname"
+        from
+            lms_student s
+        join class_jp_category jp on s.memberid = jp.memberid
+        join class_it_category it on s.memberid = it.memberid
+    </select>
+
+    <!-- 특정 학생 이름, 커리큘럼, 일본어 반, IT반 불러오기 -->
+    <select id="studentCategory" resultType="HomeworkCategory">
+        select
+            s.memberid as "memberid",
+            s.curriculum as "curriculum",
+            jp.jpclassname as "jpclassname",
+            jp.jpsubject as "jpsubject",
+            it.itclassname as "itclassname",
+            it.itsubject as "itsubject"
+        from
+            lms_student s
+        join class_jp_category jp on s.memberid = jp.memberid
+        join class_it_category it on s.memberid = it.memberid
+        where
+            s.memberid=#{memberid}
+    </select>
+
     <!-- 과제 리스트 -->
-    <select id="hwList" resultType="Homework">
+    <select id="hwList" parameterType="hashmap" resultType="Homework">
         select
             *
         from
             lms_homework
+        <where>
+            <if test="type == 'subject'">
+                and upper(hw_subject) like upper('%' || #{searchWord} || '%')
+            </if>
+            <if test="type == 'memberid'">
+                and memberid = #{searchWord}
+            </if>
+            <if test="type == 'title'">
+                and upper(hw_title) like upper('%' || #{searchWord} || '%')
+            </if>
+            <if test="type == 'contents'">
+                and upper(hw_contents) like upper('%' || #{searchWord} || '%')
+            </if>
+            <if test="type == 'all'">
+                and
+                upper(hw_subject) like upper('%' || #{searchWord} || '%')
+                or
+                upper(memberid) like upper('%' || #{searchWord} || '%')
+                or
+                upper(hw_title) like upper('%' || #{searchWord} || '%')
+                or
+                upper(hw_contents) like upper('%' || #{searchWord} || '%')
+            </if>
+        </where>
         order by
             hw_num desc
+    </select>
+
+    <!-- 학생 과제 리스트(해당하는 커리큘럼, 반만 조회) -->
+    <select id="studentHwList" parameterType="hashmap" resultType="Homework">
+        select
+            *
+        from
+            lms_homework
+        <where>
+            <if test="type == 'subject'">
+                and upper(hw_subject) like upper('%' || #{searchWord} || '%')
+            </if>
+            <if test="type == 'memberid'">
+                and memberid = #{searchWord}
+            </if>
+            <if test="type == 'title'">
+                and upper(hw_title) like upper('%' || #{searchWord} || '%')
+            </if>
+            <if test="type == 'contents'">
+                and upper(hw_contents) like upper('%' || #{searchWord} || '%')
+            </if>
+            <if test="type == 'all'">
+                and
+                upper(hw_subject) like upper('%' || #{searchWord} || '%')
+                or
+                upper(memberid) like upper('%' || #{searchWord} || '%')
+                or
+                upper(hw_title) like upper('%' || #{searchWord} || '%')
+                or
+                upper(hw_contents) like upper('%' || #{searchWord} || '%')
+            </if>
+            and
+            (
+                    hw_curriculum=#{curriculum}
+                and (hw_subject='일본어' and hw_class=#{jpclassname})
+                or (hw_subject='IT' and hw_class=#{itclassname})
+                or hw_subject='해당없음'
+            )
+        </where>
+        order by
+            hw_num desc
+    </select>
+
+    <!-- 카테고리 선택 과제 리스트 -->
+    <select id="fetchList" resultType="Homework">
+        select * from lms_homework
+        <where>
+            hw_curriculum = #{curriculum}
+            <if test="subject != '해당없음'">
+                and hw_subject = #{subject}
+            </if>
+            <if test="classname != '해당없음'">
+                and hw_class = #{classname}
+            </if>
+        </where>
+        order by
+            hw_num desc
+    </select>
+
+    <!-- 전체 글 개수 -->
+    <select id="getTotal" parameterType="hashmap" resultType="int">
+        select
+            count(*)
+        from
+            lms_homework
+        <where>
+            <if test="type == 'subject'">
+                and upper(hw_subject) like upper('%' || #{searchWord} || '%')
+            </if>
+            <if test="type == 'memberid'">
+                and memberid = #{searchWord}
+            </if>
+            <if test="type == 'title'">
+                and upper(hw_title) like upper('%' || #{searchWord} || '%')
+            </if>
+            <if test="type == 'contents'">
+                and upper(hw_contents) like upper('%' || #{searchWord} || '%')
+            </if>
+            <if test="type == 'all'">
+                and
+                upper(hw_subject) like upper('%' || #{searchWord} || '%')
+                or
+                upper(memberid) like upper('%' || #{searchWord} || '%')
+                or
+                upper(hw_title) like upper('%' || #{searchWord} || '%')
+                or
+                upper(hw_contents) like upper('%' || #{searchWord} || '%')
+            </if>
+        </where>
+    </select>
+
+    <!-- 전체 글 개수(학생) -->
+    <select id="getStudentTotal" parameterType="hashmap" resultType="int">
+        select
+            count(*)
+        from
+            lms_homework
+        <where>
+                hw_curriculum=#{curriculum}
+                and (hw_subject='일본어' and hw_class=#{jpclassname})
+                or (hw_subject='IT' and hw_class=#{itclassname})
+                or hw_subject='해당없음'
+            <if test="type == 'subject'">
+                and upper(hw_subject) like upper('%' || #{searchWord} || '%')
+            </if>
+            <if test="type == 'memberid'">
+                and memberid = #{searchWord}
+            </if>
+            <if test="type == 'title'">
+                and upper(hw_title) like upper('%' || #{searchWord} || '%')
+            </if>
+            <if test="type == 'contents'">
+                and upper(hw_contents) like upper('%' || #{searchWord} || '%')
+            </if>
+            <if test="type == 'all'">
+                and
+                upper(hw_subject) like upper('%' || #{searchWord} || '%')
+                or
+                upper(memberid) like upper('%' || #{searchWord} || '%')
+                or
+                upper(hw_title) like upper('%' || #{searchWord} || '%')
+                or
+                upper(hw_contents) like upper('%' || #{searchWord} || '%')
+            </if>
+        </where>
     </select>
 
     <!-- 과제 조회 -->
@@ -200,5 +364,17 @@
         order by
             s.memberid
     </select>
+
+    <!-- 점수 등록 -->
+    <update id="updateScore" parameterType="HomeworkSub">
+        update lms_homework_submission
+        set
+            hw_sub_score=#{hw_sub_score}
+        <if test="hw_sub_comment != null">
+            , hw_sub_comment=#{hw_sub_comment}
+        </if>
+        where hw_sub_num=#{hw_sub_num}
+    </update>
+
 
 </mapper>

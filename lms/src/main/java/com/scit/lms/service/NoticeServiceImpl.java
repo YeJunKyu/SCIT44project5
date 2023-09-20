@@ -45,7 +45,7 @@ public class NoticeServiceImpl implements NoticeService {
         map.put("searchWord", searchWord);
 
         RowBounds rb = new RowBounds(navi.getStartRecord(),navi.getCountPerPage());
-        return dao.list(map, rb);
+        return dao.studentlist(map, rb);
     }
 
     //페이지네이션
@@ -58,6 +58,23 @@ public class NoticeServiceImpl implements NoticeService {
 
         //글 수(검색 포함)
         int total = dao.getTotal(map);
+
+        //페이지 수, 글 수
+        PageNavigator navi = new PageNavigator(pagePerGroup, countPerPage, page, total);
+
+        return navi;
+    }
+
+    //페이지네이션(학생)
+    @Override
+    public PageNavigator getPageNavigatorStudent(int pagePerGroup, int countPerPage, int page, String type, String searchWord) {
+        //검색할 정보
+        HashMap<String, String> map = new HashMap<>();
+        map.put("type", type);
+        map.put("searchWord", searchWord);
+
+        //글 수(검색 포함)
+        int total = dao.getStudentTotal(map);
 
         //페이지 수, 글 수
         PageNavigator navi = new PageNavigator(pagePerGroup, countPerPage, page, total);

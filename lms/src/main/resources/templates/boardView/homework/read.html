@@ -18,11 +18,98 @@
         .table-responsive {
             text-align: center;
         }
+
+        #sub {
+            text-align: left;
+        }
+
+        #res {
+            text-align: left;
+        }
+
     </style>
 
     <script th:src="@{/assets/js/jquery-3.6.0.js}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script>
+        // 체크박스 전체 선택
+        document.addEventListener("DOMContentLoaded", function () {
+            let selectAllCheckbox = document.querySelector("th > .form-check-input");
+            let checkboxes = document.querySelectorAll("tbody .form-check-input");
 
+            selectAllCheckbox.addEventListener("change", function() {
+                checkboxes.forEach(checkbox => checkbox.checked = selectAllCheckbox.checked);
+            });
+        });
+
+        // 점수 등록 모달 표시
+        function openSelectedScoreModal() {
+            const selectedIds = Array.from(document.querySelectorAll("input[type=checkbox]:checked"))
+                                    .map(checkbox => checkbox.value);
+
+            // 체크박스 선택 확인
+            if (selectedIds.length === 0) {
+              Swal.fire({
+                icon: "error",
+                title: "체크박스를 선택해주세요",
+                text: "점수를 등록할 학생을 선택해주세요",
+              });
+              return false;
+            }
+
+            $("#selectedScore").modal("show");
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelector("#updateSelectedScore").addEventListener("submit", function(event) {
+                event.preventDefault();
+
+                const formData = new FormData(this);
+                formData.append("selectedHwSubNums", Array.from(document.querySelectorAll("input[type=checkbox]:checked:not(.selectAll)"))
+                                                      .map(checkbox => checkbox.value));
+
+                $.ajax({
+                    url: "updateSelectedScore",
+                    method: "post",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function() {
+                        location.reload();
+                    },
+                    error: function(e) {
+                        console.log(JSON.stringify(e));
+                    }
+                });
+            });
+        });
+
+        // 점수 등록 모달 숨기기
+        function closeSelectedScoreModal() {
+          $("#selectedScore").modal("hide");
+        }
+
+        // 유효성 검사
+        function check() {
+            let s = document.getElementById("hw_sub_score").value;
+
+            if (s == "") {
+              Swal.fire({
+                icon: "error",
+                title: "점수를 입력해주세요",
+                text: "점수를 입력해주세요",
+              });
+              return false;
+            }
+            if (s < 0) {
+              Swal.fire({
+                icon: "error",
+                title: "점수를 입력해주세요",
+                text: "점수를 양수로 입력해주세요",
+              });
+              return false;
+            }
+        }
     </script>
 
 </head>
@@ -64,8 +151,8 @@
                         <div class="card-body">
 
                             <!-- 글 내용 -->
-                            <div class="table-responsive">
-                                <table class="col-12" id="notice">
+                            <div>
+                                <table class="col-12">
                                     <tr>
                                         <td colspan="2">
                                             <h2 th:text="${hw.hw_title}"></h2>
@@ -127,7 +214,7 @@
                                         <a class="btn btn-primary" th:href="@{/homework/update(hw_num=${hw.hw_num})}">수정</a>
                                         <a class="btn btn-light-secondary" th:href="@{/homework/delete(hw_num=${hw.hw_num})}" onclick="return confirm('삭제하겠습니까?');">삭제</a>
                                     </div>
-                                    <div sec:authorize="hasAnyRole('ROLE_admin', 'ROLE_student')"
+                                    <div sec:authorize="hasAnyRole('ROLE_student')"
                                          th:if="${subcount == 0
                                          and T(java.time.LocalDateTime).now().isAfter(T(java.time.LocalDateTime).parse(hw.hw_start, T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd HH:mm:ss')))}">
                                         <a class="btn btn-primary" th:href="@{/homework/homeworkSub(hw_num=${hw.hw_num})}">제출</a>
@@ -161,7 +248,7 @@
                             <!-- 글 내용 -->
                             <div class="card-content">
                                 <div class="table-responsive">
-                                    <table class="col-12" id="board">
+                                    <table class="col-12" id="sub">
                                         <tr>
                                             <th>작성자</th>
                                             <td>
@@ -220,8 +307,37 @@
         </section>
         <!-- 제출 글 끝 -->
 
+        <!-- 제출 점수 -->
+        <section class="hw_sub_score" th:each="list:${subList}" th:if="${list.hw_sub_score} and ${#authentication.name} == ${list.memberid}">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-content">
+                                <table class="table mb-0" id="res">
+                                    <tr>
+                                        <th class="col-2">점수</th>
+                                        <td>
+                                            <span th:text="${list.hw_sub_score}"></span><span>점</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="col-2">코멘트</th>
+                                        <td>
+                                            <pre th:text="${list.hw_sub_comment}" style="font-size: 16px;"></pre>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- 제출 점수 끝-->
+
         <!-- 제출 리스트 -->
-        <section class="hw_sub_list">
+        <section class="hw_sub_list" sec:authorize="hasAnyRole('ROLE_admin','ROLE_teacher')">
             <div class="row">
                 <div class="col-12">
                     <div class="card">
@@ -234,7 +350,7 @@
                                     <table class="table mb-0">
                                         <thead class="thead-dark">
                                         <tr>
-                                            <th style="width: 35px"><input type="checkbox" class="form-check-input"></th>
+                                            <th style="width: 35px"><input type="checkbox" class="form-check-input selectAll"></th>
                                             <th>과정</th>
                                             <th>과목</th>
                                             <th>반</th>
@@ -247,14 +363,24 @@
                                         </thead>
                                         <tbody th:each="student:${student}">
                                         <tr th:if="${student.curriculum == hw.hw_curriculum &&
-                                       ((hw.hw_subject == '일본어' && student.jpclassname == hw.hw_class) ||
-                                       (hw.hw_subject == 'IT' && student.itclassname == hw.hw_class))}">
-                                            <td><input type="checkbox" class="form-check-input"></td>
+                                                   ((hw.hw_subject == '일본어' && (student.jpclassname == hw.hw_class || hw.hw_class == '해당없음')) ||
+                                                    (hw.hw_subject == 'IT' && (student.itclassname == hw.hw_class || hw.hw_class == '해당없음')) ||
+                                                    (hw.hw_subject == '해당없음' && hw.hw_class == '해당없음'))}">
+                                            <td><input type="checkbox" class="form-check-input" th:value="${student.hw_sub_num}"></td>
                                             <td th:text="${student.curriculum}"></td>
                                             <td th:text="${hw.hw_subject}"></td>
                                             <td th:text="${hw.hw_subject == '일본어' ? student.jpclassname : (hw.hw_subject == 'IT' ? student.itclassname : '해당없음')}"></td>
-                                            <td th:text="${student.memberid}"></td>
-                                            <td th:text="${student.originalfile}"></td>
+                                            <td>
+                                                <a th:if="${student.hw_sub_done}" th:href="@{/homework/readSub(hw_sub_num=${student.hw_sub_num})}"><span th:text="${student.memberid}"></span></a>
+                                                <span th:unless="${student.hw_sub_done}" th:text="${student.memberid}"></span>
+                                            </td>
+                                            <td>
+                                                <span th:each="file : ${student.originalfile != null ? student.originalfile.split(',') : {}}">
+                                                    <a th:href="@{/homework/downloadSub(hw_sub_num=${student.hw_sub_num}, filename=${file})}">
+                                                        <i class="bi bi-file-arrow-down"></i>
+                                                    </a>
+                                                </span>
+                                            </td>
                                             <td th:text="${student.hw_sub_done == null ? '미제출' : student.hw_sub_done}"></td>
                                             <td th:text="${student.hw_sub_inputdate}"></td>
                                             <td th:text="${student.hw_sub_score}"></td>
@@ -265,12 +391,68 @@
                             </div>
                             <!-- 테이블 끝 -->
 
+                            <hr>
+
+                            <!-- 버튼 -->
+                            <div class="row">
+                                <div class="col-12 col-md-6 order-md-1 order-last">
+                                    <div class="button">
+                                        <button class="btn btn-primary" onclick="openSelectedScoreModal()">점수 등록</button>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6 order-md-2 order-first">
+                                    <div class="breadcrumb-header float-start float-lg-end">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 버튼 끝 -->
+
                         </div>
                     </div>
                 </div>
             </div>
         </section>
         <!-- 제출 리스트 끝 -->
+
+        <!-- 점수 일괄 등록 모달 -->
+        <form th:action="@{/homework/updateSelectedScore}" method="post" onsubmit="return check()" id="updateSelectedScore">
+
+            <div class="modal fade text-left show" id="selectedScore" tabindex="-1" aria-labelledby="myModalLabel1" style="display: none; padding-right: 17px;" aria-modal="true" role="dialog">
+                <div class="modal-dialog modal-dialog-scrollable" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="ModalLabel1">점수 일괄 등록</h5>
+                            <button type="button" class="close rounded-pill" data-bs-dismiss="modal" aria-label="Close" onclick="closeSelectedScoreModal()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <label>점수</label>
+                            <div class="form-group">
+                                <input type="number" class="form-control" name="hw_sub_score" id="hw_sub_score">
+                            </div>
+                            <label>코멘트</label>
+                            <div class="form-group">
+                                <textarea class="form-control" name="hw_sub_comment" id="hw_sub_comment" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light-primary" data-bs-dismiss="modal" onclick="closeSelectedScoreModal()">
+                                <i class="bx bx-x d-block d-sm-none"></i>
+                                <span class="d-none d-sm-block">취소</span>
+                            </button>
+                            <button type="submit" class="btn btn-primary ml-1" data-bs-dismiss="modal">
+                                <i class="bx bx-check d-block d-sm-none"></i>
+                                <span class="d-none d-sm-block">저장</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+        <!-- 점수 일괄 등록 모달 끝 -->
+
 
     </div>
 

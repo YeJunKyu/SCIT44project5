@@ -32,35 +32,101 @@
     <script th:src="@{/assets/js/jquery-3.6.0.js}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <script th:inline="javascript">
+      /*<![CDATA[*/
+      var category = /*[[${category}]]*/ [];
+      /*]]>*/
+    </script>
+
     <script>
-      <!-- 페이지 이동 스크립트  -->
-      function pagingFormSubmit(currentPage) {
-        var form = document.getElementById("pagingForm");
-        var page = document.getElementById("page");
-        page.value = currentPage;
-        form.submit();
+      // 카테고리 선택
+      document.addEventListener("DOMContentLoaded", function () {
+        var subjectSelector = document.getElementById('subjectSelector');
+        if (subjectSelector) {
+          subjectSelector.addEventListener('change', function() {
+            var subject = this.value;
+            var curriculum = document.getElementById('curriculumSelector').value;
+            var classSelector = document.getElementById('classSelector');
+
+            // "해당없음"을 제외하고 모든 옵션을 지우기
+            var optionsElements = classSelector.getElementsByTagName('option');
+            for(var i = optionsElements.length - 1; i > 0; i--) {
+                classSelector.removeChild(optionsElements[i]);
+            }
+
+            // 선택한 과목에 따라 해당하는 반 옵션 추가하기
+            var options = [];
+            category.forEach(function(item) {
+                if(item.curriculum === curriculum) {
+                    if(subject === '일본어' && options.indexOf(item.jpclassname) === -1) {
+                        options.push(item.jpclassname);
+                    } else if(subject === 'IT' && options.indexOf(item.itclassname) === -1) {
+                        options.push(item.itclassname);
+                    }
+                }
+            });
+
+            // options 배열에 저장된 반 옵션들을 추가
+            options.forEach(function(optionValue) {
+                var option = document.createElement("option");
+                option.value = optionValue;
+                option.textContent = optionValue;
+                classSelector.appendChild(option);
+            });
+          });
+        }
+      });
+
+      // 카테고리 선택 리스트
+      function fetchHomeworks() {
+          let curriculum = document.getElementById('curriculumSelector').value;
+          let subject = document.getElementById('subjectSelector').value;
+          let classname = document.getElementById('classSelector').value;
+
+          $.ajax({
+              url: 'homework/fetchList',
+              type: 'GET',
+              data: { curriculum: curriculum, subject: subject, classname: classname },
+              dataType: 'json',
+              success: function(data) {
+                  console.log(data);
+
+                  //tbody 비우기
+                  const tbody = $(".table-responsive table tbody");
+                  tbody.empty();
+
+                  //data td에 추가
+                  data.forEach(function(list) {
+                      const tr = $("<tr>");
+                      tr.append($("<td>").text(list.hw_num));
+                      tr.append($("<td>").text(list.hw_curriculum));
+                      tr.append($("<td>").text(list.hw_subject));
+                      tr.append($("<td>").text(list.hw_class));
+
+                      const titleLink = $("<a>").attr("href", "/homework/read?hw_num=" + list.hw_num).text(list.hw_title);
+                      tr.append($("<td>").addClass("text-bold-500").append(titleLink));
+
+                      tr.append($("<td>").text(list.memberid));
+
+                      const period = $("<td>").append($("<span>").text(list.hw_start)).append("<br>~").append($("<span>").text(list.hw_end));
+                      tr.append(period);
+
+                      tbody.append(tr);
+                  });
+              },
+              error: function(e) {
+                  console.log(JSON.stringify(e));
+              }
+          });
       }
 
-      document.addEventListener("DOMContentLoaded", function () {
-        document
-          .getElementById("subjectSelector")
-          .addEventListener("change", function () {
-            let subject = this.value;
-            let classSelector = document.getElementById("classSelector");
-
-            const jpClasses = document.querySelectorAll(".jpclass");
-            const itClasses = document.querySelectorAll(".itclass");
-
-            jpClasses.forEach((c) => (c.style.display = "none"));
-            itClasses.forEach((c) => (c.style.display = "none"));
-
-            if (subject === "일본어") {
-              jpClasses.forEach((c) => (c.style.display = "block"));
-            } else if (subject === "IT") {
-              itClasses.forEach((c) => (c.style.display = "block"));
-            }
-          });
-      });
+      // 페이지네이션
+      function pagingFormSubmit(currentPage) {
+          var form = document.getElementById('pagingForm');
+          var page = document.getElementById('page');
+          page.value = currentPage;
+          form.submit();
+      }
     </script>
   </head>
 
@@ -104,7 +170,7 @@
         </div>
       </div>
 
-      <section class="category">
+      <section class="category" sec:authorize="hasAnyRole('ROLE_admin', 'ROLE_teacher')">
         <div class="row">
           <div class="col-12">
             <div class="card">
@@ -115,42 +181,16 @@
                       <h6>카테고리</h6>
                     </div>
                     <div class="col-md-10" style="display: flex">
-                      <select name="hw_curriculum" class="form-select">
-                        <option
-                          th:each="curriculum : ${curriculum}"
-                          th:value="${curriculum}"
-                          th:text="${curriculum}"
-                        ></option>
+                      <select id="curriculumSelector" name="hw_curriculum" class="form-select" onchange="fetchHomeworks()">
+                        <option th:each="curriculum : ${curriculum}" th:value="${curriculum}" th:text="${curriculum}"></option>
                       </select>
-                      <select
-                        name="hw_subject"
-                        class="form-select"
-                        id="subjectSelector"
-                      >
+                      <select name="hw_subject" class="form-select" id="subjectSelector" onchange="fetchHomeworks()">
                         <option value="해당없음">해당없음</option>
                         <option value="일본어">일본어</option>
                         <option value="IT">IT</option>
                       </select>
-                      <select
-                        name="hw_class"
-                        class="form-select"
-                        id="classSelector"
-                      >
+                      <select name="hw_class" class="form-select" id="classSelector" onchange="fetchHomeworks()">
                         <option value="해당없음">해당없음</option>
-                        <option
-                          th:each="class : ${jpclass}"
-                          th:value="${class}"
-                          th:text="${class}"
-                          class="jpclass"
-                          style="display: none"
-                        ></option>
-                        <option
-                          th:each="class : ${itclass}"
-                          th:value="${class}"
-                          th:text="${class}"
-                          class="itclass"
-                          style="display: none"
-                        ></option>
                       </select>
                     </div>
                   </div>
@@ -170,15 +210,9 @@
                   <div class="col-12 col-md-6 order-md-1 order-last">
                     <!-- 과제 등록 버튼 -->
                     <div class="float-start float-lg-start">
-                      <div
-                        sec:authorize="hasAnyRole('ROLE_admin', 'ROLE_teacher')"
-                      >
+                      <div sec:authorize="hasAnyRole('ROLE_admin', 'ROLE_teacher')">
                         <div class="button">
-                          <a
-                            th:href="@{/homework/write}"
-                            class="btn btn-outline-primary"
-                            >과제 등록</a
-                          >
+                          <a th:href="@{/homework/write}" class="btn btn-outline-primary">과제 등록</a>
                         </div>
                       </div>
                     </div>
@@ -187,55 +221,18 @@
                     <!-- 검색 창 -->
                     <div class="float-start float-lg-end">
                       <div class="input-group mb-3">
-                        <form
-                          id="pagingForm"
-                          th:action="@{/notice}"
-                          method="get"
-                          style="display: flex"
-                        >
-                          <input type="hidden" name="page" id="page" />
-                          <select
-                            id="type"
-                            name="type"
-                            class="form-select"
-                            style="width: 110px"
-                          >
-                            <option
-                              value="title"
-                              th:selected="${type} == 'title'"
-                            >
-                              제목
-                            </option>
-                            <option
-                              value="contents"
-                              th:selected="${type} == 'contents'"
-                            >
-                              내용
-                            </option>
-                            <option
-                              value="memberid"
-                              th:selected="${type} == 'memberid'"
-                            >
-                              작성자
-                            </option>
-                            <option value="all" th:selected="${type} == 'all'">
-                              전체
-                            </option>
+                        <form id="pagingForm" th:action="@{/homework}" method="get" style="display: flex">
+                          <input type="hidden" name="page" id="page">
+                          <select id="type" name="type" class="form-select" style="width: 110px">
+                            <option value="subject" th:selected="${type} == 'subject'">과목</option>
+                            <option value="memberid" th:selected="${type} == 'memberid'">작성자</option>
+                            <option value="title" th:selected="${type} == 'title'">제목</option>
+                            <option value="contents" th:selected="${type} == 'contents'">내용</option>
+                            <option value="all" th:selected="${type} == 'all'">전체</option>
                           </select>
 
-                          <input
-                            type="text"
-                            name="searchWord"
-                            placeholder="검색어를 입력해주세요."
-                            th:value="${searchWord}"
-                            class="form-control"
-                          />
-                          <input
-                            type="button"
-                            value="검색"
-                            th:onclick="pagingFormSubmit()"
-                            class="btn btn-outline-secondary"
-                          />
+                          <input type="text" name="searchWord" placeholder="검색어를 입력해주세요." th:value="${searchWord}"  class="form-control">
+                          <input type="button" value="검색" th:onclick="pagingFormSubmit([[${navi.currentPage}]])" class="btn btn-outline-secondary">
                         </form>
                       </div>
                     </div>
@@ -282,7 +279,30 @@
                 </div>
                 <!-- 테이블 끝 -->
 
-                <div class="card-footer"></div>
+                <div class="card-footer">
+                  <!-- 페이지네이션 -->
+                  <ul class="pagination pagination-primary  justify-content-center" th:unless="${navi.currentPage == 0}">
+                    <li class="page-item">
+                      <a class="page-link" th:href="|javascript:pagingFormSubmit(${navi.currentPage - navi.pagePerGroup})|">&laquo;</a>
+                    </li>
+                    <li class="page-item">
+                      <a class="page-link" th:href="|javascript:pagingFormSubmit(${navi.currentPage - 1})|">&lsaquo;</a>
+                    </li>
+                    <li class="page-item" th:each="counter : ${#numbers.sequence(navi.startPageGroup, navi.endPageGroup)}" th:classappend="${counter == navi.currentPage} ? 'active' : ''">
+                      <th:block th:if="${counter == navi.currentPage}"></th:block>
+                      <a class="page-link" th:text="${counter}" th:href="|javascript:pagingFormSubmit(${counter})|"></a>
+                      <th:block th:if="${counter == navi.currentPage}"></th:block>
+                    </li>
+                    <li class="page-item">
+                      <a class="page-link" th:href="|javascript:pagingFormSubmit(${navi.currentPage + 1})|">&rsaquo;</a>
+                    </li>
+                    <li class="page-item">
+                      <a class="page-link" th:href="|javascript:pagingFormSubmit(${navi.currentPage + navi.pagePerGroup})|">&raquo;</a>
+                    </li>
+                  </ul>
+                  <!-- 페이지네이션 끝 -->
+                </div>
+
               </div>
             </div>
           </div>

@@ -32,33 +32,63 @@
     <script th:src="@{/assets/js/jquery-3.6.0.js}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 
+    <script th:inline="javascript">
+      /*<![CDATA[*/
+      var category = /*[[${category}]]*/ [];
+      /*]]>*/
+    </script>
+
     <script>
-      $(document).ready(function () {
-        let subjectSelector = document.getElementById("subjectSelector");
-        let classSelector = document.getElementById("classSelector");
+      document.addEventListener("DOMContentLoaded", function () {
+      var subject = this.value;
+            var curriculum =
+              document.getElementById("curriculumSelector").value;
+            var classSelector = document.getElementById("classSelector");
 
-        // 페이지 로드 됐을 때와 select box의 값이 변경될 때 실행되는 함수
-        function updateClassesBasedOnSubject() {
-          const jpClasses = document.querySelectorAll(".jpclass");
-          const itClasses = document.querySelectorAll(".itclass");
+            function updateClassOptions(subject, curriculum) {
+            document
+          .getElementById("subjectSelector")
+          .addEventListener("change", function () {
+                // "해당없음"을 제외하고 모든 옵션을 지우기
+                var optionsElements = classSelector.getElementsByTagName("option");
+                for (var i = optionsElements.length - 1; i > 0; i--) {
+                classSelector.removeChild(optionsElements[i]);
+                }
 
-          let subject = subjectSelector.value;
+                // 선택한 과목에 따라 해당하는 반 옵션 추가하기
+                var options = [];
+                category.forEach(function (item) {
+                if (item.curriculum === curriculum) {
+                    if (
+                    subject === "일본어" &&
+                    options.indexOf(item.jpclassname) === -1
+                    ) {
+                    options.push(item.jpclassname);
+                    } else if (
+                    subject === "IT" &&
+                    options.indexOf(item.itclassname) === -1
+                    ) {
+                    options.push(item.itclassname);
+                    }
+                }
+                });
 
-          jpClasses.forEach((c) => (c.style.display = "none"));
-          itClasses.forEach((c) => (c.style.display = "none"));
+                // options 배열에 저장된 반 옵션들을 추가
+                options.forEach(function (optionValue) {
+                var option = document.createElement("option");
+                option.value = optionValue;
+                option.textContent = optionValue;
+                classSelector.appendChild(option);
+                });
+            }
 
-          if (subject === "일본어") {
-            jpClasses.forEach((c) => (c.style.display = "block"));
-          } else if (subject === "IT") {
-            itClasses.forEach((c) => (c.style.display = "block"));
-          }
+            // 페이지 로드 시 hw.class 기반으로 class 선택자 업데이트
+            updateClassOptions(subjectSelector.value, curriculumSelector.value);
+
+            subjectSelector.addEventListener("change", function () {
+              updateClassOptions(this.value, curriculumSelector.value);
+            });
         }
-
-        // 페이지 로드 시 바로 함수를 한 번 호출
-        updateClassesBasedOnSubject();
-
-        // select box 값이 변경될 때마다 함수 호출
-        subjectSelector.addEventListener("change", updateClassesBasedOnSubject);
       });
 
       function check() {
@@ -162,12 +192,16 @@
                             class="col-md-10 form-group"
                             style="display: flex"
                           >
-                            <select name="hw_curriculum" class="form-select">
+                            <select
+                              id="curriculumSelector"
+                              name="hw_curriculum"
+                              class="form-select"
+                            >
                               <option
                                 th:each="curriculum : ${curriculum}"
                                 th:value="${curriculum}"
                                 th:text="${curriculum}"
-                                th:selected="${curriculum} == ${hw.hw_curriculum}"
+                                th:selected="${hw.hw_curriculum} == ${curriculum}"
                               ></option>
                             </select>
                             <select
@@ -175,7 +209,12 @@
                               class="form-select"
                               id="subjectSelector"
                             >
-                              <option value="해당없음">해당없음</option>
+                              <option
+                                value="해당없음"
+                                th:selected="${hw.hw_subject} == '해당없음'"
+                              >
+                                해당없음
+                              </option>
                               <option
                                 value="일본어"
                                 th:selected="${hw.hw_subject} == '일본어'"
@@ -195,22 +234,6 @@
                               id="classSelector"
                             >
                               <option value="해당없음">해당없음</option>
-                              <option
-                                th:each="class : ${jpclass}"
-                                th:value="${class}"
-                                th:text="${class}"
-                                class="jpclass"
-                                style="display: none"
-                                th:selected="${class} == ${hw.hw_class}"
-                              ></option>
-                              <option
-                                th:each="class : ${itclass}"
-                                th:value="${class}"
-                                th:text="${class}"
-                                class="itclass"
-                                style="display: none"
-                                th:selected="${class} == ${hw.hw_class}"
-                              ></option>
                             </select>
                           </div>
 

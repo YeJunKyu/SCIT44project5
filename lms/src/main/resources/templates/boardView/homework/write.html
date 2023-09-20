@@ -32,26 +32,45 @@
     <script th:src="@{/assets/js/jquery-3.6.0.js}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <script th:inline="javascript">
+      /*<![CDATA[*/
+      var category = /*[[${category}]]*/ [];
+      /*]]>*/
+    </script>
+
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        document
-          .getElementById("subjectSelector")
-          .addEventListener("change", function () {
-            let subject = this.value;
-            let classSelector = document.getElementById("classSelector");
+        document.getElementById('subjectSelector').addEventListener('change', function() {
+          var subject = this.value;
+          var curriculum = document.getElementById('curriculumSelector').value;
+          var classSelector = document.getElementById('classSelector');
 
-            const jpClasses = document.querySelectorAll(".jpclass");
-            const itClasses = document.querySelectorAll(".itclass");
+          // "해당없음"을 제외하고 모든 옵션을 지우기
+          var optionsElements = classSelector.getElementsByTagName('option');
+          for(var i = optionsElements.length - 1; i > 0; i--) {
+              classSelector.removeChild(optionsElements[i]);
+          }
 
-            jpClasses.forEach((c) => (c.style.display = "none"));
-            itClasses.forEach((c) => (c.style.display = "none"));
-
-            if (subject === "일본어") {
-              jpClasses.forEach((c) => (c.style.display = "block"));
-            } else if (subject === "IT") {
-              itClasses.forEach((c) => (c.style.display = "block"));
-            }
+          // 선택한 과목에 따라 해당하는 반 옵션 추가하기
+          var options = [];
+          category.forEach(function(item) {
+              if(item.curriculum === curriculum) {
+                  if(subject === '일본어' && options.indexOf(item.jpclassname) === -1) {
+                      options.push(item.jpclassname);
+                  } else if(subject === 'IT' && options.indexOf(item.itclassname) === -1) {
+                      options.push(item.itclassname);
+                  }
+              }
           });
+
+          // options 배열에 저장된 반 옵션들을 추가
+          options.forEach(function(optionValue) {
+              var option = document.createElement("option");
+              option.value = optionValue;
+              option.textContent = optionValue;
+              classSelector.appendChild(option);
+          });
+        });
       });
 
       function check() {
@@ -158,42 +177,16 @@
                             class="col-md-10 form-group"
                             style="display: flex"
                           >
-                            <select name="hw_curriculum" class="form-select">
-                              <option
-                                th:each="curriculum : ${curriculum}"
-                                th:value="${curriculum}"
-                                th:text="${curriculum}"
-                              ></option>
+                            <select id="curriculumSelector" name="hw_curriculum" class="form-select">
+                              <option th:each="curriculum : ${curriculum}" th:value="${curriculum}" th:text="${curriculum}"></option>
                             </select>
-                            <select
-                              name="hw_subject"
-                              class="form-select"
-                              id="subjectSelector"
-                            >
+                            <select name="hw_subject" class="form-select" id="subjectSelector">
                               <option value="해당없음">해당없음</option>
                               <option value="일본어">일본어</option>
                               <option value="IT">IT</option>
                             </select>
-                            <select
-                              name="hw_class"
-                              class="form-select"
-                              id="classSelector"
-                            >
+                            <select name="hw_class" class="form-select" id="classSelector">
                               <option value="해당없음">해당없음</option>
-                              <option
-                                th:each="class : ${jpclass}"
-                                th:value="${class}"
-                                th:text="${class}"
-                                class="jpclass"
-                                style="display: none"
-                              ></option>
-                              <option
-                                th:each="class : ${itclass}"
-                                th:value="${class}"
-                                th:text="${class}"
-                                class="itclass"
-                                style="display: none"
-                              ></option>
                             </select>
                           </div>
 

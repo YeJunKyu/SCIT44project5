@@ -4,7 +4,7 @@
 
 <mapper namespace="com.scit.lms.dao.NoticeDAO">
 
-    <!-- 공지 글 작성-->
+    <!-- 공지 글 작성 -->
     <insert id="insert" parameterType="Notice">
         insert into lms_notice
         (
@@ -67,14 +67,60 @@
             noticenum, memberid, noticetitle, noticecontents, to_char(noticedate, 'yyyy-mm-dd') noticedate, viewauthority, hits
         from
             lms_notice
-        where
+        <where>
             viewauthority = 0
+            <if test="type == 'title'">
+                and upper(noticetitle) like upper('%' || #{searchWord} || '%')
+            </if>
+            <if test="type == 'contents'">
+                and upper(noticecontents) like upper('%' || #{searchWord} || '%')
+            </if>
+            <if test="type == 'memberid'">
+                and memberid = #{searchWord}
+            </if>
+            <if test="type == 'all'">
+                and
+                upper(noticetitle) like upper('%' || #{searchWord} || '%')
+                or
+                upper(noticecontents) like upper('%' || #{searchWord} || '%')
+                or
+                upper(memberid) like upper('%' || #{searchWord} || '%')
+            </if>
+        </where>
         order by
             noticenum desc
     </select>
 
     <!-- 전체 글 개수 -->
     <select id="getTotal" parameterType="hashmap" resultType="int">
+        select
+            count(*)
+        from
+            lms_notice
+        <where>
+            viewauthority = 0
+            <if test="type == 'title'">
+                and upper(noticetitle) like upper('%' || #{searchWord} || '%')
+            </if>
+            <if test="type == 'contents'">
+                and upper(noticecontents) like upper('%' || #{searchWord} || '%')
+            </if>
+            <if test="type == 'memberid'">
+                and upper(memberid) = upper(#{searchWord})
+            </if>
+            <if test="type == 'all'">
+                and
+                upper(noticetitle) like upper('%' || #{searchWord} || '%')
+                or
+                upper(noticecontents) like upper('%' || #{searchWord} || '%')
+                or
+                upper(memberid) like upper('%' || #{searchWord} || '%')
+            </if>
+        </where>
+    </select>
+
+    <!-- 전체 글 개수(학생용) -->
+    <select id="getStudentTotal" parameterType="hashmap" resultType="int">
         select
             count(*)
         from

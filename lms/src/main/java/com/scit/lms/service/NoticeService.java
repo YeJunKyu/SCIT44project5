@@ -19,6 +19,9 @@ public interface NoticeService {
     //페이지네이션
     public PageNavigator getPageNavigator(int pagePerGroup, int countPerPage, int page, String type, String searchWord);
 
+    //페이지네이션(학생용)
+    public PageNavigator getPageNavigatorStudent(int pagePerGroup, int countPerPage, int page, String type, String searchWord);
+
     //공지 글 조회
     public Notice read(int noticenum);
 
