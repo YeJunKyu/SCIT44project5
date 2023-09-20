@@ -22,6 +22,9 @@ public interface NoticeDAO {
     //전체 글 개수
     public int getTotal(HashMap<String, String> map);
 
+    //전체 글 개수
+    public int getStudentTotal(HashMap<String, String> map);
+
     //공지 글 조회
     public Notice read(int noticenum);
 

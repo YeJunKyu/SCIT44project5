@@ -8,8 +8,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class HomeworkCategory {
-    public String memberid;
-    public String curriculum;
-    public String jpclassname;
-    public String itclassname;
+    String memberid;
+    String curriculum;
+    String jpclassname;
+    String jpsubject;
+    String itclassname;
+    String itsubject;
 }

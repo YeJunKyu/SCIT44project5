@@ -57,7 +57,7 @@ public class NoticeController {
 
         //학생은 전체 공지만 조회
         if (user.getAuthorities().stream().anyMatch(auth -> "ROLE_student".equals(auth.getAuthority()))) {
-            PageNavigator navi = service.getPageNavigator(pagePerGroup, countPerPage, page, type, searchWord);
+            PageNavigator navi = service.getPageNavigatorStudent(pagePerGroup, countPerPage, page, type, searchWord);
 
             ArrayList<Notice> list = service.studentlist(navi, type, searchWord);
 

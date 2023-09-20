@@ -3,6 +3,7 @@ package com.scit.lms.controller;
 import com.scit.lms.domain.*;
 import com.scit.lms.service.HomeworkService;
 import com.scit.lms.util.FileService;
+import com.scit.lms.util.PageNavigator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,10 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
@@ -24,10 +22,7 @@ import java.io.FileInputStream;
 import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -56,47 +51,57 @@ public class HomeworkController {
 
     //과제 메인 페이지
     @GetMapping({"","/"})
-    public String homework(Model model) {
+    public String homework(Model model
+            , String type
+            , String searchWord
+            , @AuthenticationPrincipal UserDetails user
+            , @RequestParam (name="page", defaultValue="1") int page) {
+
         //카테고리
-        //학생 리스트 불러오기
-        ArrayList<Student> student=service.studentList();
-        //일본어 분반 불러오기
-        ArrayList<JP_category> jpClassList=service.jpClassList();
-        //IT 분반 불러오기
-        ArrayList<IT_category> itClassList=service.itClassList();
+        ArrayList<HomeworkCategory> category = service.homeworkCategory();
 
-        log.debug("student: {}", student);
-        log.debug("jpclasslist: {}", jpClassList);
-        log.debug("itclasslist: {}", itClassList);
+        //커리큘럼 중복 제거
+        List<String> curriculum = category.stream()
+                .map(HomeworkCategory::getCurriculum)
+                .distinct()
+                .collect(Collectors.toList());
 
-        //학생 리스트의 커리큘럼 중복제거
-        Set<String> curriculum = student.stream()
-                .map(Student::getCurriculum)
-                .collect(Collectors.toSet());
-
-        //일본어 분반 중복제거
-        Set<String> jpclass = jpClassList.stream()
-                .map(JP_category::getJpclassname)
-                .collect(Collectors.toSet());
-
-        //IT 분반 중복제거
-        Set<String> itclass = itClassList.stream()
-                .map(IT_category::getItclassname)
-                .collect(Collectors.toSet());
-
-
+        model.addAttribute("category", category);
         model.addAttribute("curriculum", curriculum);
-        model.addAttribute("jpclass", jpclass);
-        model.addAttribute("itclass", itclass);
 
-        //과제 글 리스트
-        ArrayList<Homework> list = service.hwList();
+        //페이지네이션
+        PageNavigator navi = service.getPageNavigator(pagePerGroup, countPerPage, page, type, searchWord);
 
-        log.debug("hw_list:{}", list);
+        //전체 과제 글 리스트
+        ArrayList<Homework> list = service.hwList(navi, type, searchWord);
 
-        model.addAttribute("list",list);
+        //학생 과제 글 리스트
+        if (user.getAuthorities().stream().anyMatch(auth -> "ROLE_student".equals(auth.getAuthority()))) {
+
+            //학생 커리큘럼, 과목, 반
+            HomeworkCategory studentCategory = service.studentCategory(user.getUsername());
+
+            //과제 리스트
+            list = service.studentHwList(studentCategory, navi, type, searchWord);
+
+            //페이지네이션
+            navi = service.getPageNavigatorStudent(pagePerGroup, countPerPage, page, type, searchWord, studentCategory);
+
+        }
+
+        model.addAttribute("list", list);
+        model.addAttribute("navi", navi);
+        model.addAttribute("type", type);
+        model.addAttribute("searchWord", searchWord);
 
         return "boardView/homework/homework";
+    }
+
+    //카테고리 선택 과제 리스트
+    @ResponseBody
+    @GetMapping("fetchList")
+    public ArrayList<Homework> fetchList(@RequestParam String curriculum, @RequestParam String subject, @RequestParam String classname) {
+        return service.fetchList(curriculum, subject, classname);
     }
 
     //과제 등록 폼
@@ -110,36 +115,16 @@ public class HomeworkController {
         }
 
         //카테고리
-        //학생 리스트 불러오기
-        ArrayList<Student> student=service.studentList();
-        //일본어 분반 불러오기
-        ArrayList<JP_category> jpClassList=service.jpClassList();
-        //IT 분반 불러오기
-        ArrayList<IT_category> itClassList=service.itClassList();
+        ArrayList<HomeworkCategory> category = service.homeworkCategory();
 
-        log.debug("student: {}", student);
-        log.debug("jpclasslist: {}", jpClassList);
-        log.debug("itclasslist: {}", itClassList);
+        //커리큘럼 중복 제거
+        List<String> curriculum = category.stream()
+                .map(HomeworkCategory::getCurriculum)
+                .distinct()
+                .collect(Collectors.toList());
 
-        //학생 리스트의 커리큘럼 중복제거
-        Set<String> curriculum = student.stream()
-                .map(Student::getCurriculum)
-                .collect(Collectors.toSet());
-
-        //일본어 분반 중복제거
-        Set<String> jpclass = jpClassList.stream()
-                .map(JP_category::getJpclassname)
-                .collect(Collectors.toSet());
-
-        //IT 분반 중복제거
-        Set<String> itclass = itClassList.stream()
-                .map(IT_category::getItclassname)
-                .collect(Collectors.toSet());
-
-
+        model.addAttribute("category", category);
         model.addAttribute("curriculum", curriculum);
-        model.addAttribute("jpclass", jpclass);
-        model.addAttribute("itclass", itclass);
 
         return "boardView/homework/write";
     }
@@ -258,39 +243,19 @@ public class HomeworkController {
     public String update(@RequestParam(name="hw_num", defaultValue="0") int hw_num
             , Model model) {
         //카테고리
-        //학생 리스트 불러오기
-        ArrayList<Student> student=service.studentList();
-        //일본어 분반 불러오기
-        ArrayList<JP_category> jpClassList=service.jpClassList();
-        //IT 분반 불러오기
-        ArrayList<IT_category> itClassList=service.itClassList();
+        ArrayList<HomeworkCategory> category = service.homeworkCategory();
 
-        log.debug("student: {}", student);
-        log.debug("jpclasslist: {}", jpClassList);
-        log.debug("itclasslist: {}", itClassList);
+        //커리큘럼 중복 제거
+        List<String> curriculum = category.stream()
+                .map(HomeworkCategory::getCurriculum)
+                .distinct()
+                .collect(Collectors.toList());
 
-        //학생 리스트의 커리큘럼 중복제거
-        Set<String> curriculum = student.stream()
-                .map(Student::getCurriculum)
-                .collect(Collectors.toSet());
-
-        //일본어 분반 중복제거
-        Set<String> jpclass = jpClassList.stream()
-                .map(JP_category::getJpclassname)
-                .collect(Collectors.toSet());
-
-        //IT 분반 중복제거
-        Set<String> itclass = itClassList.stream()
-                .map(IT_category::getItclassname)
-                .collect(Collectors.toSet());
-
-
+        model.addAttribute("category", category);
         model.addAttribute("curriculum", curriculum);
-        model.addAttribute("jpclass", jpclass);
-        model.addAttribute("itclass", itclass);
 
         Homework hw = service.selectHw(hw_num);
-        log.debug("hw: {}", hw);
+        log.debug("수정할 과제: {}", hw);
         model.addAttribute("hw", hw);
 
         return "boardView/homework/update";
@@ -301,8 +266,6 @@ public class HomeworkController {
     public String update(Homework hw
             , @AuthenticationPrincipal UserDetails user
             , @RequestParam("upload") List<MultipartFile> uploads) {
-
-        log.debug("수정할 과제: {}", hw);
 
         //datetime-local date타입으로 변환
         String start = hw.getHw_start().replace("T", " ");
@@ -526,7 +489,75 @@ public class HomeworkController {
         return "redirect:/homework/read?hw_num=" + hw_sub.getHw_num();
     }
 
-    //제출 확인, 점수 등록
+    //제출 조회
+    @GetMapping("readSub")
+    public String readSub(@RequestParam(name="hw_sub_num", defaultValue="0") int hw_sub_num
+            , @AuthenticationPrincipal UserDetails user
+            , Model model) {
 
+        //학생이 제출 조회 금지
+        if (user.getAuthorities().stream().anyMatch(auth -> "ROLE_student".equals(auth.getAuthority()))) {
+            return "redirect:/homework";
+        }
+
+        HomeworkSub hw_sub = service.selectSub(hw_sub_num);
+        model.addAttribute("hw_sub", hw_sub);
+
+        //과제 내용 조회
+        Homework hw = service.selectHw(hw_sub.getHw_num());
+        if(hw==null) {
+            return "redirect:/homework";
+        }
+        model.addAttribute("hw", hw);
+
+        //과제 해당 학생 리스트
+        ArrayList<HomeworkStudent> student = service.stList(hw_sub.getHw_num());
+        log.debug("student: {}",student);
+        model.addAttribute("student", student);
+
+        return "boardView/homework/readSub";
+    }
+
+    //점수 등록
+    @PostMapping("updateScore")
+    public String updateScore(@RequestParam(name="hw_sub_num", defaultValue="0") int hw_sub_num
+            , @RequestParam(name="hw_sub_score", defaultValue="0") String hw_sub_score
+            , @RequestParam(name="hw_sub_comment", defaultValue="") String hw_sub_comment
+            , @AuthenticationPrincipal UserDetails user) {
+
+        //학생이 점수 등록 금지
+        if (user.getAuthorities().stream().anyMatch(auth -> "ROLE_student".equals(auth.getAuthority()))) {
+            return "redirect:/homework";
+        }
+
+        HomeworkSub hw_sub = service.selectSub(hw_sub_num);
+        hw_sub.setHw_sub_score(hw_sub_score);
+        hw_sub.setHw_sub_comment(hw_sub_comment);
+
+        service.updateScore(hw_sub);
+
+        return "redirect:/homework/readSub?hw_sub_num=" + hw_sub_num;
+    }
+
+    //점수 일괄 등록
+    @ResponseBody
+    @PostMapping("updateSelectedScore")
+    public void updateSelectedScore(
+            @RequestParam("selectedHwSubNums") String[] hwSubNums,
+            @RequestParam("hw_sub_score") String hw_sub_score,
+            @RequestParam("hw_sub_comment") String hw_sub_comment) {
+
+        log.debug("hwSubNums: {}", hwSubNums);
+
+        for (String hwSubNum : hwSubNums) {
+            int hw_sub_num = Integer.parseInt(hwSubNum);
+            HomeworkSub hw_sub = service.selectSub(hw_sub_num);
+            hw_sub.setHw_sub_score(hw_sub_score);
+            hw_sub.setHw_sub_comment(hw_sub_comment);
+
+            service.updateScore(hw_sub);
+        }
+        
+    }
 
 }

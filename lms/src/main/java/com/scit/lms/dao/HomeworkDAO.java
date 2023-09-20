@@ -3,25 +3,33 @@ package com.scit.lms.dao;
 import com.scit.lms.domain.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.session.RowBounds;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @Mapper
 public interface HomeworkDAO {
-    //학생 리스트 불러오기
-    public ArrayList<Student> studentList();
-
-    //일본어 분반 불러오기
-    public ArrayList<JP_category> jpClassList();
-
-    //IT 분반 불러오기
-    public ArrayList<IT_category> itClassList();
-
     //과제 등록
     public void insertHw(Homework hw);
 
+    //학생 이름, 커리큘럼, 일본어 반, IT반 불러오기
+    public ArrayList<HomeworkCategory> homeworkCategory();
+
     //과제 리스트
-    public ArrayList<Homework> hwList();
+    public ArrayList<Homework> hwList(HashMap<String, String> map, RowBounds rb);
+
+    //현재 로그인한 학생 카테고리 불러오기
+    public HomeworkCategory studentCategory(String memberid);
+
+    //현재 로그인한 학생 과제 리스트 불러오기
+    public ArrayList<Homework> studentHwList(HashMap<String, String> map, RowBounds rb);
+
+    //전체 글 개수
+    public int getTotal(HashMap<String, String> map);
+
+    //전체 글 개수(학생)
+    public int getStudentTotal(HashMap<String, String> map);
 
     //과제 조회
     public Homework selectHw(int hw_num);
@@ -49,4 +57,10 @@ public interface HomeworkDAO {
 
     //학생 리스트
     public ArrayList<HomeworkStudent> stList(int hw_num);
+
+    //점수 등록
+    public void updateScore(HomeworkSub hwSub);
+
+    //카테고리 선택 과제 리스트
+    public ArrayList<Homework> fetchList(@Param("curriculum") String curriculum, @Param("subject") String subject, @Param("classname") String classname);
 }
