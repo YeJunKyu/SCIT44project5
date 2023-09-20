@@ -121,6 +121,8 @@ public class MemberController {
     //회원정보 수정폼으로 이동
     @GetMapping("updateForm")
     public String updateForm(@AuthenticationPrincipal UserDetails user, Model model){
+
+
         Member member = service.memberInfor(user.getUsername());
 
 
@@ -134,8 +136,14 @@ public class MemberController {
     @PostMapping("memberUpdate")
     public String memberUpdate(@AuthenticationPrincipal UserDetails user, Model model, Member member
             , MultipartFile upload
-            , ResourceHandlerRegistry registry){
+            //, ResourceHandlerRegistry registry
+            , @RequestParam("postcode") String postcode
+            , @RequestParam("inputAddress") String inputAddress
+            , @RequestParam("detailAddress") String detailAddress){
 
+        String fullAddress = "(" + postcode + ") " + inputAddress + " " + detailAddress;
+        log.debug("주소:{}", fullAddress);
+        member.setAddress(fullAddress);
 
         int n = service.memberUpdate(member);
         log.debug("11111111{}", member);
