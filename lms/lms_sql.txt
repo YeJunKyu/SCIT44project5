@@ -71,21 +71,6 @@ create table lms_notice(
 --공지 시퀀스
 create sequence lms_notice_seq;
 
---시험 반영비중 테이블
-CREATE TABLE primary_ratio_category (
-	category_id	number		NOT NULL,
-	parent_id	number		NULL,
-    categoryname	varchar2(50)		NULL,
-	ratio	decimal(5,2)		NULL,
-    divname varchar2(100) NULL,
-    CONSTRAINT PK_PRIMARY_RATIO_CATEGORY PRIMARY KEY (category_id),
-    CONSTRAINT FK_PRIMARY_PARENT_CATEGORY FOREIGN KEY (parent_id) REFERENCES Primary_ratio_category (category_id) ON DELETE CASCADE
-
-);
---시험 비중테이블 고유번호 시퀀스
-create sequence primary_ratio_category_seq;
-
-
 
 
 --일정 테이블
@@ -105,6 +90,20 @@ create table lms_schedule (
 create sequence lms_schedule_seq;
 
 
+
+--시험 반영비중 테이블
+CREATE TABLE primary_ratio_category (
+	category_id	number		NOT NULL,
+	parent_id	number		NULL,
+    categoryname	varchar2(50)		NULL,
+	ratio	decimal(5,2)		NULL,
+    divname varchar2(100) NULL,
+    CONSTRAINT PK_PRIMARY_RATIO_CATEGORY PRIMARY KEY (category_id),
+    CONSTRAINT FK_PRIMARY_PARENT_CATEGORY FOREIGN KEY (parent_id) REFERENCES Primary_ratio_category (category_id) ON DELETE CASCADE
+
+);
+--시험 비중테이블 고유번호 시퀀스
+create sequence primary_ratio_category_seq;
 
 --시험 테이블
 create table lms_test (
@@ -152,6 +151,8 @@ CREATE TABLE lms_q_options (
         REFERENCES lms_question(qid)
         ON DELETE CASCADE
 );
+
+
 
 --출석 테이블
 create table attendance(
