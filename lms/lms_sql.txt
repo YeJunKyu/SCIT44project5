@@ -167,3 +167,40 @@ create table attendance(
 --출석시퀀스
 create sequence attendance_seq;
 
+
+
+--과제 테이블
+create table lms_homework (
+	hw_num		    number		    primary key,	    --과제 번호
+	hw_title	    varchar2(200)	not null,	        --과제 제목
+	hw_contents	    varchar2(4000)	not null,	        --과제 내용
+	hw_curriculum	varchar2(200),			            --과제 해당 과정
+	hw_subject	    varchar2(200),			            --과제 해당 과목(일본어,IT)
+	hw_class	    varchar2(200),			            --과제 해당 반
+	hw_inputdate	date		    default sysdate,    --과제 등록일
+    hw_start	    date		    not null,	        --과제 제출 기한(시작일)
+	hw_end          date		    not null,	        --과제 제출 기한(마감일)
+	originalfile	varchar2(4000),			            --원본 파일
+	savedfile	    varchar2(4000),			            --저장된 파일
+	memberid	    varchar2(20)	not null	        --교사 아이디
+);
+
+--과제 테이블 시퀀스
+create sequence lms_hw_seq;
+
+--과제 제출 테이블
+create table lms_homework_submission (
+	hw_sub_num	        number	            primary key,					                	--제출 번호
+	hw_num		        number	            references lms_homework(hw_num) on delete cascade,	--과제 번호
+	hw_sub_contents     varchar2(4000)	    not null,					                        --제출 내용
+	hw_sub_inputdate	date	            default sysdate,			                    	--제출일
+	hw_sub_done	        varchar2(20),					                                        --제출 여부(미제출/제출완료/지각)
+	hw_sub_comment	    varchar2(4000),							                                --코멘트
+	hw_sub_score	    number,								                                    --점수
+	originalfile	    varchar2(4000),							                                --원본 파일
+	savedfile	        varchar2(4000),							                                --저장된 파일
+	memberid	        varchar2(20)	    not null					                        --학생 아이디
+);
+
+--과제 제출 테이블 시퀀스
+create sequence lms_hw_sub_seq;
