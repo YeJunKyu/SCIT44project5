@@ -32,11 +32,7 @@ public class BoardController {
         return "boardView/lecture/lecture";
     }
 
-    // 문제은행 페이지 이동
-    @GetMapping("questionBank")
-    public String questionBank() {
-        return "boardView/questionBank/questionBank";
-    }
+
 
     @GetMapping("sidebar")
     public String sidebar(Model model){

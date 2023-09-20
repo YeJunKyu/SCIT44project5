@@ -112,7 +112,8 @@ create table lms_test (
     categoryid number, -- 분류 고유번호
     totalpoints number, -- 시험 총점
     testdate date,
-    testlimit date
+    testlimit date,
+    totalpoints number
 );
 
 --시험 테이블 시퀀스

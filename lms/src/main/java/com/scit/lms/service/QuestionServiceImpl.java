@@ -47,4 +47,10 @@ public class QuestionServiceImpl implements QuestionService{
         return dao.selectOptions(qid);
     }
 
+    // 문제 하나 조회
+    @Override
+    public Question selectOneQuestion(int qid) {
+        return dao.selectOneQuestion(qid);
+    }
+
 }
