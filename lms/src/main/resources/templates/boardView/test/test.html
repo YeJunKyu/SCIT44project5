@@ -64,6 +64,8 @@
                                                         <th>시험일</th>
                                                         <th>마감일</th>
                                                         <th>제출인원/전체인원</th>
+                                                        <th></th>
+                                                        <th></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody th:each="test : ${test}">
@@ -77,6 +79,12 @@
                                                         <td class="text-bold-500" th:text="${test.testlimit}"></td>
                                                         <td>
                                                             <a href="#"><i class="badge-circle badge-circle-light-secondary font-medium-1" data-feather="mail"></i></a>
+                                                        </td>
+                                                        <td th:if="${#authorization.expression('hasRole(''ROLE_teacher'')') || #authorization.expression('hasRole(''ROLE_admin'')')}">
+                                                            <a th:href="@{/test/updateTest(testid=${test.testid})}" onclick="return confirm('수정하시겠습니까?');">수정</a>
+                                                        </td>
+                                                        <td th:if="${#authorization.expression('hasRole(''ROLE_teacher'')') || #authorization.expression('hasRole(''ROLE_admin'')')}">
+                                                            <a th:href="@{/test/deleteTest}" onclick="return confirm('삭제하시겠습니까?');">삭제</a>
                                                         </td>
                                                     </tr>
                                                 </tbody>

@@ -12,6 +12,7 @@ import com.scit.lms.util.FileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -162,6 +163,39 @@ public class TestController {
         return "boardView/test/viewTest";
     }
 
+    //시험문제 수정폼
+    @GetMapping("updateTest")
+    public String updateTest(@RequestParam("testid") int testid, Model model){
+        // 시험 정보
+        Test test = testService.selectTest(testid);
 
+        // 시험의 문제
+        ArrayList<Question> questions = questionService.selectQuestions(testid);
+
+        // 객관식 유형 문제의 보기 가져오기
+        ArrayList<Option> allOptions = new ArrayList<>();
+        for (Question q : questions) {
+            ArrayList<Option> options = questionService.selectOptions(q.getQid());
+            allOptions.addAll(options);
+        }
+//        log.debug("{}", allOptions);
+
+        model.addAttribute("test", test);
+        model.addAttribute("questions", questions);
+        model.addAttribute("options", allOptions);
+
+
+        return "boardView/test/updateTest";
+    }
+
+
+    //시험문제 수정
+    @PostMapping("updateTest")
+    public String updateTest(){
+
+
+
+        return "redirect:/test/viewTest";
+    }
 
 }
