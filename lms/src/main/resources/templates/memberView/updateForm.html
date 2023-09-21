@@ -174,6 +174,7 @@
 
                     $("#changeAddress").css("display", "block");
                     $("#address").css("display", "none");
+                    $("#address-btn").css("display", "none");
 
 
                 } else {
@@ -333,7 +334,7 @@
                                                 <div class="input-group">
                                                     <input type="text" class="form-control" th:value="${user.address}"
                                                            id="address" name="address">
-                                                    <input class="btn btn-primary" type="button" onclick="execDaumPostcode()" value="변경">
+                                                    <input id="address-btn" class="btn btn-primary" type="button" onclick="execDaumPostcode()" value="변경">
                                                     <div class="form-control-icon">
                                                         <i class="bi bi-house-door"></i>
                                                     </div>
@@ -370,7 +371,7 @@
                             </div>
 
                             <a th:href="@{/member/insertPhoto}"> 사진올리기 </a>
-                            <input type="file" id="upload" name="upload" class="image-preview-filepond">
+<!--                            <input type="file" id="upload" name="upload" class="image-preview-filepond">-->
 
 <!--                            <input type="button" onclick="photoForm()" value="적용">-->
                         </form>

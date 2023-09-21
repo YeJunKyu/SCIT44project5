@@ -114,6 +114,7 @@ public class MemberController {
 
         //검색결과 모델에 저장
         model.addAttribute("user", member);
+        model.addAttribute("photoName", member.getMemberphoto());
         log.debug("인포메이션멤버{}", member);
         return "memberView/memberInfo";
     }
@@ -267,7 +268,9 @@ public class MemberController {
         Member m = service.memberInfor(user.getUsername());
         //검색결과 모델에 저장
         model.addAttribute("user", m);
-
+        model.addAttribute("photoName", m.getMemberphoto());
+        log.debug("유저:{}", user);
+        log.debug("저장된사진이름:{}", m.getMemberphoto());
         return "memberView/memberInfo";
     }
 
