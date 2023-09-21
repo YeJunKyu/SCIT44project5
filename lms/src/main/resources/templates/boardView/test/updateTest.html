@@ -212,6 +212,9 @@
 
                 // 결과를 표시하는 요소에 업데이트
                 $('#totalPoints').text(totalPoints); // "점"을 추가하여 표시
+
+                // 여기서 <input> 필드에 값을 설정
+    $('input[name="totalpoints"]').val(totalPoints);
             }
 
             // input 요소가 변경될 때마다 총점 계산 함수 호출
@@ -287,7 +290,7 @@
                             </div>
                         </div>
                     </div>
-                    <form enctype="multipart/form-data">
+                    <form th:action="@{updateTest}" method="post" enctype="multipart/form-data" onsubmit="submitForm(); return false;">
                         <section class="section">
                             <div class="card">
                                 <div class="card-header">
@@ -301,6 +304,7 @@
                                         </div>
                                         <div class="col-md-4">
                                             <h4 class="card-title">총점</h4>
+                                            <input type="text" name="totalpoints">
                                             <span id="totalPoints" th:text="${test.totalpoints}">0</span>점
                                         </div>
                                     </div>
@@ -330,9 +334,18 @@
                                             <input type="hidden" name="papernum" th:value="${q.papernum}"> <h6 class="col-md-8" id="${cardId}-papernum">[[${q.papernum}]]</h6>
                                             <div class="col-md-2 icon">
                                                 <img th:if="${q.savedfile !=null}" th:src="@{'/noticefiles/' + ${q.savedfile}}" alt="첨부 이미지" style="width: 200px; height: auto;">
-                                                파일첨부<input type="file" class="btn btn-primary btn-sm rounded-pill" th:name="'file[' + ${q.papernum} + ']'">
+                                                <input type="file" class="btn btn-primary btn-sm rounded-pill" th:name="'file[' + ${q.papernum} + ']'">
                                             </div>
+                                            <br>
                                             <div class="col-md-2">
+                                                <select class="form-select type" name="type" data-card-id="${cardId}" style="display : none;">
+                                                    <option th:value="${q.type}">[[${q.type}]]</option>
+                                                    <option value="1">객관식</option>
+                                                    <option value="2">객관식 복수정답</option>
+                                                    <option value="3">단답형</option>
+                                                    <option value="4">서술형</option>
+                                                    <option value="5">파일</option>
+                                                </select>
                                             </div>
                                         </div>
                                         <!--문제 출력 부분-->
@@ -418,96 +431,139 @@
             </div>
             <script th:inline="javascript">
                 function submitForm() {
-                let dataToSend = [];
+            console.log("submitForm() 함수가 호출되었습니다.");
+            // 시험 정보 부분
+            let testname = document.getElementById("testname").value;
+            let testdate = document.getElementById("testdate").value;
+            let testlimit = document.getElementById("testlimit").value;
+            let totalpoints = document.getElementById("totalPoints").innerText;
 
-                // 모든 문제를 루프를 돌며 처리합니다.
-                let questions = document.querySelectorAll(".qPlace");
-                console.log(questions);
-                questions.forEach(function (question) {
-                    let qidInput = question.querySelector('input[name="qid"]');
-                    let isNewQuestion = !qidInput; // qid 입력 필드가 없으면 새로운 문제
+            // FormData 객체 생성
+            let formData = new FormData();
 
-                    let qid = isNewQuestion ? null : qidInput.value;
-                    let answer = null;
+            // 파일 업로드를 formData에 추가 (originalfile)
+            $(".card").each(function (index) {
+                let cardId = $(this).attr("id");
+                let fileInput = $("#" + cardId + "-file-input")[0];
+                if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+                    return;
+                }
+                let papernum = $(this).closest(".card").find("#" + cardId + "-papernum").text();
+                if (fileInput.files.length > 0) {
+                    formData.append(`file[${papernum}]`, fileInput.files[0]);
+                }
+            });
 
-                    // 문제 유형에 따라 값을 추출합니다.
-                    switch (questionType) {
-                        case "1": // 객관식
-                            let selectedOption = question.querySelector('input[name="' + cardId + '-answer"]:checked');
-                            if (selectedOption) {
-                                answer = selectedOption.value;
-                            }
-                            break;
+            // 문제 데이터 배열 생성
+            let questionDataArray = [];
 
-                        case "2": // 객관식 복수 선택형
-                            let selectedOptions = question.querySelectorAll('input[name="' + cardId + '-answer"]:checked');
-                            if (selectedOptions.length > 0) {
-                                answer = [];
-                                selectedOptions.forEach(function (selectedOption) {
-                                    answer.push(selectedOption.value);
-                                });
-                            }
-                            break;
+            // 각 문제마다 데이터 추출 및 구성
+            $(".card").each(function (index) {
+                let cardId = $(this).attr("id");
+                let papernum = $(this).closest(".card").find("#" + cardId + "-papernum").text();
+                let type = $("#" + cardId + " .type").val();
+                let content = $("#" + cardId + " #taTarget").val();
+                let points = $("#" + cardId + " [name='points']").val();
+                let originalfile = $("#" + cardId + "-attach-file-btn").text();
 
-                        case "3": // 단답형
-                            let textAnswer = question.querySelector('input[type="text"].form-control');
-                            if (textAnswer) {
-                                answer = textAnswer.value;
-                            }
-                            break;
+                // isNew 변수를 구성
+                let qidInput = $("#" + cardId + " input[name='qid']");
+                let isNew = !qidInput.length;  // qid 입력 필드가 없으면 새로운 문제
 
-                        case "4": // 서술형
-                            let textareaAnswer = question.querySelector("textarea.form-control");
-                            if (textareaAnswer) {
-                                answer = textareaAnswer.value;
-                            }
-                            break;
-
-                        case "5": // 파일 첨부형
-                            // 파일 입력값을 추출하려면 해당 파일 입력 요소에 접근해야 합니다.
-                            // 파일 입력 요소의 ID를 사용하여 접근할 수 있습니다.
-                            let fileInput = document.querySelector("#" + cardId + "-file-input");
-                            if (fileInput) {
-                                // 파일 입력 요소의 처리 방법은 서버 백엔드에 따라 다를 수 있습니다.
-                                // 필요에 따라 파일 업로드 로직을 추가해야 합니다.
-                            }
-                            break;
-
-                        default:
-                            break;
-                    }
-
-                    // 문제와 답을 데이터 배열에 추가
-                    dataToSend.push({
-                        qid: qid, // 해당 문제의 qid를 추가합니다.
-                        cardId: cardId,
-                         questionType: questionType,
-                         answer: answer,
-                            isNew: isNewQuestion // 새로운 문제인지 여부를 추가합니다.
+                // 선택지 데이터 추출
+                let options = [];
+                if (type === "1") { // 객관식인 경우
+                    $("#" + cardId + " .optionItem").each(function () {
+                        let optionValue = $(this).find(".form-check-input").val();
+                        let optionContent = $(this).find(".form-control").val();
+                        if (!optionContent) {
+                            return;
+                        }
+                        options.push({
+                            value: optionValue,
+                            content: optionContent,
+                            checked: $(this).find(".form-check-input:checked").length > 0
+                        });
                     });
-                });
-
-                console.log(dataToSend);
-                // 권한에 따라 요청 URL을 결정합니다.
-                let requestUrl = '';
-
-
-                // Ajax 요청을 보냅니다.
-                $.ajax({
-                    type: 'POST',
-                    url: 'updateTest',
-                    contentType: 'application/json',
-                    data: JSON.stringify(dataToSend),
-                    success: function(response) {
-                        // 성공적으로 서버에서 응답을 받았을 때 수행할 작업을 여기에 추가하세요.
-                        alert('성공적으로 제출되었습니다.');
-                    },
-                    error: function(error) {
-                        // Ajax 요청이 실패했을 때 수행할 작업을 여기에 추가하세요.
-                        alert('제출 중 오류가 발생했습니다.');
+                } else if (type === "2") { // 객관식 복수정답인 경우
+                    $("#" + cardId + " .multiOptionItem").each(function () {
+                        let multiOptionValue = $(this).find(".form-check-input").val();
+                        let multiOptionContent = $(this).find(".form-control").val();
+                        if (!multiOptionContent) {
+                            return;
+                        }
+                        options.push({
+                            value: multiOptionValue,
+                            content: multiOptionContent,
+                            checked: $(this).find(".form-check-input:checked").length > 0
+                        });
+                    });
+                } else if (type === "3") { // 단답형인 경우
+                    let answerInputValue = $("#" + cardId + " .form-control[type='text']").val();
+                    if (!answerInputValue) {
+                        return;
                     }
+                    options.push({
+                        value: answerInputValue,
+                        checked: "true"
+                    });
+                }
+
+                questionDataArray.push({
+                    qid: cardId,
+                    papernum: papernum,
+                    type: type,
+                    contents: content,
+                    points: points,
+                    originalfile: originalfile,
+                    options: options,
+                    isNew: isNew   // isNew 값을 배열에 추가
                 });
-            }
+
+            });
+            questionDataArray = questionDataArray.filter(function (question) {
+                return question.qid !== undefined;
+            });
+
+            let requestData = {
+                testname: testname,
+                testdate: testdate,
+                testlimit: testlimit,
+                totalpoints: totalpoints,
+                questionDataArray : questionDataArray
+            };
+
+            // questionDataArray를 formData에 추가
+            formData.append("testname", testname);
+            formData.append("testdate", testdate);
+            formData.append("testlimit", testlimit);
+            formData.append("totalpoints", totalpoints);
+            formData.append("questionDataArray", JSON.stringify(questionDataArray));
+            formData.append("requestData", JSON.stringify(requestData));
+            // formData에 isNew 값을 추가
+            questionDataArray.forEach((qData, index) => {
+                formData.append(`question[${index}][isNew]`, qData.isNew.toString());
+            });
+
+            console.log("FormData contents:", [...formData]);
+
+            $.ajax({
+                url: 'updateTest', // 폼의 액션과 동일한 URL로 요청합니다.
+                type: 'POST', // POST 방식으로 요청
+                data: formData, // 위에서 만든 formData 객체를 데이터로 사용
+                contentType: false, // multipart/form-data의 경우 false로 설정해야 합니다.
+                processData: false, // FormData를 사용할 때 이 값을 false로 설정해야 합니다.
+                success: function(response) {
+                    // 서버로부터의 응답을 여기에서 처리합니다. 예: 알림 표시
+                    alert('성공적으로 제출되었습니다.');
+                    window.location.href = "/lms/test";
+                },
+                error: function(err) {
+                    // 요청 중 오류가 발생한 경우 여기에서 처리합니다. 예: 오류 메시지 표시
+                    alert('제출 중 오류가 발생했습니다.');
+                }
+            });
+        }
 
 
             </script>

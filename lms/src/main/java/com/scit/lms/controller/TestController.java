@@ -266,7 +266,7 @@ public class TestController {
                 log.debug("문제수정확인:{}", question);
             }
 
-
+            int opid = questionService.opidUp();
 
             // 타입이 1, 2, 3인 경우만 option 및 answer 등록
             if (q.getOptions() != null && !q.getOptions().isEmpty() && (q.getType() == 1 || q.getType() == 2 || q.getType() == 3)) {
@@ -274,6 +274,8 @@ public class TestController {
                 for (Option optionData : q.getOptions()) {
                     if (optionData.getValue() != null) {
                         Option option = new Option();
+                        opid++;
+                        option.setOptionid(opid);
                         option.setQid(question.getQid());
                         option.setValue(optionData.getValue());
                         option.setContent(optionData.getContent());
@@ -283,6 +285,8 @@ public class TestController {
                 }
                 // 옵션 등록
                 if (q.isNew()){
+
+
                     questionService.insertOptions(options);
                     log.debug("옵션등록확인:{}", options);
                 } else {

@@ -52,6 +52,8 @@
         SELECT * FROM dual
     </insert>
 
+
+
     <update id="updateAnswer">
         UPDATE lms_question q
         SET q.answer = (
@@ -112,9 +114,18 @@
     </update>
 
 <!--    옵션수정-->
+
     <update id="updateOptions" parameterType="Option">
-
+        UPDATE lms_q_options
+        SET
+        value = #{value}
+        <if test="content != null">
+            , content = #{content}
+        </if>
+        <if test="checked != null">
+            , checked = #{checked}
+        </if>
+        WHERE optionid = #{optionid}
     </update>
-
 
 </mapper>
