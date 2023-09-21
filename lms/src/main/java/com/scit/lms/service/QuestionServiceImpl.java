@@ -58,4 +58,20 @@ public class QuestionServiceImpl implements QuestionService{
         return dao.deleteQuestion(testid);
     }
 
+    @Override
+    public void updateQuestion(Question question) {
+        dao.updateQuestion(question);
+    }
+
+    @Override
+    public void updateOptions(List<Option> options) {
+        dao.updateOptions(options);
+    }
+
+    @Override
+    public int opidUp() {
+        return dao.opidUp();
+    }
+
+
 }

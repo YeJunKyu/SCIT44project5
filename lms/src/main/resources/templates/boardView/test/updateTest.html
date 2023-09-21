@@ -287,7 +287,7 @@
                             </div>
                         </div>
                     </div>
-                    <form>
+                    <form enctype="multipart/form-data">
                         <section class="section">
                             <div class="card">
                                 <div class="card-header">
@@ -308,13 +308,13 @@
                                         <div class="col-md-6">
                                             <h4 class="card-title">시험일시</h4>
                                             <div class="form-group input-group">
-                                                <span th:text="${test.testdate}"></span>
+                                                <input type="date" name="testdate" th:value="${test.testdate}">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <h4 class="card-title">마감일시</h4>
                                             <div class="form-group input-group">
-                                                <span th:text="${test.testlimit}"></span>
+                                                <input type="date" name="testlimit" th:value="${test.testlimit}">
                                             </div>
                                         </div>
                                     </div>
@@ -347,8 +347,9 @@
                                                     <div class="d-flex justify-content-between mb-1 optionItem">
                                                         <div>
                                                             <label class="d-flex align-items-center">
-                                                                <input type="radio" class="form-check-input m-lg-1 optionCount" name="${cardId}-answer" value="${value}" />
-                                                                <span th:text="${o.content}"></span>
+                                                                <input type="radio" class="form-check-input m-lg-1 optionCount" name="${cardId}-answer" th:value="${value}" th:checked="${o.checked}"  />
+                                                                <input type="text" name="content" th:value="${o.content}">
+
                                                             </label>
                                                         </div>
                                                     </div>
@@ -360,8 +361,8 @@
                                                     <div class="d-flex justify-content-between mb-1 multiOptionItem">
                                                         <div>
                                                             <label class="d-flex align-items-center">
-                                                                <input type="checkbox" class="form-check-input m-lg-1 optionCount" name="${cardId}-answer" value="${value}" />
-                                                                <span th:text="${o.content}"></span>
+                                                                <input type="checkbox" class="form-check-input m-lg-1 optionCount" name="${cardId}-answer" value="${value}" th:checked="${o.checked}" />
+                                                                <input type="text" name="content" th:value="${o.content}">
                                                             </label>
                                                         </div>
                                                     </div>
@@ -370,13 +371,12 @@
                                             <!-- 단답형 (q.type == 3) -->
                                             <div th:case="3">
                                                 <div class="d-flex justify-content-between mb-1">
-                                                    <input type="text" class="form-control" />
+                                                    <input type="text" name="answer" th:value="${q.answer}" class="form-control" />
                                                 </div>
                                             </div>
                                             <!-- 서술형 (q.type == 4) -->
                                             <div th:case="4">
                                                 <div class="d-flex justify-content-between mb-1">
-                                                    <textarea class="form-control"></textarea>
                                                 </div>
                                             </div>
                                             <!-- 파일 첨부형 (q.type == 5) -->
@@ -424,8 +424,10 @@
                 let questions = document.querySelectorAll(".qPlace");
                 console.log(questions);
                 questions.forEach(function (question) {
-                    let cardId = question.getAttribute("th:value");
-                    let questionType = question.getAttribute("th:case");
+                    let qidInput = question.querySelector('input[name="qid"]');
+                    let isNewQuestion = !qidInput; // qid 입력 필드가 없으면 새로운 문제
+
+                    let qid = isNewQuestion ? null : qidInput.value;
                     let answer = null;
 
                     // 문제 유형에 따라 값을 추출합니다.
@@ -477,9 +479,11 @@
 
                     // 문제와 답을 데이터 배열에 추가
                     dataToSend.push({
+                        qid: qid, // 해당 문제의 qid를 추가합니다.
                         cardId: cardId,
-                        questionType: questionType,
-                        answer: answer,
+                         questionType: questionType,
+                         answer: answer,
+                            isNew: isNewQuestion // 새로운 문제인지 여부를 추가합니다.
                     });
                 });
 

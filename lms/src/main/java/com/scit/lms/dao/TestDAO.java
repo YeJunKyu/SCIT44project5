@@ -19,4 +19,6 @@ public interface TestDAO {
     Test selectTest(int testid);
 
     int deleteTest(int testid);
+
+    int updateTest(Test test);
 }

@@ -26,4 +26,10 @@ public interface QuestionService {
     Question selectOneQuestion(int qid);
 
     int deleteQuestion(int testid);
+
+    void updateQuestion(Question question);
+
+    void updateOptions(List<Option> options);
+
+    int opidUp();
 }

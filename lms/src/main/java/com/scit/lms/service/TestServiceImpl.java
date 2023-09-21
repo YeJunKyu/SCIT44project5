@@ -36,4 +36,9 @@ public class TestServiceImpl implements TestService{
     public int deleteTest(int testid) {
         return dao.deleteTest(testid);
     }
+
+    @Override
+    public int updateTest(Test test) {
+        return dao.updateTest(test);
+    }
 }

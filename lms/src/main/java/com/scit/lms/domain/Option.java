@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Option {
+    int optionid;
     long qid;
     String value;
     String content;

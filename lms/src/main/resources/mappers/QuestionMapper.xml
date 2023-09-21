@@ -21,20 +21,26 @@
         )
     </insert>
 
+<!--    optionid 증가-->
+    <select id="opidUp" resultType="int">
+        SELECT COALESCE(MAX(optionid), 0) + 1 AS next_id
+        FROM lms_q_options
+    </select>
+
 
     <!--문제의 보기 및 답안 등록-->
     <insert id="insertOptions" parameterType="Option">
         INSERT ALL
         <foreach collection="list" item="options" separator=" ">
-            INTO lms_q_options (qid, value
+            INTO lms_q_options (optionid, qid, value
             <if test="options.content != null">
                 , content
             </if>
             <if test="options.checked != null">
-               , checked
+                , checked
             </if>
             )
-            VALUES (#{options.qid}, #{options.value}
+            VALUES (#{options.optionid}, #{options.qid}, #{options.value}
             <if test="options.content != null">
                 , #{options.content}
             </if>
@@ -90,4 +96,25 @@
         delete from lms_question
         where testid = #{testid}
     </delete>
+
+<!--    문제수정-->
+    <update id="updateQuestion" parameterType="Question">
+        UPDATE lms_question
+        SET
+        contents = #{contents},
+        points = #{points}
+        <if test="originalfile != null">
+            , originalfile = #{originalfile}
+            , savedfile = #{savedfile}
+        </if>
+        WHERE qid = #{qid}
+
+    </update>
+
+<!--    옵션수정-->
+    <update id="updateOptions" parameterType="Option">
+
+    </update>
+
+
 </mapper>

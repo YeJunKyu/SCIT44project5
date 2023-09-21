@@ -20,4 +20,6 @@ public class Question {
     String originalfile; // 원본 첨부파일명
     String savedfile; // 저장된 첨부파일명
     List<Option> options; // 객관식 테이블
+
+    boolean isNew; // 새로운 문제인지 여부
 }

@@ -48,4 +48,20 @@
         delete from lms_test
         where testid = #{testid}
     </delete>
+
+<!--    시험수정-->
+    <update id="updateTest" parameterType="Test">
+    update lms_test
+        set testname = #{testname},
+        testdate = #{testdate} ,
+        testlimit = #{testlimit},
+        totalpoints = #{totalpoints}
+        where testid = #{testid}
+
+    </update>
+
+
+
+
+
 </mapper>
