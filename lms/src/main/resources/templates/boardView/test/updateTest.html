@@ -234,6 +234,8 @@
 
                 $("#" + cardId + "-attach-file-btn").text(fileName);
             });
+
+
         });
 
 
@@ -319,89 +321,92 @@
                                 <div class="card-body"></div>
                             </div>
                         </section>
-                        <div class="section" id="questions" th:each="q : ${questions}">
-                            <div class="card qPlace" id="cardid" th:value="${q.qid}">
-                                <div class="card-header justify-content-between">
-                                    <div class="d-flex mb-3 align-items-center">
-                                        <h6 class="col-md-8" id="${cardId}-papernum" th:text="${q.papernum}"></h6>
-                                        <div class="col-md-2 icon">
-                                            <input type="file" id="${cardId}-file-input" name="file" style="display: none" />
-                                            <button id="${cardId}-attach-file-btn" class="btn btn-primary btn-sm rounded-pill m-lg-2">파일 첨부</button>
+                            <div class="section" id="questions" th:each="q : ${questions}">
+                                <div class="card qPlace" id="cardid" th:value="${q.qid}">
+                                    <div class="card-header justify-content-between">
+                                        <div class="d-flex mb-3 align-items-center">
+                                            <h6 class="col-md-8" id="${cardId}-papernum">[[${q.papernum}]]</h6>
+                                            <div class="col-md-2 icon">
+                                                <img th:if="${q.savedfile !=null}" th:src="@{'/noticefiles/' + ${q.savedfile}}" alt="첨부 이미지" style="width: 200px; height: auto;">
+                                                파일첨부<input type="file" class="btn btn-primary btn-sm rounded-pill" th:name="'file[' + ${q.papernum} + ']'">
+                                            </div>
+                                            <div class="col-md-2">
+                                                <span th:text="${q.type}"></span>
+                                            </div>
                                         </div>
-                                        <div class="col-md-2">
-                                            <span th:text="${q.type}"></span>
-                                        </div>
+                                        <!--문제 출력 부분-->
+                                        <h6 th:text="${q.contents}"></h6>
                                     </div>
-                                    <!--문제 출력 부분-->
-                                    <h6 th:text="${q.contents}"></h6>
-                                </div>
-                                <!--문제 유형별 답 입력 부분-->
-                                <div id="qPlace" class="card-body">
-                                    <div th:switch="${q.type}">
-                                        <!-- 객관식 (q.type == 1) -->
-                                        <div th:case="1">
-                                            <div th:if="${q.qid == o.qid}" th:each="o :${options}">
-                                                <div class="d-flex justify-content-between mb-1 optionItem">
-                                                    <div>
-                                                        <label class="d-flex align-items-center">
-                                                            <input type="radio" class="form-check-input m-lg-1 optionCount" name="${cardId}-answer" value="${value}" />
-                                                            <span th:text="${o.content}"></span>
-                                                        </label>
+                                    <!--문제 유형별 답 입력 부분-->
+                                    <div id="qPlace" class="card-body">
+                                        <div th:switch="${q.type}">
+                                            <!-- 객관식 (q.type == 1) -->
+                                            <div th:case="1">
+                                                <div th:if="${q.qid == o.qid}" th:each="o :${options}">
+                                                    <div class="d-flex justify-content-between mb-1 optionItem">
+                                                        <div>
+                                                            <label class="d-flex align-items-center">
+                                                                <input type="radio" class="form-check-input m-lg-1 optionCount" name="${cardId}-answer" value="${value}" />
+                                                                <span th:text="${o.content}"></span>
+                                                            </label>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <!-- 객관식 복수정답 (q.type == 2) -->
-                                        <div th:case="2">
-                                            <div th:if="${q.qid == o.qid}" th:each="o :${options}">
-                                                <div class="d-flex justify-content-between mb-1 multiOptionItem">
-                                                    <div>
-                                                        <label class="d-flex align-items-center">
-                                                            <input type="checkbox" class="form-check-input m-lg-1 optionCount" name="${cardId}-answer" value="${value}" />
-                                                            <span th:text="${o.content}"></span>
-                                                        </label>
+                                            <!-- 객관식 복수정답 (q.type == 2) -->
+                                            <div th:case="2">
+                                                <div th:if="${q.qid == o.qid}" th:each="o :${options}">
+                                                    <div class="d-flex justify-content-between mb-1 multiOptionItem">
+                                                        <div>
+                                                            <label class="d-flex align-items-center">
+                                                                <input type="checkbox" class="form-check-input m-lg-1 optionCount" name="${cardId}-answer" value="${value}" />
+                                                                <span th:text="${o.content}"></span>
+                                                            </label>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <!-- 단답형 (q.type == 3) -->
-                                        <div th:case="3">
-                                            <div class="d-flex justify-content-between mb-1">
-                                                <input type="text" class="form-control" />
+                                            <!-- 단답형 (q.type == 3) -->
+                                            <div th:case="3">
+                                                <div class="d-flex justify-content-between mb-1">
+                                                    <input type="text" class="form-control" />
+                                                </div>
+                                            </div>
+                                            <!-- 서술형 (q.type == 4) -->
+                                            <div th:case="4">
+                                                <div class="d-flex justify-content-between mb-1">
+                                                    <textarea class="form-control"></textarea>
+                                                </div>
+                                            </div>
+                                            <!-- 파일 첨부형 (q.type == 5) -->
+                                            <div th:case="5">
+                                                <div class="d-flex justify-content-between mb-1">
+                                                    <!-- 파일 첨부형식 -->
+                                                </div>
                                             </div>
                                         </div>
-                                        <!-- 서술형 (q.type == 4) -->
-                                        <div th:case="4">
-                                            <div class="d-flex justify-content-between mb-1">
-                                                <textarea class="form-control"></textarea>
-                                            </div>
-                                        </div>
-                                        <!-- 파일 첨부형 (q.type == 5) -->
-                                        <div th:case="5">
-                                            <div class="d-flex justify-content-between mb-1">
-                                                <!-- 파일 첨부형식 -->
-                                            </div>
-                                        </div>
-                                    </div>
 
-                                </div>
-                                <div class="card-footer d-flex justify-content-between">
-                                    <div class="col-md-2">
-                                        <label class="d-flex align-items-center">
-                                            <span class="col-md-3">배점</span>
-                                            <b><span th:text="${q.points}"></span></b>점
-                                            <input type="number" name="points" class="form-control" required/>
-                                        </label>
+                                    </div>
+                                    <div class="card-footer d-flex justify-content-between">
+                                        <div class="col-md-2">
+                                            <label class="d-flex align-items-center">
+                                                <span class="col-md-3">배점</span>
+                                                <b><span th:text="${q.points}"></span></b>점
+                                                <input type="number" name="points" class="form-control" required/>
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
                         <section class="section" id="questionsplus">
                             <!--문제 추가될 부분-->
                         </section>
-                        <button id="qPlus" class="btn btn-primary icon">
-                            <i class="bi bi-plus"></i>
-                        </button>
+                        <section>
+                            <button id="qPlus" class="btn btn-primary icon">
+                                <i class="bi bi-plus"></i>
+                            </button>
+                        </section>
+                        <br>
                         <section class="d-flex justify-content-between">
                             <button class="btn btn-primary" type="button" onclick="submitForm();">수정</button>
                         </section>
