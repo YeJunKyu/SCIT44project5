@@ -17,9 +17,24 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
+
     $(document).ready(function(){
 
     });
+
+    function openInsertPhotoPopup() {
+        var url = '/lms/member/insertPhoto'; // insertPhoto 페이지의 URL
+        var width = 600; // 팝업 창 너비
+        var height = 400; // 팝업 창 높이
+        var left = (window.innerWidth - width) / 2;
+        var top = (window.innerHeight - height) / 2;
+
+        // 팝업 창 옵션 설정
+        var popupOptions = 'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top;
+
+        // 팝업 창 열기
+        window.open(url, 'insertPhotoPopup', popupOptions);
+    }
 
 
     <!--$(document).ready(function(){-->
@@ -75,7 +90,8 @@
         <div style="" th:if="${photoName != null}">
             <img th:src="@{|/memberUpload/${photoName}|}"  style="width: 206px; height: 260px;" alt="User Photo"/>
         </div>
-        <a class="btn btn-primary me-1 mb-1" th:href="@{/member/insertPhoto}"> 사진선택 </a>
+        <input class="btn btn-primary me-1 mb-1" type="button" onclick="openInsertPhotoPopup()" value="사진선택">
+<!--        <a class="btn btn-primary me-1 mb-1" th:href="@{/member/insertPhoto}"> 사진선택 </a>-->
         <div class="col-md-6 col-12">
             <div class="card">
 

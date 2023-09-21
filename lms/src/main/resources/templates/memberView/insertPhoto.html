@@ -24,6 +24,16 @@
                 document.getElementById('preview').src = "";
             }
         }
+        function refresh() {
+            // 팝업 창에서 이미지 업로드 및 업데이트 로직 수행
+            // (서버에 이미지 업로드 및 데이터베이스 업데이트 코드)
+
+            // 팝업 창 닫기
+            window.close();
+
+            // 부모 창 새로 고침
+            window.opener.location.reload();
+        }
     </script>
 </head>
 <body>
@@ -31,11 +41,11 @@
     <h1 class="auth-title">이미지업로드</h1>
 
     <form th:action="@{/member/updatePhoto}" method="post"
-          enctype="multipart/form-data">
+          enctype="multipart/form-data" onsubmit="refresh();">
 
-        <input type="file" id="upload" name="upload" class="image-preview-filepond" onchange="readURL(this);">
+        <input type="file" id="upload" name="upload" class="image-preview-filepond" accept="image/*" onchange="readURL(this);">
 
-        <img id="preview" />
+        <img id="preview" style="width: 200px; height: 260px;" />
 
 
         <input type="submit" value="저장">
