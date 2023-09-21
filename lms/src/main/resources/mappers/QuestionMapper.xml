@@ -83,4 +83,11 @@
         FROM lms_question
         WHERE qid = #{qid}
     </select>
+
+
+<!--    문제삭제-->
+    <delete id="deleteQuestion" parameterType="int">
+        delete from lms_question
+        where testid = #{testid}
+    </delete>
 </mapper>

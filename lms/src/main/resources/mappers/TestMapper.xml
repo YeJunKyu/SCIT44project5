@@ -42,4 +42,10 @@
         FROM lms_test
         WHERE testid = #{testid}
     </select>
+
+<!--    시험삭제-->
+    <delete id="deleteTest" parameterType="int">
+        delete from lms_test
+        where testid = #{testid}
+    </delete>
 </mapper>

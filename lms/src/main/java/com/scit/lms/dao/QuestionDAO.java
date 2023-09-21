@@ -26,4 +26,6 @@ public interface QuestionDAO {
 
     // 문제 하나 조회
     Question selectOneQuestion(int qid);
+
+    int deleteQuestion(int testid);
 }

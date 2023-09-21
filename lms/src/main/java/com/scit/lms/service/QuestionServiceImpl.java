@@ -53,4 +53,9 @@ public class QuestionServiceImpl implements QuestionService{
         return dao.selectOneQuestion(qid);
     }
 
+    @Override
+    public int deleteQuestion(int testid) {
+        return dao.deleteQuestion(testid);
+    }
+
 }

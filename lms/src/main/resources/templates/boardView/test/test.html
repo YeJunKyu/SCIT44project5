@@ -84,7 +84,7 @@
                                                             <a th:href="@{/test/updateTest(testid=${test.testid})}" onclick="return confirm('수정하시겠습니까?');">수정</a>
                                                         </td>
                                                         <td th:if="${#authorization.expression('hasRole(''ROLE_teacher'')') || #authorization.expression('hasRole(''ROLE_admin'')')}">
-                                                            <a th:href="@{/test/deleteTest}" onclick="return confirm('삭제하시겠습니까?');">삭제</a>
+                                                            <a th:href="@{/test/deleteTest(testid=${test.testid})}" onclick="return confirm('삭제하시겠습니까?');">삭제</a>
                                                         </td>
                                                     </tr>
                                                 </tbody>

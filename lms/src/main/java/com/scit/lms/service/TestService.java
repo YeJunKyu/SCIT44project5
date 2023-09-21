@@ -15,4 +15,6 @@ public interface TestService {
 
     // 테스트 정보 조회
     Test selectTest(int testid);
+
+    int deleteTest(int testid);
 }

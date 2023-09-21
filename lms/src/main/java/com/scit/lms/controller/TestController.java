@@ -198,4 +198,17 @@ public class TestController {
         return "redirect:/test/viewTest";
     }
 
+
+    //시험문제 삭제
+    @GetMapping("deleteTest")
+    public String deleteTest(@RequestParam("testid") int testid){
+        log.debug("삭제컨트롤러:{}",testid);
+        int m = questionService.deleteQuestion(testid);
+        log.debug("문제삭제확인:{}",m);
+        int n = testService.deleteTest(testid);
+        log.debug("시험삭제확인:{}",n);
+
+
+        return "redirect:/test";
+    }
 }
