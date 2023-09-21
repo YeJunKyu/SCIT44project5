@@ -175,8 +175,8 @@
                         </form>
 
 
-                        <div style="width: 100px; height: 50px;" th:if="${user.memberphoto != null}">
-                            <img th:src="'/lms/memberUpload/' + ${user.memberphoto}" />
+                        <div style="" th:if="${photoName != null}">
+                            <img th:src="@{|/memberUpload/${photoName}|}" alt="User Photo"/>
                         </div>
 
                     </div>

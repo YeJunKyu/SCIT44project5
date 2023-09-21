@@ -15,9 +15,8 @@ public class WebConfig implements WebMvcConfigurer {
     private String memberphotoPath;
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/memberphoto/**")
-                .addResourceLocations("file:///c:/lms/uploadFile/memberphoto/");
-        //registry.addResourceHandler(memberUploadPath)
-         //       .addResourceLocations(memberphotoPath);
+        registry.addResourceHandler(memberUploadPath)
+                .addResourceLocations(memberphotoPath);
     }
+
 }
