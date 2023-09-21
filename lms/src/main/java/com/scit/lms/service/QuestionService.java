@@ -11,7 +11,7 @@ public interface QuestionService {
     int insertQuestion(Question question);
 
     // 문제의 보기 및 정답 등록
-    void submitOptions(List<Option> options);
+    void insertOptions(List<Option> options);
 
     // 문제 테이블에 정답 갱신
     void updateAnswer();

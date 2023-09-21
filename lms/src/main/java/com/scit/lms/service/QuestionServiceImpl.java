@@ -25,8 +25,8 @@ public class QuestionServiceImpl implements QuestionService{
 
     // 문제의 보기 및 정답 등록
     @Override
-    public void submitOptions(List<Option> options) {
-        dao.submitOptions(options);
+    public void insertOptions(List<Option> options) {
+        dao.insertOptions(options);
     }
 
     // 문제 테이블의 정답 갱신

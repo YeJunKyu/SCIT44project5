@@ -54,7 +54,7 @@ public class TestController {
 
     // 시험 문제 등록
     @PostMapping("insertTest")
-    public String submitTest(
+    public String insertTest(
             @RequestParam("totalpoints") String totalpoints,
             @RequestParam("testname") String testname,
             @RequestParam("testdate") String testdate,
@@ -127,7 +127,7 @@ public class TestController {
                     }
                 }
                 // 옵션 등록
-                questionService.submitOptions(options);
+                questionService.insertOptions(options);
                 log.debug("옵션등록확인:{}", options);
 
                 // 답변 갱신
