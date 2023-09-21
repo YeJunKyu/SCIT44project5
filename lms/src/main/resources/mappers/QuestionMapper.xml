@@ -23,7 +23,7 @@
 
 
     <!--문제의 보기 및 답안 등록-->
-    <insert id="submitOptions" parameterType="Option">
+    <insert id="insertOptions" parameterType="Option">
         INSERT ALL
         <foreach collection="list" item="options" separator=" ">
             INTO lms_q_options (qid, value
