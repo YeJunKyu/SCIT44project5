@@ -72,7 +72,10 @@
             <h1>회원정보</h1>
         </div>
 
-
+        <div style="" th:if="${photoName != null}">
+            <img th:src="@{|/memberUpload/${photoName}|}"  style="width: 206px; height: 260px;" alt="User Photo"/>
+        </div>
+        <a class="btn btn-primary me-1 mb-1" th:href="@{/member/insertPhoto}"> 사진선택 </a>
         <div class="col-md-6 col-12">
             <div class="card">
 
@@ -175,9 +178,7 @@
                         </form>
 
 
-                        <div style="" th:if="${photoName != null}">
-                            <img th:src="@{|/memberUpload/${photoName}|}" alt="User Photo"/>
-                        </div>
+
 
                     </div>
                 </div>
