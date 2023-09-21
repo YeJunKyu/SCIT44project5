@@ -191,11 +191,91 @@ public class TestController {
 
     //시험문제 수정
     @PostMapping("updateTest")
-    public String updateTest(){
+    public String updateTest(@RequestParam("totalpoints") String totalpoints,
+                             @RequestParam("testname") String testname,
+                             @RequestParam("testdate") String testdate,
+                             @RequestParam("testlimit") String testlimit,
+                             @RequestParam("requestData") String requestDataString,
+                             @RequestParam Map<String, MultipartFile> fileMap) throws JsonProcessingException
+    {
+        // 문제 배열 추출
+        ObjectMapper objectMapper = new ObjectMapper();
+        TestRequestObject requestObject = objectMapper.readValue(requestDataString, TestRequestObject.class);
+        log.debug("파일확인:{}",requestObject);
+        // requestDataString 대신에 requestObject에서 데이터 추출
+
+        // 시험 등록
+
+        Test test = new Test();
+        test.setTestname(testname);
+        test.setTestdate(testdate.replace("T", " "));
+        test.setTestlimit(testlimit.replace("T", " "));
+        test.setTotalpoints(String.valueOf(Integer.parseInt(totalpoints)));
+        log.debug("날짜:{}, 제한시간:{}", testdate, testlimit);
+
+
+        log.debug("시험:{}", test);
+
+        int testid = testService.insertTest(test);
+        log.debug("시험아이디:{}", testid);
 
 
 
-        return "redirect:/test/viewTest";
+
+        // 문제 배열 등록
+        // 문제 배열 등록
+        for (Question q: requestObject.getQuestionDataArray()) {
+
+
+            MultipartFile currentFile = fileMap.get("file[" + q.getPapernum() + "]");
+            log.debug("현파일:{}", currentFile);
+
+            Question question = new Question();
+            question.setTestid(test.getTestid());
+            question.setPapernum(q.getPapernum());
+            question.setContents(q.getContents());
+            question.setPoints(q.getPoints());
+            question.setType(q.getType());
+            question.setOptions(q.getOptions());
+
+            // 파일이 있다면 처리합니다.
+            if (currentFile != null && !currentFile.isEmpty()) {
+                String savedfile = FileService.saveFile(currentFile, uploadPath);
+                log.debug("현파일:{}", currentFile.getOriginalFilename());
+                question.setOriginalfile(currentFile.getOriginalFilename());
+                question.setSavedfile(savedfile);
+            } else {
+                log.debug("현파일 없음");
+            }
+            questionService.insertQuestion(question);
+            log.debug("문제등록확인:{}", question);
+
+            // 타입이 1, 2, 3인 경우만 option 및 answer 등록
+            if (q.getOptions() != null && !q.getOptions().isEmpty() && (q.getType() == 1 || q.getType() == 2 || q.getType() == 3)) {
+                List<Option> options = new ArrayList<>();
+                for (Option optionData : q.getOptions()) {
+                    if (optionData.getValue() != null) {
+                        Option option = new Option();
+                        option.setQid(question.getQid());
+                        option.setValue(optionData.getValue());
+                        option.setContent(optionData.getContent());
+                        option.setChecked(optionData.getChecked());
+                        options.add(option);
+                    }
+                }
+                // 옵션 등록
+                questionService.insertOptions(options);
+                log.debug("옵션등록확인:{}", options);
+
+                // 답변 갱신
+                questionService.updateAnswer();
+                log.debug("답변등록확인:{}", "okay");
+            }
+        }
+
+        return "boardView/test/test";
+
+
     }
 
 

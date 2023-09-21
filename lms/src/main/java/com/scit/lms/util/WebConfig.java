@@ -9,6 +9,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 //@EnableWebMvc
 public class WebConfig implements WebMvcConfigurer {
+
+
     @Value("${memberUpload.path}")
     private String memberUploadPath;
     @Value("${memberphoto.path}")
@@ -17,6 +19,10 @@ public class WebConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler(memberUploadPath)
                 .addResourceLocations(memberphotoPath);
+        registry.addResourceHandler("/noticefiles/**")
+                .addResourceLocations("file:/c:/lms/noticefiles/");
     }
+
+
 
 }
