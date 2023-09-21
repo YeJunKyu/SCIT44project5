@@ -15,7 +15,7 @@
         ORDER BY testid desc
     </select>
 
-    <insert id="submitTest" parameterType="Test">
+    <insert id="insertTest" parameterType="Test">
         <selectKey keyProperty="testid" resultType="int" order="AFTER">
             SELECT lms_test_seq.CURRVAL FROM DUAL
         </selectKey>

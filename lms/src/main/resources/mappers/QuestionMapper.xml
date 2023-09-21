@@ -4,7 +4,7 @@
 
 <mapper namespace="com.scit.lms.dao.QuestionDAO">
     <!--문제 등록-->
-    <insert id="submitQuestion" parameterType="Question">
+    <insert id="insertQuestion" parameterType="Question">
         <selectKey keyProperty="qid" resultType="int" order="AFTER">
             SELECT lms_question_seq.CURRVAL FROM DUAL
         </selectKey>

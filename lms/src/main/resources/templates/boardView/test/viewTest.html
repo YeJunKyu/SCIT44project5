@@ -79,20 +79,30 @@
                 });
 
                 console.log(dataToSend);
-                // // Ajax 요청을 보냅니다.
-                // $.ajax({
-                //     type: 'POST',
-                //     url: '/submit', // 서버의 엔드포인트 URL을 지정하세요.
-                //     contentType: 'application/json',
-                //     data: JSON.stringify(dataToSend),
-                //     success: function(response) {
-                //         // 성공적으로 서버에서 응답을 받았을 때 수행할 작업을 여기에 추가하세요.
-                //     },
-                //     error: function(error) {
-                //         // Ajax 요청이 실패했을 때 수행할 작업을 여기에 추가하세요.
-                //     }
-                // });
+                // 권한에 따라 요청 URL을 결정합니다.
+                let requestUrl = '';
+                if (document.querySelector("[th\\:if=${#authorization.expression('hasRole(''ROLE_student'')')}")) {
+                    requestUrl = '/submitTest';
+                } else if (document.querySelector("[th\\:if=${#authorization.expression('hasRole(''ROLE_teacher'')') || #authorization.expression('hasRole(''ROLE_admin'')')}")) {
+                    requestUrl = '/updateTest';
+                }
+
+                // Ajax 요청을 보냅니다.
+                $.ajax({
+                    type: 'POST',
+                    url: requestUrl,
+                    contentType: 'application/json',
+                    data: JSON.stringify(dataToSend),
+                    success: function(response) {
+                        // 성공적으로 서버에서 응답을 받았을 때 수행할 작업을 여기에 추가하세요.
+                    },
+                    error: function(error) {
+                        // Ajax 요청이 실패했을 때 수행할 작업을 여기에 추가하세요.
+                    }
+                });
             }
+
+
         </script>
     </head>
     <body>
@@ -232,9 +242,12 @@
                             </div>
                         </div>
                         <section class="d-flex justify-content-between">
-                            <button class="btn btn-primary" type="button" onclick="submitForm();">제출</button>
+                            <button th:if="${#authorization.expression('hasRole(''ROLE_student'')')}" class="btn btn-primary" type="button" onclick="submitForm();">제출</button>
+                            <button th:if="${#authorization.expression('hasRole(''ROLE_teacher'')') || #authorization.expression('hasRole(''ROLE_admin'')')}" class="btn btn-primary" type="button" onclick="submitForm();">수정</button>
                         </section>
                     </form>
+
+
                 </div>
             </div>
             <script th:src="@{/assets/js/bootstrap.js}"></script>

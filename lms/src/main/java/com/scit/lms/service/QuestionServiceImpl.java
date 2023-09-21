@@ -19,8 +19,8 @@ public class QuestionServiceImpl implements QuestionService{
 
     // 문제 등록
     @Override
-    public int submitQuestion(Question question) {
-        return dao.submitQuestion(question);
+    public int insertQuestion(Question question) {
+        return dao.insertQuestion(question);
     }
 
     // 문제의 보기 및 정답 등록

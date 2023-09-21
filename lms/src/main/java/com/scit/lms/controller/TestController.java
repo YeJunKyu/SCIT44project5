@@ -52,7 +52,7 @@ public class TestController {
     }
 
     // 시험 문제 등록
-    @PostMapping("submitTest")
+    @PostMapping("insertTest")
     public String submitTest(
             @RequestParam("totalpoints") String totalpoints,
             @RequestParam("testname") String testname,
@@ -78,7 +78,7 @@ public class TestController {
 
         log.debug("시험:{}", test);
 
-        int testid = testService.submitTest(test);
+        int testid = testService.insertTest(test);
         log.debug("시험아이디:{}", testid);
 
 
@@ -109,7 +109,7 @@ public class TestController {
             } else {
                 log.debug("현파일 없음");
             }
-            questionService.submitQuestion(question);
+            questionService.insertQuestion(question);
             log.debug("문제등록확인:{}", question);
 
             // 타입이 1, 2, 3인 경우만 option 및 answer 등록
@@ -161,5 +161,7 @@ public class TestController {
 
         return "boardView/test/viewTest";
     }
+
+
 
 }
