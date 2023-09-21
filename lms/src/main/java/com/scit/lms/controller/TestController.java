@@ -196,7 +196,9 @@ public class TestController {
                              @RequestParam("testdate") String testdate,
                              @RequestParam("testlimit") String testlimit,
                              @RequestParam("requestData") String requestDataString,
+                             @RequestParam int testid,
                              @RequestParam Map<String, MultipartFile> fileMap) throws JsonProcessingException
+
     {
         // 문제 배열 추출
         ObjectMapper objectMapper = new ObjectMapper();
@@ -204,25 +206,14 @@ public class TestController {
         log.debug("파일확인:{}",requestObject);
         // requestDataString 대신에 requestObject에서 데이터 추출
 
-        // 시험 등록
-
-        Test test = new Test();
-        test.setTestname(testname);
-        test.setTestdate(testdate.replace("T", " "));
-        test.setTestlimit(testlimit.replace("T", " "));
-        test.setTotalpoints(String.valueOf(Integer.parseInt(totalpoints)));
-        log.debug("날짜:{}, 제한시간:{}", testdate, testlimit);
-
-
-        log.debug("시험:{}", test);
-
-        int testid = testService.insertTest(test);
-        log.debug("시험아이디:{}", testid);
 
 
 
 
-        // 문제 배열 등록
+
+
+
+
         // 문제 배열 등록
         for (Question q: requestObject.getQuestionDataArray()) {
 
@@ -231,7 +222,7 @@ public class TestController {
             log.debug("현파일:{}", currentFile);
 
             Question question = new Question();
-            question.setTestid(test.getTestid());
+            question.setTestid(testid);
             question.setPapernum(q.getPapernum());
             question.setContents(q.getContents());
             question.setPoints(q.getPoints());

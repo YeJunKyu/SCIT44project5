@@ -294,6 +294,7 @@
                                     <div class="row">
                                         <div class="col-md-8">
                                             <h4 class="card-title">시험명</h4>
+                                            <input type="hidden" name="testid" th:value="${test.testid}">
                                             <div class="form-group input-group-lg">
                                                 <input type="text" class="card-title" th:value="${test.testname}" name="testname">
                                             </div>
@@ -325,7 +326,8 @@
                                 <div class="card qPlace" id="cardid" th:value="${q.qid}">
                                     <div class="card-header justify-content-between">
                                         <div class="d-flex mb-3 align-items-center">
-                                            <h6 class="col-md-8" id="${cardId}-papernum">[[${q.papernum}]]</h6>
+                                            <input type="hidden" name="qid" th:value="${q.qid}">
+                                            <input type="hidden" name="papernum" th:value="${q.papernum}"> <h6 class="col-md-8" id="${cardId}-papernum">[[${q.papernum}]]</h6>
                                             <div class="col-md-2 icon">
                                                 <img th:if="${q.savedfile !=null}" th:src="@{'/noticefiles/' + ${q.savedfile}}" alt="첨부 이미지" style="width: 200px; height: auto;">
                                                 파일첨부<input type="file" class="btn btn-primary btn-sm rounded-pill" th:name="'file[' + ${q.papernum} + ']'">
@@ -334,7 +336,7 @@
                                             </div>
                                         </div>
                                         <!--문제 출력 부분-->
-                                        <h6 th:text="${q.contents}"></h6>
+                                        <h6><input type="text" name="contents" th:value="${q.contents}"> </h6>
                                     </div>
                                     <!--문제 유형별 답 입력 부분-->
                                     <div id="qPlace" class="card-body">
