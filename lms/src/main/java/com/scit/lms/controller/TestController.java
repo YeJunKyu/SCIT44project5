@@ -230,10 +230,9 @@ public class TestController {
 
 
 
-
+        int i = 0;
         // 문제 배열 등록
         for (Question q: requestObject.getQuestionDataArray()) {
-
 
             MultipartFile currentFile = fileMap.get("file[" + q.getPapernum() + "]");
             log.debug("현파일:{}", currentFile);
@@ -258,7 +257,7 @@ public class TestController {
                 log.debug("현파일 없음");
             }
 
-            if (q.isNew()){
+            if (true){
                 questionService.insertQuestion(question);
                 log.debug("문제등록확인:{}", question);
             } else {
@@ -284,7 +283,7 @@ public class TestController {
                     }
                 }
                 // 옵션 등록
-                if (q.isNew()){
+                if (true){
 
 
                     questionService.insertOptions(options);
@@ -300,6 +299,7 @@ public class TestController {
                 questionService.updateAnswer();
                 log.debug("답변등록확인:{}", "okay");
             }
+            i++;
         }
 
         return "boardView/test/test";

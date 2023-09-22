@@ -33,6 +33,7 @@
                             <div class="d-flex mb-3 align-items-center">
                                 <h6 class="col-md-8" id="${cardId}-papernum">${currentQuestionNumber}</h6>
                                 <div class="col-md-2 icon">
+                                    <input type="hidden" name="qid" value="null">
                                     <input type="file" id="${cardId}-file-input" name="file[${currentQuestionNumber}]" style="display: none;">
                                     <button id
                                     ="${cardId}-attach-file-btn" class="btn btn-primary btn-sm rounded-pill m-lg-2">파일 첨부</button>
@@ -297,9 +298,9 @@
                                     <div class="row">
                                         <div class="col-md-8">
                                             <h4 class="card-title">시험명</h4>
-                                            <input type="hidden" name="testid" th:value="${test.testid}">
+                                            <input type="hidden" id="testid" name="testid" th:value="${test.testid}">
                                             <div class="form-group input-group-lg">
-                                                <input type="text" class="card-title" th:value="${test.testname}" name="testname">
+                                                <input type="text" class="card-title" id="testname" th:value="${test.testname}" name="testname">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
@@ -312,13 +313,13 @@
                                         <div class="col-md-6">
                                             <h4 class="card-title">시험일시</h4>
                                             <div class="form-group input-group">
-                                                <input type="date" name="testdate" th:value="${test.testdate}">
+                                                <input type="date" id="testdate" name="testdate" th:value="${test.testdate}">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <h4 class="card-title">마감일시</h4>
                                             <div class="form-group input-group">
-                                                <input type="date" name="testlimit" th:value="${test.testlimit}">
+                                                <input type="date" id="testlimit" name="testlimit" th:value="${test.testlimit}">
                                             </div>
                                         </div>
                                     </div>
@@ -360,7 +361,8 @@
                                                     <div class="d-flex justify-content-between mb-1 optionItem">
                                                         <div>
                                                             <label class="d-flex align-items-center">
-                                                                <input type="radio" class="form-check-input m-lg-1 optionCount" name="${cardId}-answer" th:value="${value}" th:checked="${o.checked}"  />
+                                                                <input type="radio" class="form-check-input m-lg-1 optionCount" name="value" th:value="${o.value}" th:checked="${o.checked}"  />
+                                                                <input type="text" name="optionid" th:value="${o.optionid}">
                                                                 <input type="text" name="content" th:value="${o.content}">
 
                                                             </label>
@@ -374,7 +376,8 @@
                                                     <div class="d-flex justify-content-between mb-1 multiOptionItem">
                                                         <div>
                                                             <label class="d-flex align-items-center">
-                                                                <input type="checkbox" class="form-check-input m-lg-1 optionCount" name="${cardId}-answer" value="${value}" th:checked="${o.checked}" />
+                                                                <input type="checkbox" class="form-check-input m-lg-1 optionCount" name="value" th:value="${o.value}" th:checked="${o.checked}" />
+                                                                <input type="text" name="optionid" th:value="${o.optionid}">
                                                                 <input type="text" name="content" th:value="${o.content}">
                                                             </label>
                                                         </div>
@@ -383,8 +386,10 @@
                                             </div>
                                             <!-- 단답형 (q.type == 3) -->
                                             <div th:case="3">
-                                                <div class="d-flex justify-content-between mb-1">
-                                                    <input type="text" name="answer" th:value="${q.answer}" class="form-control" />
+                                                <div  class="d-flex justify-content-between mb-1">
+
+                                                    <input type="text" name="optionid" th:value="${optionid}">
+                                                    <input type="text" name="value" th:value="${q.answer}" class="form-control" />
                                                 </div>
                                             </div>
                                             <!-- 서술형 (q.type == 4) -->
@@ -431,139 +436,148 @@
             </div>
             <script th:inline="javascript">
                 function submitForm() {
-            console.log("submitForm() 함수가 호출되었습니다.");
-            // 시험 정보 부분
-            let testname = document.getElementById("testname").value;
-            let testdate = document.getElementById("testdate").value;
-            let testlimit = document.getElementById("testlimit").value;
-            let totalpoints = document.getElementById("totalPoints").innerText;
+                console.log("submitForm() 함수가 호출되었습니다.");
 
-            // FormData 객체 생성
-            let formData = new FormData();
 
-            // 파일 업로드를 formData에 추가 (originalfile)
-            $(".card").each(function (index) {
-                let cardId = $(this).attr("id");
-                let fileInput = $("#" + cardId + "-file-input")[0];
+        // 시험 정보 부분
+        let testid = document.getElementById("testid").value;
+        let testname = document.getElementById("testname").value;
+        console.log(testname);
+        let testdate = document.getElementById("testdate").value;
+        console.log(testdate);
+        let testlimit = document.getElementById("testlimit").value;
+        console.log(testlimit);
+        let totalpoints = document.getElementById("totalPoints").innerText;
+        console.log(testname);
+        // FormData 객체 생성
+        let formData = new FormData();
+
+        // 파일 업로드를 formData에 추가 (originalfile)
+        $(".card").each(function (index) {
+            let cardId = $(this).attr("id");
+            let fileInput = $("#" + cardId + "-file-input")[0];
                 if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
                     return;
                 }
                 let papernum = $(this).closest(".card").find("#" + cardId + "-papernum").text();
-                if (fileInput.files.length > 0) {
-                    formData.append(`file[${papernum}]`, fileInput.files[0]);
-                }
-            });
 
-            // 문제 데이터 배열 생성
-            let questionDataArray = [];
+            if (fileInput && fileInput.files && fileInput.files.length > 0) {
+                formData.append(`file[${papernum}]`, fileInput.files[0]);
+            }
+        });
 
-            // 각 문제마다 데이터 추출 및 구성
-            $(".card").each(function (index) {
-                let cardId = $(this).attr("id");
-                let papernum = $(this).closest(".card").find("#" + cardId + "-papernum").text();
-                let type = $("#" + cardId + " .type").val();
-                let content = $("#" + cardId + " #taTarget").val();
-                let points = $("#" + cardId + " [name='points']").val();
-                let originalfile = $("#" + cardId + "-attach-file-btn").text();
+        // 문제 데이터 배열 생성
+        let questionDataArray = [];
 
-                // isNew 변수를 구성
-                let qidInput = $("#" + cardId + " input[name='qid']");
-                let isNew = !qidInput.length;  // qid 입력 필드가 없으면 새로운 문제
+        // 각 문제마다 데이터 추출 및 구성
+        $(".card").each(function (index) {
+            let cardId = $(this).attr("id");
+            let papernum = $(this).closest(".card").find("#" + cardId + "-papernum").text();
+            let type = $("#" + cardId + " .type").val();
+            let content = $("#" + cardId + " #taTarget").val();
+            let points = $("#" + cardId + " [name='points']").val();
+            let originalfile = $("#" + cardId + "-attach-file-btn").text();
 
-                // 선택지 데이터 추출
-                let options = [];
-                if (type === "1") { // 객관식인 경우
-                    $("#" + cardId + " .optionItem").each(function () {
-                        let optionValue = $(this).find(".form-check-input").val();
-                        let optionContent = $(this).find(".form-control").val();
-                        if (!optionContent) {
-                            return;
-                        }
-                        options.push({
-                            value: optionValue,
-                            content: optionContent,
-                            checked: $(this).find(".form-check-input:checked").length > 0
-                        });
-                    });
-                } else if (type === "2") { // 객관식 복수정답인 경우
-                    $("#" + cardId + " .multiOptionItem").each(function () {
-                        let multiOptionValue = $(this).find(".form-check-input").val();
-                        let multiOptionContent = $(this).find(".form-control").val();
-                        if (!multiOptionContent) {
-                            return;
-                        }
-                        options.push({
-                            value: multiOptionValue,
-                            content: multiOptionContent,
-                            checked: $(this).find(".form-check-input:checked").length > 0
-                        });
-                    });
-                } else if (type === "3") { // 단답형인 경우
-                    let answerInputValue = $("#" + cardId + " .form-control[type='text']").val();
-                    if (!answerInputValue) {
-                        return;
-                    }
-                    options.push({
-                        value: answerInputValue,
-                        checked: "true"
-                    });
-                }
+            let qidValue = $(this).find("input[name='qid']").val();
 
-                questionDataArray.push({
-                    qid: cardId,
-                    papernum: papernum,
-                    type: type,
-                    contents: content,
-                    points: points,
-                    originalfile: originalfile,
-                    options: options,
-                    isNew: isNew   // isNew 값을 배열에 추가
-                });
+
+
+            // 선택지 데이터 추출
+            let options = [];
+            extractOptionsData(cardId, type, options);
+
+            questionDataArray.push({
+                qid: qidValue === "null" ? null : cardId,
+                papernum: papernum,
+                type: type,
+                contents: content,
+                points: points,
+                originalfile: originalfile,
+                options: options,
 
             });
-            questionDataArray = questionDataArray.filter(function (question) {
+        });
+        questionDataArray = questionDataArray.filter(function (question) {
                 return question.qid !== undefined;
             });
 
-            let requestData = {
-                testname: testname,
-                testdate: testdate,
-                testlimit: testlimit,
-                totalpoints: totalpoints,
-                questionDataArray : questionDataArray
-            };
+        let requestData = {
+            testid: testid,
+            testname: testname,
+            testdate: testdate,
+            testlimit: testlimit,
+            totalpoints: totalpoints,
+            questionDataArray: questionDataArray
+        };
 
-            // questionDataArray를 formData에 추가
-            formData.append("testname", testname);
-            formData.append("testdate", testdate);
-            formData.append("testlimit", testlimit);
-            formData.append("totalpoints", totalpoints);
-            formData.append("questionDataArray", JSON.stringify(questionDataArray));
-            formData.append("requestData", JSON.stringify(requestData));
-            // formData에 isNew 값을 추가
-            questionDataArray.forEach((qData, index) => {
-                formData.append(`question[${index}][isNew]`, qData.isNew.toString());
+        // formData에 데이터 추가
+        formData.append("testid", testid);
+        formData.append("testname", testname);
+        formData.append("testdate", testdate);
+        formData.append("testlimit", testlimit);
+        formData.append("totalpoints", totalpoints);
+        formData.append("questionDataArray", JSON.stringify(questionDataArray));
+        formData.append("requestData", JSON.stringify(requestData));
+
+
+
+        console.log("FormData contents:", [...formData]);
+
+        $.ajax({
+            url: 'updateTest',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                alert('성공적으로 제출되었습니다.');
+                window.location.href = "/lms/test";
+            },
+            error: function (err) {
+                alert('제출 중 오류가 발생했습니다.');
+            }
+        });
+    }
+
+    function extractOptionsData(cardId, type, options) {
+        if (type === "1") {
+            $("#" + cardId + " .optionItem").each(function () {
+                let optionValue = $(this).find(".form-check-input").val();
+                let optionContent = $(this).find(".form-control").val();
+                if (!optionContent) {
+                            return;
+                        }
+                options.push({
+                    value: optionValue,
+                    content: optionContent,
+                    checked: $(this).find(".form-check-input:checked").length > 0
+                });
             });
+        } else if (type === "2") {
+            $("#" + cardId + " .multiOptionItem").each(function () {
+                let multiOptionValue = $(this).find(".form-check-input").val();
+                let multiOptionContent = $(this).find(".form-control").val();
+                if (!multiOptionContent) {
+                            return;
+                        }
+                options.push({
+                    value: multiOptionValue,
+                    content: multiOptionContent,
+                    checked: $(this).find(".form-check-input:checked").length > 0
+                });
+            });
+        } else if (type === "3") {
+            let answerInputValue = $("#" + cardId + " .form-control[type='text']").val();
+            if (!answerInputValue) {
+                                    return;
+                                }
 
-            console.log("FormData contents:", [...formData]);
-
-            $.ajax({
-                url: 'updateTest', // 폼의 액션과 동일한 URL로 요청합니다.
-                type: 'POST', // POST 방식으로 요청
-                data: formData, // 위에서 만든 formData 객체를 데이터로 사용
-                contentType: false, // multipart/form-data의 경우 false로 설정해야 합니다.
-                processData: false, // FormData를 사용할 때 이 값을 false로 설정해야 합니다.
-                success: function(response) {
-                    // 서버로부터의 응답을 여기에서 처리합니다. 예: 알림 표시
-                    alert('성공적으로 제출되었습니다.');
-                    window.location.href = "/lms/test";
-                },
-                error: function(err) {
-                    // 요청 중 오류가 발생한 경우 여기에서 처리합니다. 예: 오류 메시지 표시
-                    alert('제출 중 오류가 발생했습니다.');
-                }
+            options.push({
+                value: answerInputValue,
+                checked: true
             });
         }
+    }
 
 
             </script>

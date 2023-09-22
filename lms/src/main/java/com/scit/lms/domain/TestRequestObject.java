@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TestRequestObject {
     // 특정 목적 없이 단순 정보 전달을 위해 사용하는 클래스
+    int testid;
     String testname;
     String testdate;
     String testlimit;
