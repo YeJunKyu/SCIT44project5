@@ -2,26 +2,22 @@ package com.scit.lms.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.scit.lms.domain.Option;
-import com.scit.lms.domain.Question;
-import com.scit.lms.domain.Test;
-import com.scit.lms.domain.TestRequestObject;
+import com.scit.lms.domain.*;
 import com.scit.lms.service.QuestionService;
 import com.scit.lms.service.TestService;
 import com.scit.lms.util.FileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.parameters.P;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping("test")
@@ -319,5 +315,61 @@ public class TestController {
 
 
         return "redirect:/test";
+    }
+
+
+    //시험문제 제출(학생)
+    @ResponseBody
+    @PostMapping("submitTest")
+    public String submitTest(
+            @AuthenticationPrincipal UserDetails user,
+            @RequestParam("testid") String testid,
+            @RequestParam("answerArray") String answerArray,
+            @RequestParam Map<String, MultipartFile> fileMap
+    ) {
+
+        log.debug("테스트 : {}", testid);
+        log.debug("어레이 : {}", answerArray);
+        log.debug("파일 : {}", fileMap);
+
+        TestListFromStudent tlfs = new TestListFromStudent();
+        tlfs.setMemberid(user.getUsername());
+        tlfs.setTestid(Integer.parseInt(testid));
+        int asid = testService.submitTest(tlfs);
+
+
+        ObjectMapper objectMapper = new ObjectMapper();
+//        TestAnswerSheet[] answerSheets = objectMapper.readValue(answerArray, TestAnswerSheet[].class);
+//        log.debug("파일 확인 : {}", answerSheets);
+//        for(TestAnswerSheet answerSheet : answerSheets) {
+//
+//        }
+        try {
+            TestAnswerSheet[] answerSheets = objectMapper.readValue(answerArray, TestAnswerSheet[].class);
+            for (TestAnswerSheet answerSheet : answerSheets) {
+                log.debug("파일 확인: {}", answerSheet);
+//                answerSheet.setAsnum();
+
+                MultipartFile currentFile = fileMap.get("file[" + answerSheet.getQid() + "]");
+
+                if (currentFile != null && !currentFile.isEmpty()) {
+                    String savedfile = FileService.saveFile(currentFile, uploadPath);
+                    log.debug("현파일:{}", currentFile.getOriginalFilename());
+                    answerSheet.setOriginalfile(currentFile.getOriginalFilename());
+                    answerSheet.setSavedfile(savedfile);
+                } else {
+                    log.debug("현파일 없음");
+                }
+
+                log.debug("앤서 : {}", answerSheet);
+                questionService.submitTest(answerSheet);
+
+            }
+
+        } catch (Exception e) {
+            log.error("역직렬화 오류 발생: {}", e.getMessage(), e);
+        }
+
+        return "";
     }
 }

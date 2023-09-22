@@ -14,72 +14,107 @@
         <script th:src="@{/privatejs/sidebarLoader.js}"></script>
         <script th:inline="javascript">
             function submitForm() {
-                let dataToSend = [];
+                let answerArray = [];
+
+                // FormData 객체 생성
+                let formData = new FormData();
+
+                let testid = document.getElementById("testid").innerText;
+                console.log(testid);
+                formData.append("testid", testid);
+
+                // 파일 업로드를 formData에 추가 (originalfile)
+                $(".card").each(function (index) {
+                    let cardId = $(this).attr("id");
+                    // console.log(cardId);
+                    let fileInput = $("#" + cardId + "-file-input")[0];
+                    // console.log(fileInput)
+                    if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+                        return;
+                    }
+                    // let papernum = $(this).closest(".card").find("#" + cardId + "-papernum").text();
+                    if (fileInput.files.length > 0) {
+                        formData.append(`file[${cardId}]`, fileInput.files[0]);
+                    }
+                });
 
                 // 모든 문제를 루프를 돌며 처리합니다.
-                let questions = document.querySelectorAll(".qPlace");
-                console.log(questions);
+                let questions = [[${questions}]];
+                // console.log(questions);
                 questions.forEach(function (question) {
-                    let cardId = question.getAttribute("th:value");
-                    let questionType = question.getAttribute("th:case");
-                    let answer = null;
+                    let qid = question.qid;
+                    let questionType = question.type;
+                    let answer = [];
+
+                    // console.log(qid);
+                    // console.log(questionType);
+
 
                     // 문제 유형에 따라 값을 추출합니다.
                     switch (questionType) {
-                        case "1": // 객관식
-                            let selectedOption = question.querySelector('input[name="' + cardId + '-answer"]:checked');
+                        case 1: // 객관식
+                            let selectedOption = document.querySelector(`input[name="${qid}-answer"]:checked`);
+                            // console.log(selectedOption);
                             if (selectedOption) {
-                                answer = selectedOption.value;
+                                answer.push(selectedOption.value);
                             }
                             break;
 
-                        case "2": // 객관식 복수 선택형
-                            let selectedOptions = question.querySelectorAll('input[name="' + cardId + '-answer"]:checked');
+                        case 2: // 객관식 복수 선택형
+                            let selectedOptions = document.querySelectorAll(`input[name="${qid}-answer"]:checked`);
+                            // console.log(selectedOptions);
                             if (selectedOptions.length > 0) {
-                                answer = [];
                                 selectedOptions.forEach(function (selectedOption) {
                                     answer.push(selectedOption.value);
+                                    // console.log(answer);
                                 });
                             }
                             break;
 
-                        case "3": // 단답형
-                            let textAnswer = question.querySelector('input[type="text"].form-control');
+                        case 3: // 단답형
+                            let textAnswer = document.querySelector(`input[name="${qid}-answer"].form-control`);
                             if (textAnswer) {
-                                answer = textAnswer.value;
+                                answer.push(textAnswer.value);
                             }
                             break;
 
-                        case "4": // 서술형
-                            let textareaAnswer = question.querySelector("textarea.form-control");
+                        case 4: // 서술형
+                            let textareaAnswer = document.querySelector(`textarea[name="${qid}-answer"].form-control`);
                             if (textareaAnswer) {
-                                answer = textareaAnswer.value;
+                                answer.push(textareaAnswer.value);
                             }
                             break;
-
-                        case "5": // 파일 첨부형
-                            // 파일 입력값을 추출하려면 해당 파일 입력 요소에 접근해야 합니다.
-                            // 파일 입력 요소의 ID를 사용하여 접근할 수 있습니다.
-                            let fileInput = document.querySelector("#" + cardId + "-file-input");
-                            if (fileInput) {
-                                // 파일 입력 요소의 처리 방법은 서버 백엔드에 따라 다를 수 있습니다.
-                                // 필요에 따라 파일 업로드 로직을 추가해야 합니다.
-                            }
-                            break;
+                        //
+                        // case 5: // 파일 첨부형
+                        //     // 파일 입력값을 추출하려면` 해당 파일 입력 요소에 접근해야 합니다.
+                        //     // 파일 입력 요소의 ID를 사용하여 접근할 수 있습니다.
+                        //     // let fileInput = document.getElementById(`${qid}-file-input`).files;
+                        //     // console.log(fileInput);
+                        //     // if (fileInput.length > 0) {
+                        //     //     answer.push(fileInput);
+                        //     // }
+                        //     break;
 
                         default:
                             break;
                     }
 
                     // 문제와 답을 데이터 배열에 추가
-                    dataToSend.push({
-                        cardId: cardId,
-                        questionType: questionType,
+                    answerArray.push({
+                        qid: qid,
                         answer: answer,
                     });
-                });
 
-                console.log(dataToSend);
+
+
+
+                });
+                formData.append("answerArray", JSON.stringify(answerArray));
+
+                console.log("폼데이터", [...formData]);
+
+
+
                 // 권한에 따라 요청 URL을 결정합니다.
                 let requestUrl = '';
 
@@ -88,11 +123,13 @@
                 $.ajax({
                     type: 'POST',
                     url: 'submitTest',
-                    contentType: 'application/json',
-                    data: JSON.stringify(dataToSend),
+                    data: formData,
+                    contentType: false,
+                    processData: false,
                     success: function(response) {
                         // 성공적으로 서버에서 응답을 받았을 때 수행할 작업을 여기에 추가하세요.
                         alert('성공적으로 제출되었습니다.');
+                        window.location.href = "/lms/test";
                     },
                     error: function(error) {
                         // Ajax 요청이 실패했을 때 수행할 작업을 여기에 추가하세요.
@@ -101,7 +138,20 @@
                 });
             }
 
+            // 첨부파일 다운로드
+            function download(qid) {
+                $.ajax({
+                    url : "download",
+                    method : "GET",
+                    data: {qid : qid},
+                    success: function (data) {
 
+                    },
+                    error: function (e){
+                        console.log(JSON.stringify(e));
+                    }
+                })
+            }
         </script>
     </head>
     <body>
@@ -119,6 +169,7 @@
                         <div class="row">
                             <div class="col-12 col-md-6 order-md-1 order-last">
                                 <h3 th:text="${test.testname}"></h3>
+                                <div id="testid" th:text="${test.testid}" style="display: none"></div>
                                 <p class="text-subtitle text-muted">Customize the native &laquo;select&raquo; with custom CSS that changes the element’s initial appearance..</p>
                             </div>
                             <div class="col-12 col-md-6 order-md-2 order-first">
@@ -166,16 +217,14 @@
                             </div>
                         </section>
                         <div class="section" id="questions" th:each="q : ${questions}">
-                            <div class="card qPlace" id="cardid" th:value="${q.qid}">
+                            <div class="card qPlace" th:id="${q.qid}" th:value="${q.qid}">
                                 <div class="card-header justify-content-between">
                                     <div class="d-flex mb-3 align-items-center">
-                                        <h6 class="col-md-8" id="${cardId}-papernum" th:text="${q.papernum}"></h6>
-                                        <div class="col-md-2 icon">
-                                            <input type="file" id="${cardId}-file-input" name="file" style="display: none" />
-                                            <button id="${cardId}-attach-file-btn" class="btn btn-primary btn-sm rounded-pill m-lg-2">파일 첨부</button>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <span th:text="${q.type}"></span>
+                                        <h6 class="col-md-8" th:id="|${q.qid}-papernum|" th:text="${q.papernum}"></h6>
+                                        <div class="col-md-2 icon" th:if="${q.originalfile} != null">
+                                            <div class="btn btn-primary btn-sm rounded-pill">
+                                                <a th:text="${q.originalfile}" th:href="@{/test/download(qid=${q.qid})}" style="color: #ffffff"></a>
+                                            </div>
                                         </div>
                                     </div>
                                     <!--문제 출력 부분-->
@@ -190,7 +239,7 @@
                                                 <div class="d-flex justify-content-between mb-1 optionItem">
                                                     <div>
                                                         <label class="d-flex align-items-center">
-                                                            <input type="radio" class="form-check-input m-lg-1 optionCount" name="${cardId}-answer" value="${value}" />
+                                                            <input type="radio" class="form-check-input m-lg-1 optionCount" th:name="|${o.qid}-answer|" th:value="${o.value}" />
                                                             <span th:text="${o.content}"></span>
                                                         </label>
                                                     </div>
@@ -203,7 +252,7 @@
                                                 <div class="d-flex justify-content-between mb-1 multiOptionItem">
                                                     <div>
                                                         <label class="d-flex align-items-center">
-                                                            <input type="checkbox" class="form-check-input m-lg-1 optionCount" name="${cardId}-answer" value="${value}" />
+                                                            <input type="checkbox" class="form-check-input m-lg-1 optionCount" th:name="|${o.qid}-answer|" th:value="${o.value}" />
                                                             <span th:text="${o.content}"></span>
                                                         </label>
                                                     </div>
@@ -213,19 +262,20 @@
                                         <!-- 단답형 (q.type == 3) -->
                                         <div th:case="3">
                                             <div class="d-flex justify-content-between mb-1">
-                                                <input type="text" class="form-control" />
+                                                <input type="text" class="form-control" th:name="|${q.qid}-answer|"/>
                                             </div>
                                         </div>
                                         <!-- 서술형 (q.type == 4) -->
                                         <div th:case="4">
                                             <div class="d-flex justify-content-between mb-1">
-                                                <textarea class="form-control"></textarea>
+                                                <textarea class="form-control" rows="5" th:name="|${q.qid}-answer|"></textarea>
                                             </div>
                                         </div>
                                         <!-- 파일 첨부형 (q.type == 5) -->
                                         <div th:case="5">
                                             <div class="d-flex justify-content-between mb-1">
                                                 <!-- 파일 첨부형식 -->
+                                                <input class="form-control" type="file" th:name="|${q.qid}-answer|" th:id="|${q.qid}-file-input|">
                                             </div>
                                         </div>
                                     </div>
@@ -244,8 +294,6 @@
                             <button class="btn btn-primary" type="button" onclick="submitForm();">제출</button>
                         </section>
                     </form>
-
-
                 </div>
             </div>
             <script th:src="@{/assets/js/bootstrap.js}"></script>
