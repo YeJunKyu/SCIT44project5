@@ -3,6 +3,7 @@ package com.scit.lms.service;
 import com.scit.lms.dao.QuestionDAO;
 import com.scit.lms.domain.Option;
 import com.scit.lms.domain.Question;
+import com.scit.lms.domain.TestAnswerSheet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -71,6 +72,12 @@ public class QuestionServiceImpl implements QuestionService{
     @Override
     public int opidUp() {
         return dao.opidUp();
+    }
+
+    // 학생이 낸 시험지의 문제들
+    @Override
+    public void submitTest(TestAnswerSheet answerSheet) {
+        dao.submitTest(answerSheet);
     }
 
 

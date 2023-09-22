@@ -2,6 +2,7 @@ package com.scit.lms.dao;
 
 import com.scit.lms.domain.Option;
 import com.scit.lms.domain.Question;
+import com.scit.lms.domain.TestAnswerSheet;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.ArrayList;
@@ -34,4 +35,7 @@ public interface QuestionDAO {
     void updateOptions(List<Option> options);
 
     int opidUp();
+
+    // 학생이 낸 시험지의 문제들
+    void submitTest(TestAnswerSheet answerSheet);
 }

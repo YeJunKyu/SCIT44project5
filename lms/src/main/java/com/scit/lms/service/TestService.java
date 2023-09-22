@@ -1,7 +1,7 @@
 package com.scit.lms.service;
 
-import com.scit.lms.domain.Question;
 import com.scit.lms.domain.Test;
+import com.scit.lms.domain.TestListFromStudent;
 
 import java.util.ArrayList;
 
@@ -19,4 +19,7 @@ public interface TestService {
     int deleteTest(int testid);
 
     int updateTest(Test test);
+
+    // 학생이 낸 시험지
+    int submitTest(TestListFromStudent tlfs);
 }
