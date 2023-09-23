@@ -2,7 +2,7 @@ package com.scit.lms.service;
 
 import com.scit.lms.dao.TestDAO;
 import com.scit.lms.domain.Test;
-import com.scit.lms.domain.TestListFromStudent;
+import com.scit.lms.domain.TestpaperList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +44,7 @@ public class TestServiceImpl implements TestService{
 
     // 학생이 낸 시험지
     @Override
-    public int submitTest(TestListFromStudent tlfs) {
-        return dao.submitTest(tlfs);
+    public int submitTest(TestpaperList testpaperList) {
+        return dao.submitTest(testpaperList);
     }
 }

@@ -61,7 +61,20 @@
     </update>
 
 <!--답안지 등록-->
-
+    <insert id="submitTest" parameterType="TestpaperList">
+        <selectKey keyProperty="asnum" resultType="int" order="AFTER">
+            SELECT lms_testpaper_list_seq.CURRVAL FROM DUAL
+        </selectKey>
+        INSERT INTO lms_testpaper_list (
+            asnum
+            , testid
+            , memberid
+        ) VALUES (
+            lms_testpaper_list_seq.nextval
+            , #{testid}
+            , #{memberid}
+        )
+    </insert>
 
 
 </mapper>

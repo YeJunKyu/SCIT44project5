@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -332,37 +331,38 @@ public class TestController {
         log.debug("어레이 : {}", answerArray);
         log.debug("파일 : {}", fileMap);
 
-        TestListFromStudent tlfs = new TestListFromStudent();
-        tlfs.setMemberid(user.getUsername());
-        tlfs.setTestid(Integer.parseInt(testid));
-        int asid = testService.submitTest(tlfs);
+        TestpaperList testpaperList = new TestpaperList();
+        testpaperList.setMemberid(user.getUsername());
+        testpaperList.setTestid(Integer.parseInt(testid));
+        int asnum = testService.submitTest(testpaperList); // 답안지 고유번호 반환
 
 
         ObjectMapper objectMapper = new ObjectMapper();
-//        TestAnswerSheet[] answerSheets = objectMapper.readValue(answerArray, TestAnswerSheet[].class);
-//        log.debug("파일 확인 : {}", answerSheets);
-//        for(TestAnswerSheet answerSheet : answerSheets) {
-//
-//        }
         try {
-            TestAnswerSheet[] answerSheets = objectMapper.readValue(answerArray, TestAnswerSheet[].class);
-            for (TestAnswerSheet answerSheet : answerSheets) {
-                log.debug("파일 확인: {}", answerSheet);
-//                answerSheet.setAsnum();
+            AnswerObject[] answerObjects = objectMapper.readValue(answerArray, AnswerObject[].class);
+            for (AnswerObject answerObject : answerObjects) {
+                log.debug("파일 확인: {}", answerObject);
+                TestAnswer testAnswer = new TestAnswer();
+                testAnswer.setAsnum(asnum);
+                testAnswer.setQid(answerObject.getQid());
 
-                MultipartFile currentFile = fileMap.get("file[" + answerSheet.getQid() + "]");
+                String answer = String.join(",", answerObject.getAnswer());
+                log.debug("정답 {}", answer);
+                testAnswer.setAnswer(answer);
+
+                MultipartFile currentFile = fileMap.get("file[" + answerObject.getQid() + "]");
 
                 if (currentFile != null && !currentFile.isEmpty()) {
                     String savedfile = FileService.saveFile(currentFile, uploadPath);
                     log.debug("현파일:{}", currentFile.getOriginalFilename());
-                    answerSheet.setOriginalfile(currentFile.getOriginalFilename());
-                    answerSheet.setSavedfile(savedfile);
+                    testAnswer.setOriginalfile(currentFile.getOriginalFilename());
+                    testAnswer.setSavedfile(savedfile);
                 } else {
                     log.debug("현파일 없음");
                 }
 
-                log.debug("앤서 : {}", answerSheet);
-                questionService.submitTest(answerSheet);
+                log.debug("앤서 : {}", testAnswer);
+                questionService.submitQuestion(testAnswer);
 
             }
 

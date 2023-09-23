@@ -1,7 +1,7 @@
 package com.scit.lms.dao;
 
 import com.scit.lms.domain.Test;
-import com.scit.lms.domain.TestListFromStudent;
+import com.scit.lms.domain.TestpaperList;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.ArrayList;
@@ -23,5 +23,5 @@ public interface TestDAO {
     int updateTest(Test test);
 
     // 학생이 낸 시험지
-    int submitTest(TestListFromStudent tlfs);
+    int submitTest(TestpaperList testpaperList);
 }

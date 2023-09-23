@@ -2,7 +2,7 @@ package com.scit.lms.service;
 
 import com.scit.lms.domain.Option;
 import com.scit.lms.domain.Question;
-import com.scit.lms.domain.TestAnswerSheet;
+import com.scit.lms.domain.TestAnswer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,5 +35,5 @@ public interface QuestionService {
     int opidUp();
 
     // 학생이 낸 시험지의 문제들
-    void submitTest(TestAnswerSheet answerSheet);
+    void submitQuestion(TestAnswer TestAnswer);
 }
