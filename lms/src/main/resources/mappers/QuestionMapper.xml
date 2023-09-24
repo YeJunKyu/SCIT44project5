@@ -82,7 +82,9 @@
         SELECT *
         FROM lms_q_options
         WHERE qid = #{qid}
-            AND ((SELECT type FROM lms_question where qid = #{qid}) = 1 OR (SELECT type FROM lms_question where qid = #{qid}) = 2)
+            AND ((SELECT type FROM lms_question where qid = #{qid}) = 1 OR (SELECT type FROM lms_question where qid = #{qid}) = 2
+        OR (SELECT type FROM lms_question where qid = #{qid}) = 3 OR (SELECT type FROM lms_question where qid = #{qid}) = 4
+        OR (SELECT type FROM lms_question where qid = #{qid}) = 5)
         ORDER BY value ASC
     </select>
 
