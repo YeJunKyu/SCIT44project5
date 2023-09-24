@@ -208,3 +208,27 @@ create table lms_homework_submission (
 
 --과제 제출 테이블 시퀀스
 create sequence lms_hw_sub_seq;
+
+
+--학생 답안지 등록 테이블
+create table lms_testpaper_list (
+    asnum       number      primary key,                                        --시험지 고유번호
+    testid      number      references lms_test(testid),                         --시험 고유번호
+    memberid    varchar2(500) references lms_member(memberid)                    --제출자 아이디
+);
+
+--학생 답안지 등록 테이블 시퀀스
+create sequence lms_testpaper_list_seq;
+
+--학생 제출 답 등록 테이블
+create table lms_test_answer (
+    answernum   number  primary key,                                --답변 고유번호
+    asnum       number  references lms_testpaper_list(asnum),       --시험지 고유번호
+    qid         number  references lms_question(qid),               --문제 고유번호
+    answer      varchar2(4000),                                     --답변
+    originalfile varchar2(4000),                                    --첨부파일 원본
+    savedfile   varchar2(4000)                                      --저장된 첨부파일
+);
+
+--학생 제출 답 등록 테이블 시퀀스
+create sequence lms_test_answer_seq;

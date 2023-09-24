@@ -130,4 +130,28 @@
         WHERE optionid = #{optionid}
     </update>
 
+<!--학생 제출 문제 등록-->
+    <insert id="submitQuestion" parameterType="TestAnswer">
+        INSERT INTO lms_test_answer (
+            answernum
+            , asnum
+            , qid
+            , answer
+            <if test="originalfile != null">
+            , originalfile
+            , savedfile
+            </if>
+        )
+        VALUES (
+            lms_test_answer_seq.nextval
+            , #{asnum}
+            , #{qid}
+            , #{answer}
+            <if test="originalfile != null">
+            , #{originalfile}
+            , #{savedfile}
+            </if>
+        )
+    </insert>
+
 </mapper>
