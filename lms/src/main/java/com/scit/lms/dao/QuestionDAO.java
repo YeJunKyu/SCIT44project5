@@ -39,4 +39,13 @@ public interface QuestionDAO {
 
     // 학생이 낸 시험지의 문제들
     void submitQuestion(TestAnswer testAnswer);
+
+    // 채점을 위한 문제 가져오기
+    Question getQuestionByQid(int qid);
+
+    // 점수 업데이트
+    void updatePoints(TestAnswer updateAnswer);
+
+    // 선택한 답 가져오기
+    ArrayList<TestAnswer> getAllTestAnswers(int asnum);
 }

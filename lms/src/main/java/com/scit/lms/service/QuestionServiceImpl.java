@@ -81,5 +81,23 @@ public class QuestionServiceImpl implements QuestionService{
         dao.submitQuestion(testAnswer);
     }
 
+    // 채점을 위한 문제 가져오기
+    @Override
+    public Question getQuestionByQid(int qid) {
+        return dao.getQuestionByQid(qid);
+    }
+
+    // 점수 업데이트
+    @Override
+    public void updatePoints(TestAnswer updateAnswer) {
+        dao.updatePoints(updateAnswer);
+    }
+
+    // 선택한 답 가져오기
+    @Override
+    public ArrayList<TestAnswer> getAllTestAnswers(int asnum) {
+        return dao.getAllTestAnswers(asnum);
+    }
+
 
 }
