@@ -1,20 +1,21 @@
 
 --회원 테이블
-           create table lms_member(
-               memberid        varchar2(100)    primary key,
-               memberpw        varchar2(100)   not null,
-               membername      varchar2(100)    not null,
-               birthday        date            not null,
-               phone           varchar2(100)    not null,
-               gender          varchar2(50)    not null,
-               email           varchar2(200)   not null,
-               address         varchar2(200)   not null,
-               memberphoto     varchar2(500),
+create table lms_member(
+    memberid        varchar2(100)    primary key,
+    memberpw        varchar2(100)   not null,
+    membername      varchar2(100)    not null,
+    birthday        date            not null,
+    phone           varchar2(100)    not null,
+    gender          varchar2(50)    not null,
+    email           varchar2(200)   not null,
+    address         varchar2(200)   not null,
+    memberphoto     varchar2(500),
     photopath       varchar2(500),
     note            varchar2(1000),
     rolename        varchar2(100)   default 'ROLE_USER' check (rolename in('ROLE_USER','ROLE_teacher','ROLE_student','ROLE_admin')),
     enabled         number          default 1 check (enabled in (0, 1))
 );
+
 
 
 --학생 테이블
@@ -55,21 +56,25 @@ CREATE TABLE student_info (
 
 
 
+
+
 --공지 테이블
 create table lms_notice(
-	noticenum	    number	        not null primary   key,
+	noticenum	    number	        primary key,
 	memberid	    varchar2(20)	not null,
-	noticetitle 	varchar2(50)	not null,
+	noticetitle 	varchar2(200)	not null,
 	noticecontents	varchar2(1000)	not null,
 	noticedate	    date	        default sysdate,
 	viewauthority	number      	default 0, --읽기권한(0:모두, 1:선생)
 	hits	        number	        default 0,
-	originalfile	varchar2(225),
-	savedfile   	varchar2(225)
+	originalfile	varchar2(4000),
+	savedfile   	varchar2(4000)
 );
 
 --공지 시퀀스
 create sequence lms_notice_seq;
+
+
 
 
 
@@ -82,12 +87,15 @@ create table lms_schedule (
 	enddate         date,
     allday          number(1),
     color           varchar2(100),
-    textcolor       varchar(100),
+    textcolor       varchar2(100),
+    categories      varchar2(200),
 	memberid        varchar2(100)   not null
 );
 
 --일정 테이블 시퀀스
 create sequence lms_schedule_seq;
+
+
 
 
 
@@ -105,6 +113,8 @@ CREATE TABLE primary_ratio_category (
 --시험 비중테이블 고유번호 시퀀스
 create sequence primary_ratio_category_seq;
 
+
+
 --시험 테이블
 create table lms_test (
     testid  number primary key,
@@ -113,11 +123,12 @@ create table lms_test (
     totalpoints number, -- 시험 총점
     testdate date,
     testlimit date
-
 );
 
 --시험 테이블 시퀀스
 create sequence lms_test_seq;
+
+
 
 --문제 테이블
 create table lms_question (
@@ -139,6 +150,7 @@ create table lms_question (
 create sequence lms_question_seq;
 
 
+
 --문제 테이블의 보기 및 정답 테이블
 CREATE TABLE lms_q_options (
     optionid NUMBER PRIMARY KEY,
@@ -155,59 +167,6 @@ CREATE TABLE lms_q_options (
 --옵션 시퀀스
 CREATE SEQUENCE lms_q_options_seq START WITH 1 INCREMENT BY 1;
 
-
-
---출석 테이블
-create table attendance(
-    attnum number primary key,
-    memberid	varchar2(20) references lms_member(memberid) ON DELETE CASCADE,
-    att_date date,
-    att_type varchar2(100),
-    att_comment varchar2(100),
-    att_permission varchar2(100)
-
-);
-
---출석시퀀스
-create sequence attendance_seq;
-
-
-
---과제 테이블
-create table lms_homework (
-	hw_num		    number		    primary key,	    --과제 번호
-	hw_title	    varchar2(200)	not null,	        --과제 제목
-	hw_contents	    varchar2(4000)	not null,	        --과제 내용
-	hw_curriculum	varchar2(200),			            --과제 해당 과정
-	hw_subject	    varchar2(200),			            --과제 해당 과목(일본어,IT)
-	hw_class	    varchar2(200),			            --과제 해당 반
-	hw_inputdate	date		    default sysdate,    --과제 등록일
-    hw_start	    date		    not null,	        --과제 제출 기한(시작일)
-	hw_end          date		    not null,	        --과제 제출 기한(마감일)
-	originalfile	varchar2(4000),			            --원본 파일
-	savedfile	    varchar2(4000),			            --저장된 파일
-	memberid	    varchar2(20)	not null	        --교사 아이디
-);
-
---과제 테이블 시퀀스
-create sequence lms_hw_seq;
-
---과제 제출 테이블
-create table lms_homework_submission (
-	hw_sub_num	        number	            primary key,					                	--제출 번호
-	hw_num		        number	            references lms_homework(hw_num) on delete cascade,	--과제 번호
-	hw_sub_contents     varchar2(4000)	    not null,					                        --제출 내용
-	hw_sub_inputdate	date	            default sysdate,			                    	--제출일
-	hw_sub_done	        varchar2(20),					                                        --제출 여부(미제출/제출완료/지각)
-	hw_sub_comment	    varchar2(4000),							                                --코멘트
-	hw_sub_score	    number,								                                    --점수
-	originalfile	    varchar2(4000),							                                --원본 파일
-	savedfile	        varchar2(4000),							                                --저장된 파일
-	memberid	        varchar2(20)	    not null					                        --학생 아이디
-);
-
---과제 제출 테이블 시퀀스
-create sequence lms_hw_sub_seq;
 
 
 --학생 답안지 등록 테이블
@@ -234,3 +193,62 @@ create table lms_test_answer (
 
 --학생 제출 답 등록 테이블 시퀀스
 create sequence lms_test_answer_seq;
+
+
+
+
+
+--출석 테이블
+create table attendance(
+    attnum number primary key,
+    memberid	varchar2(20) references lms_member(memberid) ON DELETE CASCADE,
+    att_date date,
+    att_type varchar2(100),
+    att_comment varchar2(100),
+    att_permission varchar2(100)
+
+);
+
+--출석시퀀스
+create sequence attendance_seq;
+
+
+
+
+
+--과제 테이블
+create table lms_homework (
+	hw_num		    number		    primary key,	    --과제 번호
+	hw_title	    varchar2(200)	not null,	        --과제 제목
+	hw_contents	    varchar2(4000)	not null,	        --과제 내용
+	hw_curriculum	varchar2(200),			            --과제 해당 과정
+	hw_subject	    varchar2(200),			            --과제 해당 과목(일본어,IT)
+	hw_class	    varchar2(200),			            --과제 해당 반
+	hw_inputdate	date		    default sysdate,    --과제 등록일
+    hw_start	    date		    not null,	        --과제 제출 기한(시작일)
+	hw_end          date		    not null,	        --과제 제출 기한(마감일)
+	originalfile	varchar2(4000),			            --원본 파일
+	savedfile	    varchar2(4000),			            --저장된 파일
+	memberid	    varchar2(100)	not null,	        --교사 아이디
+    hw_students     varchar2(200)   not null
+);
+
+--과제 테이블 시퀀스
+create sequence lms_hw_seq;
+
+--과제 제출 테이블
+create table lms_homework_submission (
+	hw_sub_num	        number	            primary key,					                	--제출 번호
+	hw_num		        number	            references lms_homework(hw_num) on delete cascade,	--과제 번호
+	hw_sub_contents     varchar2(4000)	    not null,					                        --제출 내용
+	hw_sub_inputdate	date	            default sysdate,			                    	--제출일
+	hw_sub_done	        varchar2(20),					                                        --제출 여부(미제출/제출완료/지각)
+	hw_sub_comment	    varchar2(4000),							                                --코멘트
+	hw_sub_score	    number,								                                    --점수
+	originalfile	    varchar2(4000),							                                --원본 파일
+	savedfile	        varchar2(4000),							                                --저장된 파일
+	memberid	        varchar2(100)	    not null					                        --학생 아이디
+);
+
+--과제 제출 테이블 시퀀스
+create sequence lms_hw_sub_seq;
