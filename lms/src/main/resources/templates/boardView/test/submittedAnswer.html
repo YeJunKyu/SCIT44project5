@@ -83,12 +83,20 @@
                                         <h6 class="col-md-8" th:id="|${q.qid}-papernum|" th:text="${q.papernum}"></h6>
                                         <div class="col-md-2 icon" th:if="${q.originalfile} != null">
                                             <div class="btn btn-primary btn-sm rounded-pill">
-                                                <a th:text="${q.originalfile}" th:href="@{/test/download(qid=${q.qid})}" style="color: #ffffff"></a>
+                                                <a th:if="${q.originalfile != null}"
+                                                   th:text="${q.originalfile}"
+                                                   th:href="@{/test/download(qid=${q.qid})}"
+                                                   class="btn btn-primary"
+                                                   role="button">[Download Link]</a>
                                             </div>
                                         </div>
                                     </div>
                                     <!--문제 출력 부분-->
                                     <h6 th:text="${q.contents}"></h6>
+                                    <div class="col-md-2 icon">
+                                        <img th:if="${q.savedfile !=null}" th:src="@{'/noticefiles/' + ${q.savedfile}}" alt="첨부 이미지" style="width: 100px; height: auto;">
+
+                                    </div>
                                 </div>
                                 <!--문제 유형별 답 입력 부분-->
                                 <div id="qPlace" class="card-body">
