@@ -179,7 +179,7 @@
         where qid = #{qid}
     </select>
 
-    
+
     <select id="getQuestionByQid" resultType="Question">
         SELECT *
         FROM lms_question
