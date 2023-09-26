@@ -185,6 +185,7 @@
                             <th>선택</th>
                             <th>시험코드</th>
                             <th>상위코드</th>
+                            <th>상위시험종목</th>
                             <th>시험종목</th>
                             <th>반영비율</th>
                             <th>분류</th>
@@ -196,6 +197,13 @@
                             <td><input type="checkbox" th:name="'selectedCheckbox' + ${midtest.category_id}" th:value="${midtest.category_id}"></td>
                             <td th:text="${midtest.category_id}"></td>
                             <td th:text="${midtest?.parent_id}"></td>
+
+                            <!-- 상위 시험종목 이름 표시 -->
+                            <td>
+                                <span th:each="bigtest : ${bigList}"
+                                      th:if="${bigtest.category_id == midtest.parent_id}"
+                                      th:text="${bigtest.categoryname}"></span>
+                            </td>
                             <td>
                                 <input type="text" th:name="'categoryname' + ${midtest.category_id}" th:value="${midtest.categoryname}">
                             </td>
@@ -241,6 +249,7 @@
                             <th>선택</th>
                             <th>시험코드</th>
                             <th>상위코드</th>
+                            <th>상위시험종목</th>
                             <th>시험종목</th>
                             <th>반영비율</th>
                             <th>분류</th>
@@ -251,6 +260,13 @@
                             <td><input type="checkbox" th:name="'selectedCheckbox' + ${smtest.category_id}" th:value="${smtest.category_id}"></td>
                             <td th:text="${smtest.category_id}"></td>
                             <td th:text="${smtest?.parent_id}"></td>
+
+                            <td>
+                                <span th:each="midtest : ${midList}"
+                                      th:if="${midtest.category_id == smtest.parent_id}"
+                                      th:text="${midtest.categoryname}"></span>
+                            </td>
+                            
                             <td>
                                 <input type="text" th:name="'categoryname' + ${smtest.category_id}" th:value="${smtest.categoryname}">
                             </td>
