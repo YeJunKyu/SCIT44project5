@@ -202,27 +202,27 @@ bindCheckboxEvents();
                                 </thead>
                                 <tbody>
                                 <tr th:each="member : ${list}" th:if="${member.member.rolename == 'ROLE_student' and member.member.enabled == true}">
-                                    <td><input type="checkbox" class="att-checkbox" th:name="'att_type' + ${member.member.memberid}" data-column="attendance" value="출석"></td>
-                                    <td><input type="checkbox" class="att-checkbox" th:name="'att_type' + ${member.member.memberid}" data-column="absence" value="결석"></td>
-                                    <td><input type="checkbox" class="att-checkbox" th:name="'att_type' + ${member.member.memberid}" data-column="halfabsence" value="1/2결석"></td>
-                                    <td><input type="checkbox" class="att-checkbox" th:name="'att_type' + ${member.member.memberid}" data-column="late" value="지각"></td>
-                                    <td><input type="checkbox" class="att-checkbox" th:name="'att_type' + ${member.member.memberid}" data-column="out" value="외출"></td>
-                                    <td><input type="checkbox" class="att-checkbox" th:name="'att_type' + ${member.member.memberid}" data-column="leave" value="조퇴"></td>
+                                    <td><input type="checkbox" class="att-checkbox" th:name="'att_type' + ${member.member?.memberid}" data-column="attendance" value="출석"></td>
+                                    <td><input type="checkbox" class="att-checkbox" th:name="'att_type' + ${member.member?.memberid}" data-column="absence" value="결석"></td>
+                                    <td><input type="checkbox" class="att-checkbox" th:name="'att_type' + ${member.member?.memberid}" data-column="halfabsence" value="1/2결석"></td>
+                                    <td><input type="checkbox" class="att-checkbox" th:name="'att_type' + ${member.member?.memberid}" data-column="late" value="지각"></td>
+                                    <td><input type="checkbox" class="att-checkbox" th:name="'att_type' + ${member.member?.memberid}" data-column="out" value="외출"></td>
+                                    <td><input type="checkbox" class="att-checkbox" th:name="'att_type' + ${member.member?.memberid}" data-column="leave" value="조퇴"></td>
 
-                                    <td><input type="radio" th:name="${member.member.memberid} + '-' + 'permission'" value="O"> O
-                                        <input type="radio" th:name="${member.member.memberid} + '-' + 'permission'" value="X"> X</td>
+                                    <td><input type="radio" th:name="${member.member?.memberid} + '-' + 'permission'" value="O"> O
+                                        <input type="radio" th:name="${member.member?.memberid} + '-' + 'permission'" value="X"> X</td>
 
-                                    <td>[[${member.member.memberid}]]</td>
-                                    <td th:text="${member.member.membername}"></td>
-                                    <td th:text="${member.attendance.att_type}">
+                                    <td>[[${member.member?.memberid}]]</td>
+                                    <td th:text="${member.member?.membername}"></td>
+                                    <td th:text="${member.attendance?.att_type}">
                                         </td>
 
 
 
-                                    <td th:text="${member.attendance.att_permission}">
+                                    <td th:text="${member.attendance?.att_permission}">
 
                                     </td>
-                                    <td th:text="${member.attendance.att_date}">
+                                    <td th:text="${member.attendance?.att_date}">
 
                                     </td>
 
