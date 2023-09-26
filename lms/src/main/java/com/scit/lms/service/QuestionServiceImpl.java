@@ -1,7 +1,6 @@
 package com.scit.lms.service;
 
 import com.scit.lms.dao.QuestionDAO;
-import com.scit.lms.domain.AnswerObject;
 import com.scit.lms.domain.Option;
 import com.scit.lms.domain.Question;
 import com.scit.lms.domain.TestAnswer;
@@ -103,8 +102,8 @@ public class QuestionServiceImpl implements QuestionService{
 
     // 점수 업데이트
     @Override
-    public void updatePoints(TestAnswer updateAnswer) {
-        dao.updatePoints(updateAnswer);
+    public void updateResult(TestAnswer updateAnswer) {
+        dao.updateResult(updateAnswer);
     }
 
     // 선택한 답 가져오기

@@ -187,10 +187,11 @@
             qid = #{qid}
     </select>
 
-    <update id="updatePoints" parameterType="TestAnswer">
+    <update id="updateResult" parameterType="TestAnswer">
         UPDATE lms_test_answer
         SET
             points = #{points}
+            rwc = #{rwc}
         WHERE
             asnum = #{asnum}
             AND qid = #{qid}

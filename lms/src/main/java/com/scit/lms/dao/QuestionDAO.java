@@ -1,6 +1,5 @@
 package com.scit.lms.dao;
 
-import com.scit.lms.domain.AnswerObject;
 import com.scit.lms.domain.Option;
 import com.scit.lms.domain.Question;
 import com.scit.lms.domain.TestAnswer;
@@ -49,7 +48,7 @@ public interface QuestionDAO {
     Question getQuestionByQid(int qid);
 
     // 점수 업데이트
-    void updatePoints(TestAnswer updateAnswer);
+    void updateResult(TestAnswer updateAnswer);
 
     // 선택한 답 가져오기
     ArrayList<TestAnswer> getAllTestAnswers(int asnum);

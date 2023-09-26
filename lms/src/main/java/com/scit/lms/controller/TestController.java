@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("test")
@@ -438,6 +437,7 @@ public class TestController {
             log.debug("앤서 : {}", testAnswer);
             questionService.submitQuestion(testAnswer);
 
+            //
             Question question = questionService.getQuestionByQid(testAnswer.getQid());
             if (question.getType() == 1 || question.getType() == 2 || question.getType() == 3) {
                 if (question.getAnswer().equals(answer)) {
@@ -446,9 +446,24 @@ public class TestController {
                     log.debug("앤서넘버 : {}", asnum);
                     updateAnswer.setQid((int) question.getQid());
                     updateAnswer.setPoints(question.getPoints());
+                    updateAnswer.setRwc("right");
 
-                    questionService.updatePoints(updateAnswer);
+                    questionService.updateResult(updateAnswer);
+                } else if (!question.getAnswer().equals(answer)) {
+                    TestAnswer updateAnswer = new TestAnswer();
+                    updateAnswer.setAsnum(asnum);
+                    updateAnswer.setQid((int) question.getQid());
+                    updateAnswer.setRwc("wrong");
+
+                    questionService.updateResult(updateAnswer);
                 }
+            } else if (question.getType() == 4 || question.getType() == 5) {
+                TestAnswer updateAnswer = new TestAnswer();
+                updateAnswer.setAsnum(asnum);
+                updateAnswer.setQid((int) question.getQid());
+                updateAnswer.setRwc("check");
+
+                questionService.updateResult(updateAnswer);
             }
 
             testService.updateTotalpoints(asnum);
@@ -489,7 +504,8 @@ public class TestController {
 
         // 선택한 답 가져오기
         ArrayList<TestAnswer> testAnswers = questionService.getAllTestAnswers(asnum);
-//        log.debug("테스트 배열 : {}", testAnswers);
+        log.debug("테스트 배열 : {}", testAnswers);
+
 
 
         model.addAttribute("test", test);
