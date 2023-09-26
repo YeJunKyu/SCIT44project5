@@ -1,15 +1,15 @@
 
 --회원 테이블
-create table lms_member(
-    memberid        varchar2(100)    primary key,
-    memberpw        varchar2(100)   not null,
-    membername      varchar2(100)    not null,
-    birthday        date            not null,
-    phone           varchar2(100)    not null,
-    gender          varchar2(50)    not null,
-    email           varchar2(200)   not null,
-    address         varchar2(200)   not null,
-    memberphoto     varchar2(500),
+           create table lms_member(
+               memberid        varchar2(100)    primary key,
+               memberpw        varchar2(100)   not null,
+               membername      varchar2(100)    not null,
+               birthday        date            not null,
+               phone           varchar2(100)    not null,
+               gender          varchar2(50)    not null,
+               email           varchar2(200)   not null,
+               address         varchar2(200)   not null,
+               memberphoto     varchar2(500),
     photopath       varchar2(500),
     note            varchar2(1000),
     rolename        varchar2(100)   default 'ROLE_USER' check (rolename in('ROLE_USER','ROLE_teacher','ROLE_student','ROLE_admin')),
@@ -112,8 +112,8 @@ create table lms_test (
     categoryid number, -- 분류 고유번호
     totalpoints number, -- 시험 총점
     testdate date,
-    testlimit date,
-    totalpoints number
+    testlimit date
+
 );
 
 --시험 테이블 시퀀스

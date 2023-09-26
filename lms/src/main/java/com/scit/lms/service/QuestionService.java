@@ -30,10 +30,16 @@ public interface QuestionService {
 
     void updateQuestion(Question question);
 
-    void updateOptions(List<Option> options);
+    void updateOptions(Option option);
 
     int opidUp();
 
     // 학생이 낸 시험지의 문제들
     void submitQuestion(TestAnswer TestAnswer);
+
+    int countQuestion(int testid);
+
+    int countOption(Integer integer);
+
+    int countQidOption(Long aLong);
 }

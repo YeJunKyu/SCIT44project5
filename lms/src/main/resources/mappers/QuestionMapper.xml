@@ -120,12 +120,12 @@
     <update id="updateOptions" parameterType="Option">
         UPDATE lms_q_options
         SET
-        value = #{value}
+        checked = #{checked}
+        <if test="value != null">
+            ,value = #{value}
+        </if>
         <if test="content != null">
             , content = #{content}
-        </if>
-        <if test="checked != null">
-            , checked = #{checked}
         </if>
         WHERE optionid = #{optionid}
     </update>
@@ -154,4 +154,28 @@
         )
     </insert>
 
+
+<!--    문제수 조회-->
+    <select id="countQuestion" parameterType="int" resultType="int">
+        select count(*) from lms_question
+        where testid = #{testid}
+    </select>
+
+<!--    보기수조회-->
+    <select id="countOption" parameterType="integer" resultType="int">
+        select count(*)
+        from lms_q_options
+        where qid in (
+        select qid
+        from lms_question
+        where testid = #{testid}
+        )
+    </select>
+
+<!--    문제당보기수조회-->
+    <select id="countQidOption" parameterType="Long">
+        select count(*)
+        from lms_q_options
+        where qid = #{qid}
+    </select>
 </mapper>

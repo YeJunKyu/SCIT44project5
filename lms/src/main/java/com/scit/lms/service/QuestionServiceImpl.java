@@ -66,8 +66,8 @@ public class QuestionServiceImpl implements QuestionService{
     }
 
     @Override
-    public void updateOptions(List<Option> options) {
-        dao.updateOptions(options);
+    public void updateOptions(Option option) {
+        dao.updateOptions(option);
     }
 
     @Override
@@ -79,6 +79,21 @@ public class QuestionServiceImpl implements QuestionService{
     @Override
     public void submitQuestion(TestAnswer testAnswer) {
         dao.submitQuestion(testAnswer);
+    }
+
+    @Override
+    public int countQuestion(int testid) {
+        return dao.countQuestion(testid);
+    }
+
+    @Override
+    public int countOption(Integer integer) {
+        return dao.countOption(integer);
+    }
+
+    @Override
+    public int countQidOption(Long aLong) {
+        return dao.countQidOption(aLong);
     }
 
 

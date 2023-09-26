@@ -11,7 +11,7 @@ public class Test {
     int testid;
     String testname;
     int categoryid;
-    String totalpoints;
+    int totalpoints;
     String testdate;
     String testlimit;
 

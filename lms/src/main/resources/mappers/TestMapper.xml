@@ -51,13 +51,12 @@
 
 <!--    시험수정-->
     <update id="updateTest" parameterType="Test">
-    update lms_test
+        update lms_test
         set testname = #{testname},
-        testdate = #{testdate} ,
-        testlimit = #{testlimit},
+        testdate = to_date(#{testdate}, 'YYYY-MM-DD HH24:MI'),
+        testlimit = to_date(#{testlimit}, 'YYYY-MM-DD HH24:MI'),
         totalpoints = #{totalpoints}
         where testid = #{testid}
-
     </update>
 
 <!--답안지 등록-->
