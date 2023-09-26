@@ -13,9 +13,17 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -163,6 +171,37 @@ public class TestController {
         model.addAttribute("options", allOptions);
 
         return "boardView/test/viewTest";
+    }
+
+    //파일다운로드
+    @GetMapping("download")
+    public void download(long qid, HttpServletRequest request
+            , HttpServletResponse response
+                         ){
+        log.debug("{}",request.getRemoteAddr());//다운요청보낸ip문자열
+
+        Question question = questionService.selectOneQuestion(qid);
+
+        String fullPath = uploadPath + "/" + question.getSavedfile();
+
+        try {
+            response.setHeader("Content-Disposition", " attachment;filename="+ URLEncoder.encode(question.getOriginalfile(), "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            FileInputStream in = new FileInputStream(fullPath);
+            ServletOutputStream out = response.getOutputStream();
+
+            FileCopyUtils.copy(in, out);
+
+            in.close();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     //시험문제 수정폼
@@ -322,77 +361,7 @@ public class TestController {
 
             return "redirect:/test/updateTest?testid=" + testid;
         }
-    //시험문제 수정ajax요청
-    @PostMapping("updateTestAjax")
-    public String updateTestAjax(int testid,
-                                 @RequestParam("requestData") String requestDataString,
-                                 @RequestParam Map<String, MultipartFile> fileMap) throws JsonProcessingException {
-        // 문제 배열 추출
-        ObjectMapper objectMapper = new ObjectMapper();
-        TestRequestObject requestObject = objectMapper.readValue(requestDataString, TestRequestObject.class);
-        log.debug("파일확인:{}",requestObject);
-        // requestDataString 대신에 requestObject에서 데이터 추출
 
-        // 문제 배열 등록
-        for (Question q: requestObject.getQuestionDataArray()) {
-
-
-            MultipartFile currentFile = fileMap.get("file[" + q.getPapernum() + "]");
-            log.debug("현파일:{}", currentFile);
-
-            Question question = new Question();
-            question.setTestid(testid);
-            question.setPapernum(q.getPapernum());
-            question.setContents(q.getContents());
-            question.setPoints(q.getPoints());
-            question.setType(q.getType());
-            question.setOptions(q.getOptions());
-
-            // 파일이 있다면 처리합니다.
-            if (currentFile != null && !currentFile.isEmpty()) {
-                String savedfile = FileService.saveFile(currentFile, uploadPath);
-                log.debug("현파일:{}", currentFile.getOriginalFilename());
-                question.setOriginalfile(currentFile.getOriginalFilename());
-                question.setSavedfile(savedfile);
-            } else {
-                log.debug("현파일 없음");
-            }
-            questionService.insertQuestion(question);
-            log.debug("문제등록확인:{}", question);
-
-            int opid = questionService.opidUp();
-            log.debug("옵션id:{}",opid);
-
-            // 타입이 1, 2, 3인 경우만 option 및 answer 등록
-            if (q.getOptions() != null && !q.getOptions().isEmpty() && (q.getType() == 1 || q.getType() == 2 || q.getType() == 3)) {
-                List<Option> options = new ArrayList<>();
-                for (Option optionData : q.getOptions()) {
-                    if (optionData.getValue() != null) {
-                        Option option = new Option();
-                        opid++;
-                        option.setOptionid(opid);
-
-                        option.setQid(question.getQid());
-                        option.setValue(optionData.getValue());
-                        option.setContent(optionData.getContent());
-                        option.setChecked(optionData.getChecked());
-                        options.add(option);
-                    }
-                }
-                log.debug("옵션확인:{}",options);
-                // 옵션 등록
-                questionService.insertOptions(options);
-                log.debug("옵션등록확인:{}", options);
-
-                // 답변 갱신
-                questionService.updateAnswer();
-                log.debug("답변등록확인:{}", "okay");
-            }
-        }
-
-
-        return "boardView/test/test";
-    }
 
 
     //시험문제 삭제

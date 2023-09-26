@@ -88,7 +88,7 @@
         ORDER BY value ASC
     </select>
 
-    <select id="selectOneQuestion" parameterType="int" resultType="Question">
+    <select id="selectOneQuestion" parameterType="long" resultType="Question">
         SELECT *
         FROM lms_question
         WHERE qid = #{qid}

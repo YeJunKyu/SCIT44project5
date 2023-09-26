@@ -51,7 +51,7 @@ public class QuestionServiceImpl implements QuestionService{
 
     // 문제 하나 조회
     @Override
-    public Question selectOneQuestion(int qid) {
+    public Question selectOneQuestion(long qid) {
         return dao.selectOneQuestion(qid);
     }
 

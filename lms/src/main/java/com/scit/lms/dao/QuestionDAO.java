@@ -27,7 +27,7 @@ public interface QuestionDAO {
     ArrayList<Option> selectOptions(long qid);
 
     // 문제 하나 조회
-    Question selectOneQuestion(int qid);
+    Question selectOneQuestion(long qid);
 
     int deleteQuestion(int testid);
 
