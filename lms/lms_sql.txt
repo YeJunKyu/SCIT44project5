@@ -214,7 +214,7 @@ create sequence lms_hw_sub_seq;
 create table lms_testpaper_list (
     asnum       number      primary key,                                        --시험지 고유번호
     testid      number      references lms_test(testid),                        --시험 고유번호
-    memberid    varchar2(500) references lms_member(memberid)                   --제출자 아이디
+    memberid    varchar2(500) references lms_member(memberid),                   --제출자 아이디
     totalscore       number                                                     --점수
 );
 

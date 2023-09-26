@@ -37,13 +37,11 @@ public interface QuestionService {
     // 학생이 낸 시험지의 문제들
     void submitQuestion(TestAnswer TestAnswer);
 
-<<<<<<< HEAD
     int countQuestion(int testid);
 
     int countOption(Integer integer);
 
     int countQidOption(Long aLong);
-=======
     // 채점을 위한 문제 가져오기
     Question getQuestionByQid(int qid);
 
@@ -52,5 +50,4 @@ public interface QuestionService {
 
     // 선택한 답 가져오기
     ArrayList<TestAnswer> getAllTestAnswers(int asnum);
->>>>>>> b9a5c1f891985e17bc28148e3cb3aca34ebb400f
 }

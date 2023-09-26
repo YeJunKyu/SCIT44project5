@@ -106,10 +106,10 @@
                             </a>
                             </td>
 
-                            <td th:text="${students.member.membername}">
+                            <td th:text="${students.member?.membername}">
 
                             </td>
-                            <td th:text="${students.student.curriculum}">
+                            <td th:text="${students.student?.curriculum}">
 
                             </td>
                             <td th:text="${students.jpCategory?.jpclassname}">
@@ -118,25 +118,25 @@
                             <td th:text="${students.itCategory?.itclassname}">
 
                             </td>
-                            <td th:text="${students.member.birthday}">
+                            <td th:text="${students.member?.birthday}">
 
                             </td>
-                            <td th:if="${students.member.gender == 'male'}">
+                            <td th:if="${students.member?.gender == 'male'}">
                             남성
                             </td>
-                            <td th:if="${students.member.gender == 'female'}">
+                            <td th:if="${students.member?.gender == 'female'}">
                                 여성
                             </td>
-                            <td th:text="${students.student.school}">
+                            <td th:text="${students.student?.school}">
 
                             </td>
-                            <td th:if="${students.student.graduation == '1'}">
+                            <td th:if="${students.student?.graduation == '1'}">
                             졸업
                             </td>
-                            <td th:if="${students.student.graduation == '0'}">
+                            <td th:if="${students.student?.graduation == '0'}">
                             재학중
                             </td>
-                            <td th:text="${students.member.address}">
+                            <td th:text="${students.member?.address}">
 
                             </td>
 
