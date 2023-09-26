@@ -55,6 +55,31 @@
         LEFT JOIN student_info si ON m.memberid = si.memberid
         where m.rolename = 'ROLE_student'
     </select>
+
+<!--    학생관리  기수별조회-->
+    <select id="getStudentsByBatch" parameterType="String" resultType="StudentsAll">
+        SELECT
+        m.memberid as "member.memberid",
+        m.membername as "member.membername",
+        TO_CHAR(m.birthday, 'YY/MM/DD') as "member.birthday",
+        m.gender as "member.gender",
+        m.address as "member.address",
+        s.school as "student.school",
+        s.major as "student.major",
+        s.graduation as "student.graduation",
+        s.curriculum as "student.curriculum",
+        jp.jpclassname as "jpCategory.jpclassname",
+        it.itclassname as "itCategory.itclassname"
+        FROM
+        lms_member m
+        LEFT JOIN lms_student s ON m.memberid = s.memberid
+        LEFT JOIN class_jp_category jp ON m.memberid = jp.memberid
+        LEFT JOIN class_it_category it ON m.memberid = it.memberid
+        LEFT JOIN student_info si ON m.memberid = si.memberid
+        where  s.curriculum = #{curriculum}
+    </select>
+
+
 <!--학생관리 : 과정등록폼-->
     <select id="selectOnlyStudent" resultType="StudentsAll">
         SELECT m.memberid AS "member.memberid",

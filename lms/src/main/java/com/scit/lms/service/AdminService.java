@@ -81,4 +81,6 @@ public interface AdminService {
     IT_category selectOneitCategory(String memberid);
 
     StudentInfo selectOneStudentInfo(String memberid);
+
+    ArrayList<StudentsAll> getStudentsByBatch(String curriculum);
 }

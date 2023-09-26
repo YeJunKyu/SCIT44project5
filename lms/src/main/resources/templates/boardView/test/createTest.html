@@ -300,6 +300,10 @@
                                 <div class="col-md-8">
                                     <h4 class="card-title">시험명</h4>
                                     <div class="form-group input-group-lg">
+                                        <select name="categoryid">
+
+                                            <option th:each="category : ${category}" th:value="${category.category_id}" th:text="${category.categoryname}"></option>
+                                        </select>
                                         <input type="text" class="form-control" id="testname"/>
                                     </div>
                                 </div>

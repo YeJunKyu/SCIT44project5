@@ -204,5 +204,10 @@ public class AdminServiceImple implements AdminService {
 		return dao.selectOneStudentInfo(memberid);
 	}
 
+	@Override
+	public ArrayList<StudentsAll> getStudentsByBatch(String curriculum) {
+		return dao.getStudentsByBatch(curriculum);
+	}
+
 
 }

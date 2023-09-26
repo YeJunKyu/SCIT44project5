@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.scit.lms.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -117,6 +118,17 @@ public class AdminController {
 		log.debug("학생확인2:{}",studentslist);
 
 		return "adminView/studentManager";
+	}
+
+	//학생관리 기수별조회
+
+	@ResponseBody
+	@GetMapping("/getStudentsByBatch")
+	public ArrayList<StudentsAll> getStudentsByBatch(@RequestParam("curriculum") String curriculum) {
+		log.debug("선택기수:{}",curriculum);
+		ArrayList<StudentsAll> studentsByBatch = service.getStudentsByBatch(curriculum);
+		log.debug("해당기수학생:{}",studentsByBatch);
+		return studentsByBatch;
 	}
 
 	
@@ -564,11 +576,11 @@ public class AdminController {
 		return "redirect:/admin/ReadStudentAttendance";
 	}
 	
-	// 성적조회및수정
-//	@GetMapping("scoreManager")
-//	public String scoreManager(){
-//
-//		return "adminView/scoreManager";
-//	}
+	 //성적조회및수정
+	@GetMapping("scoreManager")
+	public String scoreManager(Model model){
+
+		return "adminView/scoreManager";
+	}
 
 }

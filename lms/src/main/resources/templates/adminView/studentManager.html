@@ -38,9 +38,44 @@
                     $('#selectAll').prop('checked', false);
                 }
             });
+
+
+            $('#batchSelection').change(function() {
+                var selectedBatch = $(this).val();
+
+                // 선택된 기수를 서버에 전달
+                $.get('/lms/admin/getStudentsByBatch', { curriculum: selectedBatch }, function(data) {
+                    // 테이블의 학생 목록 업데이트 로직 (아래의 3번 단계 참조)
+                    updateStudentTable(data);
+                });
+            });
+
+            function updateStudentTable(data) {
+            var tbody = $('#table1 tbody');
+            tbody.empty();
+
+            data.forEach(function(student) {
+            var gender = student.member.gender === 'male' ? '남성' : '여성';
+    var graduation = student.student.graduation === '1' ? '졸업' : '재학중';
+
+    var row = `<tr>
+        <td><input type="checkbox" name="memberid" value="${student.member.memberid}"></td>
+        <td><a href="/admin/ReadOneStudent/${student.member.memberid}">${student.member.memberid}</a></td>
+        <td>${student.member.membername}</td>
+        <td>${student.student.curriculum}</td>
+        <td>${student.jpCategory.jpclassname}</td>
+        <td>${student.itCategory.itclassname}</td>
+        <td>${student.member.birthday}</td>
+        <td>${gender}</td>
+        <td>${student.student.school}</td>
+        <td>${graduation}</td>
+        <td>${student.member.address}</td>
+    </tr>`;
+
+    tbody.append(row);
         });
-
-
+        }
+});
 </script>
 
 </head>
@@ -75,7 +110,7 @@
     <section class="section">
         <div class="card">
             <div class="card-header">
-                회원 목록
+                회원 목록<br>
                 <select id="batchSelection">
                     <option value="" selected>기수 선택</option>
                     <th:block th:each="i: ${#numbers.sequence(1, 100)}">
