@@ -14,4 +14,12 @@ public class PrimaryRatio {
     double ratio;
     String divname;
 
+    //수정용 다른테이블컬럼
+    String testname;
+    
+    //수정을위해 변환
+    public String assignTestNameToCategoryName(String testname) {
+        this.categoryname = this.testname;
+        return testname;
+    }
 }

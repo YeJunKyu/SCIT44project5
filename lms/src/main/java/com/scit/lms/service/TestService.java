@@ -36,4 +36,6 @@ public interface TestService {
 
 
     ArrayList<PrimaryRatio> selectCategory();
+
+    int updateCategory(PrimaryRatio primaryRatio);
 }

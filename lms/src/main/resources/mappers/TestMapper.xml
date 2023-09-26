@@ -65,6 +65,12 @@
         where testid = #{testid}
     </update>
 
+<!--    시험수정 : 카테고리수정-->
+<update id="updateCategory" parameterType="PrimaryRatio">
+    update primary_ratio_category
+    set categoryname = #{categoryname}
+    where category_id = #{category_id}
+</update>
 <!--답안지 등록-->
     <insert id="submitTest" parameterType="TestpaperList">
         <selectKey keyProperty="asnum" resultType="int" order="AFTER">

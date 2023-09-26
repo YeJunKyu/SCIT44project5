@@ -76,4 +76,9 @@ public class TestServiceImpl implements TestService{
     public ArrayList<PrimaryRatio> selectCategory() {
         return dao.selectCategory();
     }
+
+    @Override
+    public int updateCategory(PrimaryRatio primaryRatio) {
+        return dao.updateCategory(primaryRatio);
+    }
 }

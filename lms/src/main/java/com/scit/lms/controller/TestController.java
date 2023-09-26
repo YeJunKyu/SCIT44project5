@@ -225,7 +225,9 @@ public class TestController {
             allOptions.addAll(options);
         }
 //        log.debug("{}", allOptions);
-
+        ArrayList<PrimaryRatio> primaryRatios = testService.selectCategory();
+        log.debug("테스트비중:{}",primaryRatios);
+        model.addAttribute("category",primaryRatios);
         model.addAttribute("test", test);
         model.addAttribute("questions", questions);
         model.addAttribute("options", allOptions);
@@ -238,7 +240,8 @@ public class TestController {
         //시험문제 수정html요청
 
         @PostMapping("updateTestHtml")
-        public String updateTest(@RequestParam("testid") int testid,
+        public String updateTest(@RequestParam("category_id") int category_id,
+                                 @RequestParam("testid") int testid,
                                  @RequestParam("testname") String testname,
                                  @RequestParam("testdate") String testdate,
                                  @RequestParam("testlimit") String testlimit,
@@ -252,10 +255,9 @@ public class TestController {
                                  @RequestParam("content[]") List<String> content,
                                  @RequestParam("value[]") List<String> value,
                                  @RequestParam Map<String, MultipartFile> fileMap,
-                                 @RequestParam Map<String, String> paramMap) throws JsonProcessingException {
-
-
-
+                                 @RequestParam Map<String, String> paramMap) throws JsonProcessingException
+        {
+            log.debug("testname:{},categoryid:{}",testname,category_id);
 
             Set<Integer> checkedOptionIds = new HashSet<>();
 
@@ -268,8 +270,13 @@ public class TestController {
             }
             log.debug("checked :{},checked size:{}",checkedOptionIds,checkedOptionIds.size());
 
-
-
+            //시험종목 수정 (카테고리)
+            PrimaryRatio primaryRatio = new PrimaryRatio();
+            primaryRatio.setCategory_id(category_id);
+            primaryRatio.setCategoryname(primaryRatio.assignTestNameToCategoryName(testname));
+            log.debug("primaryRatio:{}",primaryRatio);
+            testService.updateCategory(primaryRatio);
+            log.debug("카테고리수정:{}",primaryRatio);
             // 문제 배열 추출
             Test test = new Test();
             test.setTestid(testid);

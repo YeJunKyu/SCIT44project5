@@ -38,4 +38,6 @@ public interface TestDAO {
 
 
     ArrayList<PrimaryRatio> selectCategory();
+
+    int updateCategory(PrimaryRatio primaryRatio);
 }

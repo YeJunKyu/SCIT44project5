@@ -103,7 +103,7 @@ create sequence lms_schedule_seq;
 CREATE TABLE primary_ratio_category (
 	category_id	number		NOT NULL,
 	parent_id	number		NULL,
-    categoryname	varchar2(50)		NULL,
+    categoryname	varchar2(500)		NULL,
 	ratio	decimal(5,2)		NULL,
     divname varchar2(100) NULL,
     CONSTRAINT PK_PRIMARY_RATIO_CATEGORY PRIMARY KEY (category_id),
