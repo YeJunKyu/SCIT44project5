@@ -15,21 +15,20 @@
 
     <link rel="stylesheet" th:href="@{/assets/css/shared/iconly.css}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!--    <script th:src="@{/privatejs/sidebarLoader.js}"></script>-->
+    <script th:src="@{/privatejs/sidebarLoader.js}"></script>
 
     <script>
         $(document).ready(function(){
             var authStr = $('#authorities').val();
 
             console.log(authStr);
-            console.log(authStr = 'ROLE_admin');
 
-            if(authStr === 'ROLE_admin'){
+            if(authStr === '[ROLE_admin]'){
                 console.log(true);
                 $('#roleName').text('관리자');
-            }else if(authStr === 'ROLE_student'){
+            }else if(authStr === '[ROLE_student]'){
                 $('#roleName').text('학생');
-            }else if(authStr === 'ROLE_teacher'){
+            }else if(authStr === '[ROLE_teacher]'){
                 $('#roleName').text('선생님');
             }else{
                 $('#roleName').text('권한이 없습니다.');
@@ -40,7 +39,7 @@
 
 <body>
 <div id="app">
-    <div th:replace="~{/fragments/sidebar.html :: sidebarFrag}"></div>
+<!--    <div th:replace="~{/fragments/sidebar.html :: sidebarFrag}"></div>-->
     <div id="sidebar-placeholder"></div>
     <div id="main">
         <header class="mb-3">
@@ -259,6 +258,7 @@
                                     <a th:href="@{/member/information}">
                                         <img src="assets/images/faces/1.jpg" alt="Face 1">
                                     </a>
+
                                 </div>
                                 <div class="ms-3 name" sec:authorize="isAuthenticated()">
                                     <a th:href="@{/member/information}"><h5 class="font-bold" th:text="${#authentication.name}"></h5></a>
