@@ -12,7 +12,21 @@
         <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png" />
         <script th:src="@{/assets/js/jquery-3.6.0.js}"></script>
         <script th:src="@{/privatejs/sidebarLoader.js}"></script>
-        <script th:inline="javascript"></script>
+        <script th:inline="javascript">
+            function download(answernum) {
+                $.ajax({
+                    url : "downloadAnswerfile",
+                    method : "GET",
+                    data: {answernum : answernum},
+                    success: function (data) {
+
+                    },
+                    error: function (e){
+                        console.log(JSON.stringify(e));
+                    }
+                })
+            }
+        </script>
     </head>
     <body>
         <div id="app">
@@ -104,46 +118,46 @@
                                         <!-- 객관식 (q.type == 1) -->
                                         <div th:case="1">
                                             <div th:if="${q.qid == o.qid}" th:each="o :${options}">
-                                                <div class="d-flex justify-content-between mb-1 optionItem">
-                                                    <div>
-                                                        <label class="d-flex align-items-center">
-                                                            <input type="radio" class="form-check-input m-lg-1 optionCount" th:name="|${o.qid}-answer|" th:value="${o.value}" />
-                                                            <span th:text="${o.content}"></span>
-                                                        </label>
-                                                    </div>
+                                                <div class="d-flex justify-content-between mb-1 optionItem" th:each="ta : ${testAnswers}" th:if="${ta.qid == q.qid}">
+                                                    <label class="d-flex align-items-center">
+                                                        <input type="radio" class="form-check-input m-lg-1 optionCount" th:value="${o.value}" th:checked="${o.value == ta.answer}" disabled/>
+                                                        <span th:text="${o.content}"></span>
+                                                    </label>
                                                 </div>
                                             </div>
                                         </div>
                                         <!-- 객관식 복수정답 (q.type == 2) -->
                                         <div th:case="2">
                                             <div th:if="${q.qid == o.qid}" th:each="o :${options}">
-                                                <div class="d-flex justify-content-between mb-1 multiOptionItem">
-                                                    <div>
-                                                        <label class="d-flex align-items-center">
-                                                            <input type="checkbox" class="form-check-input m-lg-1 optionCount" th:name="|${o.qid}-answer|" th:value="${o.value}" />
-                                                            <span th:text="${o.content}"></span>
-                                                        </label>
-                                                    </div>
+                                                <div class="d-flex justify-content-between mb-1 multiOptionItem" th:each="ta : ${testAnswers}" th:if="${ta.qid == q.qid}">
+                                                    <label class="d-flex align-items-center">
+                                                        <input type="checkbox" class="form-check-input m-lg-1 optionCount" th:value="${o.value}" th:checked="${#strings.contains(ta.answer, o.value)}" disabled/>
+                                                        <span th:text="${o.content}"></span>
+                                                    </label>
                                                 </div>
                                             </div>
                                         </div>
                                         <!-- 단답형 (q.type == 3) -->
                                         <div th:case="3">
-                                            <div class="d-flex justify-content-between mb-1">
-                                                <input type="text" class="form-control" th:name="|${q.qid}-answer|"/>
+                                            <div class="d-flex justify-content-between mb-1" th:each="ta : ${testAnswers}" th:if="${ta.qid == q.qid}">
+                                                <span th:text="${ta.answer}"></span>
                                             </div>
                                         </div>
                                         <!-- 서술형 (q.type == 4) -->
                                         <div th:case="4">
-                                            <div class="d-flex justify-content-between mb-1">
-                                                <textarea class="form-control" rows="5" th:name="|${q.qid}-answer|"></textarea>
+                                            <div class="d-flex justify-content-between mb-1" th:each="ta : ${testAnswers}" th:if="${ta.qid == q.qid}">
+                                                <span th:text="${ta.answer}"></span>
                                             </div>
                                         </div>
                                         <!-- 파일 첨부형 (q.type == 5) -->
                                         <div th:case="5">
-                                            <div class="d-flex justify-content-between mb-1">
+                                            <div class="d-flex justify-content-between mb-1" th:each="ta : ${testAnswers}" th:if="${ta.qid == q.qid}">
                                                 <!-- 파일 첨부형식 -->
-                                                <input class="form-control" type="file" th:name="|${q.qid}-answer|" th:id="|${q.qid}-file-input|">
+                                                <a th:if="${ta.originalfile != null}"
+                                                   th:text="${ta.originalfile}"
+                                                   th:href="@{/test/downloadAnswerfile(answernum=${ta.answernum})}"
+                                                   class="btn btn-primary"
+                                                   role="button">[Download Link]</a>
                                             </div>
                                         </div>
                                     </div>
