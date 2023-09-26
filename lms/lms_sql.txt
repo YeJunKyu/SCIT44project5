@@ -133,6 +133,7 @@ create sequence lms_test_seq;
 --문제 테이블
 create table lms_question (
     testid number,
+    category_id number,
     qid number primary key,
     papernum number,
     contents varchar2(1000),
@@ -142,6 +143,8 @@ create table lms_question (
     originalfile varchar2(500),
     savedfile varchar2(500),
 
+    constraint fk_lms_questions2 foreign key (category_id)
+        references primary_ratio_category(category_id) on delete cascade,
     constraint fk_lms_questions foreign key (testid)
         references lms_test(testid)
 );

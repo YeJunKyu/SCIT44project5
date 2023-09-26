@@ -34,17 +34,12 @@ public class AdminController {
 	AdminService service;
 
 
-	
-	@Value("${spring.servlet.multipart.location}")
+
+	// 파일 저장 경로
+	@Value("${notice.servlet.multipart.location}")
 	String uploadPath;
 	
-	//게시판 목록의 페이지당 글 수
-	@Value("${user.board.page}")
-	int countPerPage;
-	
-	//게시판 목록의 페이지 이동 링크 수
-	@Value("${user.board.group}")
-	int pagePerGroup;
+
 
 	@GetMapping("authentication")
 	public String authentication(Model model){
@@ -568,5 +563,12 @@ public class AdminController {
 
 		return "redirect:/admin/ReadStudentAttendance";
 	}
+	
+	// 성적조회및수정
+//	@GetMapping("scoreManager")
+//	public String scoreManager(){
+//
+//		return "adminView/scoreManager";
+//	}
 
 }

@@ -374,5 +374,7 @@ select * from lms_student
         where memberid = #{memberid}
     </update>
 
+<!--    단체성적조회-->
+
 
 </mapper>

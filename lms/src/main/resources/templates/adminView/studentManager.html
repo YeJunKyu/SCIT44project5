@@ -76,6 +76,12 @@
         <div class="card">
             <div class="card-header">
                 회원 목록
+                <select id="batchSelection">
+                    <option value="" selected>기수 선택</option>
+                    <th:block th:each="i: ${#numbers.sequence(1, 100)}">
+                        <option th:value="'SCIT' + ${i} + '기'" th:text="'SCIT' + ${i} + '기'"></option>
+                    </th:block>
+                </select>
             </div>
             <div class="card-body">
 
@@ -148,7 +154,7 @@
 
                         </tbody>
                     </table>
-                    <input type="button" value="공통정보편집">
+
 
 
 
