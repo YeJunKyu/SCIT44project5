@@ -17,10 +17,29 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script th:src="@{/privatejs/sidebarLoader.js}"></script>
 
+    <script>
+        $(document).ready(function(){
+            var authStr = $('#authorities').val();
+
+            console.log(authStr);
+
+            if(authStr === '[ROLE_admin]'){
+                console.log(true);
+                $('#roleName').text('관리자');
+            }else if(authStr === '[ROLE_student]'){
+                $('#roleName').text('학생');
+            }else if(authStr === '[ROLE_teacher]'){
+                $('#roleName').text('선생님');
+            }else{
+                $('#roleName').text('권한이 없습니다.');
+            }
+        });
+    </script>
 </head>
 
 <body>
 <div id="app">
+<!--    <div th:replace="~{/fragments/sidebar.html :: sidebarFrag}"></div>-->
     <div id="sidebar-placeholder"></div>
     <div id="main">
         <header class="mb-3">
@@ -236,11 +255,32 @@
                         <div class="card-body py-4 px-4">
                             <div class="d-flex align-items-center">
                                 <div class="avatar avatar-xl">
-                                    <img src="assets/images/faces/1.jpg" alt="Face 1">
+                                    <a th:href="@{/member/information}">
+                                        <img src="assets/images/faces/1.jpg" alt="Face 1">
+                                    </a>
+
                                 </div>
                                 <div class="ms-3 name" sec:authorize="isAuthenticated()">
                                     <a th:href="@{/member/information}"><h5 class="font-bold" th:text="${#authentication.name}"></h5></a>
-                                    <h6 class="text-muted mb-0">@johnducky</h6>
+                                    <h6 class="text-muted mb-0">
+                                        <a id="roleName"></a>
+<!--                                        &lt;!&ndash; 'ROLE_admin' 권한이 있는 경우 &ndash;&gt;-->
+<!--                                        <span th:if="${#authentication.authorities.contains('ROLE_admin') or #authentication.authorities.contains('admin')}" th:text="'관리자'"> @johnducky</span>-->
+
+<!--                                        &lt;!&ndash; 'ROLE_student' 권한이 있는 경우 &ndash;&gt;-->
+<!--                                        <span th:if="${#authentication.authorities.contains('ROLE_student') or #authentication.authorities.contains('student')}" th:text="'학생'"> @johnducky</span>-->
+
+<!--                                        &lt;!&ndash; 'ROLE_teacher' 권한이 있는 경우 &ndash;&gt;-->
+<!--                                        <span th:if="${#authentication.authorities.contains('ROLE_teacher') or #authentication.authorities.contains('teacher')}" th:text="'선생님'"> @johnducky</span>-->
+
+<!--                                        &lt;!&ndash; 다른 권한에 속할 경우 &ndash;&gt;-->
+<!--                                        <span th:unless="${#authentication.authorities.contains('ROLE_admin') or #authentication.authorities.contains('admin')-->
+<!--                                            or #authentication.authorities.contains('ROLE_teacher') or #authentication.authorities.contains('teacher')-->
+<!--                                            or #authentication.authorities.contains('ROLE_student') or #authentication.authorities.contains('student')}" th:text="'권한이 없습니다.'"> @johnducky</span>-->
+                                    </h6>
+
+                                    <input type="hidden" id="authorities" th:value="${#authentication.authorities}">
+
                                     <h6 class="text-muted mb-0"><a th:href="@{/member/logout}">로그아웃</a></h6>
                                 </div>
                             </div>

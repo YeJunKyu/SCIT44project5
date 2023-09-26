@@ -4,7 +4,7 @@
 
 <mapper namespace="com.scit.lms.dao.TestDAO">
     <!--시험 목록 조회-->
-    <select id="testList" resultType="Test">
+    <select id="testListAll" resultType="Test">
         select
             testid
             , testname
@@ -75,5 +75,42 @@
         )
     </insert>
 
+    <!--시험 하나의 제출된 답변들 목록으로 이동-->
+    <select id="testList" parameterType="int" resultType="TestpaperList">
+        SELECT
+            asnum
+            , testid
+            , memberid
+            , totalscore
+            , (SELECT membername FROM lms_member m WHERE t.memberid = m.memberid) membername
+        FROM lms_testpaper_list t
+        WHERE
+            testid = #{testid}
+    </select>
 
+    <!--testid 가져오기-->
+    <select id="getTestid" parameterType="int" resultType="int">
+        SELECT
+            testid
+        FROM lms_testpaper_list
+        WHERE
+            asnum = #{asnum}
+    </select>
+
+    <!--제출된 답변 총점 계산-->
+    <update id="updateTotalpoints" parameterType="int">
+        UPDATE
+            lms_testpaper_list
+        SET
+            totalscore = (
+            SELECT
+                SUM(points)
+            FROM
+                lms_test_answer
+            WHERE
+                asnum = #{asnum}
+            )
+        WHERE
+            asnum = #{asnum}
+    </update>
 </mapper>

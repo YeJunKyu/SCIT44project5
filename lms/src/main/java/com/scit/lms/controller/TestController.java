@@ -36,7 +36,7 @@ public class TestController {
     // 시험 페이지 이동
     @GetMapping("")
     public String test(Model model) {
-        ArrayList<Test> test = testService.testList();
+        ArrayList<Test> test = testService.testListAll();
         model.addAttribute("test", test);
 
         return "boardView/test/test";
@@ -409,7 +409,7 @@ public class TestController {
     }
 
 
-    //시험문제 제출(학생)
+    //시험문제 제출(학생) 및 자동채점
     @ResponseBody
     @PostMapping("submitTest")
     public String submitTest(
@@ -417,7 +417,7 @@ public class TestController {
             @RequestParam("testid") String testid,
             @RequestParam("answerArray") String answerArray,
             @RequestParam Map<String, MultipartFile> fileMap
-    ) {
+    ) throws JsonProcessingException {
 
         log.debug("테스트 : {}", testid);
         log.debug("어레이 : {}", answerArray);
@@ -426,42 +426,93 @@ public class TestController {
         TestpaperList testpaperList = new TestpaperList();
         testpaperList.setMemberid(user.getUsername());
         testpaperList.setTestid(Integer.parseInt(testid));
-        int asnum = testService.submitTest(testpaperList); // 답안지 고유번호 반환
+        testService.submitTest(testpaperList); // 답안지 고유번호 반환
+        int asnum = testpaperList.getAsnum();
+        log.debug("앤서넘버가져오기 : {}", asnum);
 
 
         ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            AnswerObject[] answerObjects = objectMapper.readValue(answerArray, AnswerObject[].class);
-            for (AnswerObject answerObject : answerObjects) {
-                log.debug("파일 확인: {}", answerObject);
-                TestAnswer testAnswer = new TestAnswer();
-                testAnswer.setAsnum(asnum);
-                testAnswer.setQid(answerObject.getQid());
+        AnswerObject[] answerObjects = objectMapper.readValue(answerArray, AnswerObject[].class);
+        for (AnswerObject answerObject : answerObjects) {
+            log.debug("파일 확인: {}", answerObject);
+            TestAnswer testAnswer = new TestAnswer();
+            testAnswer.setAsnum(asnum);
+            testAnswer.setQid(answerObject.getQid());
 
-                String answer = String.join(",", answerObject.getAnswer());
-                log.debug("정답 {}", answer);
-                testAnswer.setAnswer(answer);
+            String answer = String.join(",", answerObject.getAnswer());
+            log.debug("정답 {}", answer);
+            testAnswer.setAnswer(answer);
 
-                MultipartFile currentFile = fileMap.get("file[" + answerObject.getQid() + "]");
+            MultipartFile currentFile = fileMap.get("file[" + answerObject.getQid() + "]");
 
-                if (currentFile != null && !currentFile.isEmpty()) {
-                    String savedfile = FileService.saveFile(currentFile, uploadPath);
-                    log.debug("현파일:{}", currentFile.getOriginalFilename());
-                    testAnswer.setOriginalfile(currentFile.getOriginalFilename());
-                    testAnswer.setSavedfile(savedfile);
-                } else {
-                    log.debug("현파일 없음");
-                }
-
-                log.debug("앤서 : {}", testAnswer);
-                questionService.submitQuestion(testAnswer);
-
+            if (currentFile != null && !currentFile.isEmpty()) {
+                String savedfile = FileService.saveFile(currentFile, uploadPath);
+                log.debug("현파일:{}", currentFile.getOriginalFilename());
+                testAnswer.setOriginalfile(currentFile.getOriginalFilename());
+                testAnswer.setSavedfile(savedfile);
+            } else {
+                log.debug("현파일 없음");
             }
 
-        } catch (Exception e) {
-            log.error("역직렬화 오류 발생: {}", e.getMessage(), e);
+            log.debug("앤서 : {}", testAnswer);
+            questionService.submitQuestion(testAnswer);
+
+            Question question = questionService.getQuestionByQid(testAnswer.getQid());
+            if (question.getType() == 1 || question.getType() == 2 || question.getType() == 3) {
+                if (question.getAnswer().equals(answer)) {
+                    TestAnswer updateAnswer = new TestAnswer();
+                    updateAnswer.setAsnum(asnum);
+                    log.debug("앤서넘버 : {}", asnum);
+                    updateAnswer.setQid((int) question.getQid());
+                    updateAnswer.setPoints(question.getPoints());
+
+                    questionService.updatePoints(updateAnswer);
+                }
+            }
+
+            testService.updateTotalpoints(asnum);
+
         }
 
         return "";
+    }
+
+    //시험 하나의 제출된 답변들 목록으로 이동
+    @GetMapping("testList")
+    public String testList(@RequestParam("testid") int testid, Model model) {
+        List<TestpaperList> test = testService.testList(testid);
+
+        log.debug("testLists : {}", test);
+        model.addAttribute("test", test);
+        return "boardView/test/testList";
+    }
+
+    // 제출된 학생의 시험지 보기
+    @GetMapping("submittedAnswer")
+    public String submittedAnswer(@RequestParam("asnum") int asnum, Model model) {
+        int testid = testService.getTestid(asnum);
+        // 시험 정보
+        Test test = testService.selectTest(testid);
+
+        // 시험의 문제
+        ArrayList<Question> questions = questionService.selectQuestions(testid);
+
+        // 객관식 유형 문제의 보기 가져오기
+        ArrayList<Option> allOptions = new ArrayList<>();
+        for (Question q : questions) {
+            ArrayList<Option> options = questionService.selectOptions(q.getQid());
+            allOptions.addAll(options);
+        }
+
+//        log.debug("{}", allOptions);
+
+        // 선택한 답 가져오기
+        ArrayList<TestAnswer> testAnswers = questionService.getAllTestAnswers(asnum);
+
+        model.addAttribute("test", test);
+        model.addAttribute("questions", questions);
+        model.addAttribute("options", allOptions);
+        model.addAttribute("testAnswers", testAnswers);
+        return "boardView/test/submittedAnswer";
     }
 }

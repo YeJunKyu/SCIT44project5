@@ -87,11 +87,10 @@
             <h1>회원정보</h1>
         </div>
 
-        <div style="" th:if="${photoName != null}">
-            <img th:src="@{|/memberUpload/${photoName}|}"  style="width: 206px; height: 260px;" alt="User Photo"/>
-        </div>
-        <input class="btn btn-primary me-1 mb-1" type="button" onclick="openInsertPhotoPopup()" value="사진선택">
-<!--        <a class="btn btn-primary me-1 mb-1" th:href="@{/member/insertPhoto}"> 사진선택 </a>-->
+<section class="row">
+
+
+
         <div class="col-md-6 col-12">
             <div class="card">
 
@@ -200,6 +199,16 @@
                 </div>
             </div>
         </div>
+
+        <div class="col-12 col-lg-3">
+
+            <div style="" th:if="${photoName != null}">
+                <img th:src="@{|/memberUpload/${photoName}|}"  style="width: 206px; height: 260px;" alt="User Photo"/>
+            </div>
+            <input class="btn btn-primary me-1 mb-1" type="button" onclick="openInsertPhotoPopup()" value="사진선택">
+            <!--        <a class="btn btn-primary me-1 mb-1" th:href="@{/member/insertPhoto}"> 사진선택 </a>-->
+        </div>
+</section>
 
 
 

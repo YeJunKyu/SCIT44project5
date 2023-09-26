@@ -178,4 +178,29 @@
         from lms_q_options
         where qid = #{qid}
     </select>
+
+    
+    <select id="getQuestionByQid" resultType="Question">
+        SELECT *
+        FROM lms_question
+        WHERE
+            qid = #{qid}
+    </select>
+
+    <update id="updatePoints" parameterType="TestAnswer">
+        UPDATE lms_test_answer
+        SET
+            points = #{points}
+        WHERE
+            asnum = #{asnum}
+            AND qid = #{qid}
+    </update>
+
+    <!--선택한 답 가져오기-->
+    <select id="getAllTestAnswers" parameterType="int" resultType="TestAnswer">
+        SELECT *
+        FROM lms_test_answer
+        WHERE
+            asnum = #{asnum}
+    </select>
 </mapper>

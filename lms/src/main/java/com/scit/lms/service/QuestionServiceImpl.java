@@ -81,6 +81,7 @@ public class QuestionServiceImpl implements QuestionService{
         dao.submitQuestion(testAnswer);
     }
 
+<<<<<<< HEAD
     @Override
     public int countQuestion(int testid) {
         return dao.countQuestion(testid);
@@ -94,6 +95,24 @@ public class QuestionServiceImpl implements QuestionService{
     @Override
     public int countQidOption(Long aLong) {
         return dao.countQidOption(aLong);
+=======
+    // 채점을 위한 문제 가져오기
+    @Override
+    public Question getQuestionByQid(int qid) {
+        return dao.getQuestionByQid(qid);
+    }
+
+    // 점수 업데이트
+    @Override
+    public void updatePoints(TestAnswer updateAnswer) {
+        dao.updatePoints(updateAnswer);
+    }
+
+    // 선택한 답 가져오기
+    @Override
+    public ArrayList<TestAnswer> getAllTestAnswers(int asnum) {
+        return dao.getAllTestAnswers(asnum);
+>>>>>>> b9a5c1f891985e17bc28148e3cb3aca34ebb400f
     }
 
 
