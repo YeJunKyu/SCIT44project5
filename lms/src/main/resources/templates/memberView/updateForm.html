@@ -24,6 +24,8 @@
 
 
     <script>
+        console.log(${user.gender});
+
 <!--        $(document).ready(function(){-->
 <!--            let birth = $("#birthday").val();                               // 50번째 줄 히든에 user.birthday 를 밸류로 가져옴-->
 
@@ -81,114 +83,114 @@
 <!--        	});-->
 <!--        }-->
 
-    function nameCheck() {
-        var name = document.getElementById('membername').value;
-        var namePattern = /^[A-Za-z가-힣]+$/; // 이름에 대한 정규식 패턴
+function nameCheck() {
+    var name = document.getElementById('membername').value;
+    var namePattern = /^[A-Za-z가-힣]+$/; // 이름에 대한 정규식 패턴
 
-        if (namePattern.test(name)) {
-            // 이름이 조건에 맞을 경우
-            $("#membername").removeClass("form-control is-invalid").addClass("form-control is-valid");
+    if (namePattern.test(name)) {
+        // 이름이 조건에 맞을 경우
+        $("#membername").removeClass("form-control is-invalid").addClass("form-control is-valid");
 
-            document.getElementById("nameAlert").textContent = ""; // 경고 메시지 초기화
-            // 여기에서 다른 작업을 수행하거나, 이름이 유효할 때의 처리를 추가할 수 있습니다.
-        } else {
-            // 이름이 조건에 맞지 않을 경우
-            $("#membername").removeClass("form-control is-valid").addClass("form-control is-invalid");
+        document.getElementById("nameAlert").textContent = ""; // 경고 메시지 초기화
+        // 여기에서 다른 작업을 수행하거나, 이름이 유효할 때의 처리를 추가할 수 있습니다.
+    } else {
+        // 이름이 조건에 맞지 않을 경우
+        $("#membername").removeClass("form-control is-valid").addClass("form-control is-invalid");
 
-            document.getElementById("nameAlert").textContent = "한글, 영문 대/소문자를 사용해 주세요. (특수기호, 공백 사용 불가)";
-            // 이외의 처리를 추가할 수 있습니다.
-        }
+        document.getElementById("nameAlert").textContent = "한글, 영문 대/소문자를 사용해 주세요. (특수기호, 공백 사용 불가)";
+        // 이외의 처리를 추가할 수 있습니다.
     }
-    function phoneCheck(){
-        var inputPhone = document.getElementById('phone');
-        var phonePattern = /^(010|011)\d{3,4}\d{4}$/;
+}
+function phoneCheck(){
+    var inputPhone = document.getElementById('phone');
+    var phonePattern = /^(010|011)\d{3,4}\d{4}$/;
 
-        if (phonePattern.test(inputPhone.value)) {
-            $("#phone").removeClass("form-control is-invalid").addClass("form-control is-valid");
-            document.getElementById("phoneAlert").textContent = ""; // 경고 메시지 초기화
+    if (phonePattern.test(inputPhone.value)) {
+        $("#phone").removeClass("form-control is-invalid").addClass("form-control is-valid");
+        document.getElementById("phoneAlert").textContent = ""; // 경고 메시지 초기화
 
-            inputPhone.value = inputPhone.value.replace(/(\d{3})(\d{3,4})(\d{4})/, "$1-$2-$3");
+        inputPhone.value = inputPhone.value.replace(/(\d{3})(\d{3,4})(\d{4})/, "$1-$2-$3");
 
 
-            return true;
-        } else {
-            $("#phone").removeClass("form-control is-valid").addClass("form-control is-invalid");
+        return true;
+    } else {
+        $("#phone").removeClass("form-control is-valid").addClass("form-control is-invalid");
 
-            document.getElementById("phoneAlert").textContent = "다시 확인해주세요.";
-            return false;
-        }
+        document.getElementById("phoneAlert").textContent = "다시 확인해주세요.";
+        return false;
     }
+}
 
-    function emailCheck(){
-        var email = document.getElementById('email').value;
-        var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+function emailCheck(){
+    var email = document.getElementById('email').value;
+    var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-        if (emailPattern.test(email)) {
-            $("#email").removeClass("form-control is-invalid").addClass("form-control is-valid");
+    if (emailPattern.test(email)) {
+        $("#email").removeClass("form-control is-invalid").addClass("form-control is-valid");
 
-            document.getElementById("emailAlert").textContent = ""; // 경고 메시지 초기화
+        document.getElementById("emailAlert").textContent = ""; // 경고 메시지 초기화
 
-            return true;
-        } else {
-            $("#email").removeClass("form-control is-valid").addClass("form-control is-invalid");
+        return true;
+    } else {
+        $("#email").removeClass("form-control is-valid").addClass("form-control is-invalid");
 
-            document.getElementById("emailAlert").textContent = "이메일 형식에 맞게 써주세요.";
-            return false;
-        }
+        document.getElementById("emailAlert").textContent = "이메일 형식에 맞게 써주세요.";
+        return false;
     }
+}
 
-    function execDaumPostcode() {
-        new daum.Postcode({
-            oncomplete: function(data) {
-                // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+function execDaumPostcode() {
+    new daum.Postcode({
+        oncomplete: function(data) {
+            // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
 
-                // 각 주소의 노출 규칙에 따라 주소를 조합한다.
-                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
-                var addr = ''; // 주소 변수
-                var extraAddr = ''; // 참고항목 변수
+            // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+            // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+            var addr = ''; // 주소 변수
+            var extraAddr = ''; // 참고항목 변수
 
-                //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
-                if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
-                    addr = data.roadAddress;
-                } else { // 사용자가 지번 주소를 선택했을 경우(J)
-                    addr = data.jibunAddress;
-                }
-
-                // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
-                if(data.userSelectedType === 'R'){
-                    // 법정동명이 있을 경우 추가한다. (법정리는 제외)
-                    // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
-                    if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
-                        extraAddr += data.bname;
-                    }
-                    // 건물명이 있고, 공동주택일 경우 추가한다.
-                    if(data.buildingName !== '' && data.apartment === 'Y'){
-                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
-                    }
-                    // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
-                    if(extraAddr !== ''){
-                        extraAddr = ' (' + extraAddr + ')';
-                    }
-                    // 조합된 참고항목을 해당 필드에 넣는다.
-                    document.getElementById("extraAddress").value = extraAddr;
-
-                    $("#changeAddress").css("display", "block");
-                    $("#address").css("display", "none");
-                    $("#address-btn").css("display", "none");
-
-
-                } else {
-                    document.getElementById("extraAddress").value = '';
-                }
-
-                // 우편번호와 주소 정보를 해당 필드에 넣는다.
-                document.getElementById('postcode').value = data.zonecode;
-                document.getElementById("inputAddress").value = addr;
-                // 커서를 상세주소 필드로 이동한다.
-                document.getElementById("detailAddress").focus();
+            //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+            if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                addr = data.roadAddress;
+            } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                addr = data.jibunAddress;
             }
-        }).open();
-    }
+
+            // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+            if(data.userSelectedType === 'R'){
+                // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                    extraAddr += data.bname;
+                }
+                // 건물명이 있고, 공동주택일 경우 추가한다.
+                if(data.buildingName !== '' && data.apartment === 'Y'){
+                    extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                }
+                // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                if(extraAddr !== ''){
+                    extraAddr = ' (' + extraAddr + ')';
+                }
+                // 조합된 참고항목을 해당 필드에 넣는다.
+                document.getElementById("extraAddress").value = extraAddr;
+
+                $("#changeAddress").css("display", "block");
+                $("#address").css("display", "none");
+                $("#address-btn").css("display", "none");
+
+
+            } else {
+                document.getElementById("extraAddress").value = '';
+            }
+
+            // 우편번호와 주소 정보를 해당 필드에 넣는다.
+            document.getElementById('postcode').value = data.zonecode;
+            document.getElementById("inputAddress").value = addr;
+            // 커서를 상세주소 필드로 이동한다.
+            document.getElementById("detailAddress").focus();
+        }
+    }).open();
+}
 
 
 
@@ -272,8 +274,8 @@
                                             <div class="position-relative">
                                                 <fieldset class="form-group">
                                                     <select class="form-select" id="gender" name="gender" required>
-                                                        <option value="male" th:selected="${user.gender == '남자'}">남자</option>
-                                                        <option value="female" th:selected="${user.gender == '여자'}">여자</option>
+                                                        <option value="male" th:selected="${user.gender == '남성'}">남성</option>
+                                                        <option value="female" th:selected="${user.gender == '여성'}">여성</option>
                                                     </select>
                                                 </fieldset>
 
