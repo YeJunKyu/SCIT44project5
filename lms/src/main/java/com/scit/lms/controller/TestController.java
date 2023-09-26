@@ -477,11 +477,42 @@ public class TestController {
 
         // 선택한 답 가져오기
         ArrayList<TestAnswer> testAnswers = questionService.getAllTestAnswers(asnum);
+//        log.debug("테스트 배열 : {}", testAnswers);
+
 
         model.addAttribute("test", test);
         model.addAttribute("questions", questions);
         model.addAttribute("options", allOptions);
         model.addAttribute("testAnswers", testAnswers);
         return "boardView/test/submittedAnswer";
+    }
+
+    // 제출된 시험지 첨부파일 다운로드
+    @GetMapping("downloadAnswerfile")
+    public void downloadAnswerfile(int answernum, HttpServletRequest request, HttpServletResponse response){
+        log.debug("{}",request.getRemoteAddr());//다운요청보낸ip문자열
+
+        TestAnswer testAnswer = questionService.selectOneAnswer(answernum);
+
+        String fullPath = uploadPath + "/" + testAnswer.getSavedfile();
+
+        try {
+            response.setHeader("Content-Disposition", " attachment;filename="+ URLEncoder.encode(testAnswer.getOriginalfile(), "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            FileInputStream in = new FileInputStream(fullPath);
+            ServletOutputStream out = response.getOutputStream();
+
+            FileCopyUtils.copy(in, out);
+
+            in.close();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }

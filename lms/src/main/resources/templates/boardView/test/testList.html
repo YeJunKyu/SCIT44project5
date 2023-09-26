@@ -63,7 +63,6 @@
                                                         <th class="col-5">제출자</th>
                                                         <th>점수</th>
                                                         <th>확인여부</th>
-                                                        <th>제출인원/전체인원</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody th:each="test : ${test}">
@@ -75,15 +74,6 @@
                                                         </td>
                                                         <td class="text-bold-500" th:text="${test.totalscore}">0</td>
                                                         <td class="text-bold-500"></td>
-                                                        <td>
-                                                            <a href="#"><i class="badge-circle badge-circle-light-secondary font-medium-1" data-feather="mail"></i></a>
-                                                        </td>
-                                                        <td th:if="${#authorization.expression('hasRole(''ROLE_teacher'')') || #authorization.expression('hasRole(''ROLE_admin'')')}">
-                                                            <a th:href="@{/test/updateTest(testid=${test.testid})}" onclick="return confirm('수정하시겠습니까?');">수정</a>
-                                                        </td>
-                                                        <td th:if="${#authorization.expression('hasRole(''ROLE_teacher'')') || #authorization.expression('hasRole(''ROLE_admin'')')}">
-                                                            <a th:href="@{/test/deleteTest(testid=${test.testid})}" onclick="return confirm('삭제하시겠습니까?');">삭제</a>
-                                                        </td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -95,19 +85,6 @@
                     </section>
                     <!-- Hoverable rows end -->
                 </div>
-
-                <footer>
-                    <div class="footer clearfix mb-0 text-muted">
-                        <div class="float-start">
-                            <p>2021 &copy; Mazer</p>
-                        </div>
-                        <div class="float-end">
-                            <p>
-                                Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by <a href="https://saugi.me">Saugi</a>
-                            </p>
-                        </div>
-                    </div>
-                </footer>
             </div>
         </div>
         <script src="assets/js/bootstrap.js"></script>

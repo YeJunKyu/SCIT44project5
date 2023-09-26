@@ -113,5 +113,17 @@ public class QuestionServiceImpl implements QuestionService{
         return dao.getAllTestAnswers(asnum);
     }
 
+    // 문제 타입 가져오기
+    @Override
+    public int getQuestionType(int qid) {
+        return dao.getQuestionType(qid);
+    }
+
+    // 제출된 시험지 문제 하나 선택
+    @Override
+    public TestAnswer selectOneAnswer(int answernum) {
+        return dao.selectOneAnswer(answernum);
+    }
+
 
 }

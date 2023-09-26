@@ -203,4 +203,20 @@
         WHERE
             asnum = #{asnum}
     </select>
+
+    <!--문제 타입 가져오기-->
+    <select id="getQuestionType" resultType="int">
+        SELECT type
+        FROM lms_question
+        WHERE
+            qid = #{qid}
+    </select>
+
+    <!--제출된 시험지 문제 하나 선택-->
+    <select id="selectOneAnswer" resultType="TestAnswer">
+        SELECT *
+        FROM lms_test_answer
+        WHERE
+            answernum = #{answernum}
+    </select>
 </mapper>

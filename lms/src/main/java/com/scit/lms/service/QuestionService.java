@@ -50,4 +50,10 @@ public interface QuestionService {
 
     // 선택한 답 가져오기
     ArrayList<TestAnswer> getAllTestAnswers(int asnum);
+
+    // 문제 타입 가져오기
+    int getQuestionType(int qid);
+
+    // 제출된 시험지 문제 하나 선택
+    TestAnswer selectOneAnswer(int answernum);
 }
