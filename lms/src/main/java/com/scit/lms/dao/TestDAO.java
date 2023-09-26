@@ -1,5 +1,6 @@
 package com.scit.lms.dao;
 
+import com.scit.lms.domain.PrimaryRatio;
 import com.scit.lms.domain.Test;
 import com.scit.lms.domain.TestpaperList;
 import org.apache.ibatis.annotations.Mapper;
@@ -36,4 +37,5 @@ public interface TestDAO {
     void updateTotalpoints(int asnum);
 
 
+    ArrayList<PrimaryRatio> selectCategory();
 }

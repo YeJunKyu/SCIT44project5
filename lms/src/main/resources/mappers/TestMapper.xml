@@ -20,16 +20,22 @@
             SELECT lms_test_seq.CURRVAL FROM DUAL
         </selectKey>
         insert into lms_test (
-            testid, testname, testdate, testlimit, totalpoints
+            testid, testname,categoryid, testdate, testlimit, totalpoints
         ) values (
             lms_test_seq.nextval
             , #{testname}
+            , #{categoryid}
             , to_date(#{testdate}, 'YYYY-MM-DD HH24:MI')
             , to_date(#{testlimit}, 'YYYY-MM-DD HH24:MI')
             , #{totalpoints}
         )
     </insert>
 
+<!--    비중조회-->
+<select id="selectCategory" resultType="PrimaryRatio">
+    select * from
+    primary_ratio_category
+</select>
     <!--시험 정보 조회-->
     <select id="selectTest" parameterType="int" resultType="Test">
         SELECT

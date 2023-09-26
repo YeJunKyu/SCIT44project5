@@ -259,7 +259,13 @@
         }
 
 
+        function updateInput() {
+        // 선택된 <option>의 텍스트 값을 가져옵니다.
+        var selectedText = document.getElementById('categoryid').options[document.getElementById('categoryid').selectedIndex].text;
 
+        // 해당 텍스트 값을 <input> 요소의 value에 설정합니다.
+        document.getElementById('testname').value = selectedText;
+        }
 
 
     </script>
@@ -300,11 +306,11 @@
                                 <div class="col-md-8">
                                     <h4 class="card-title">시험명</h4>
                                     <div class="form-group input-group-lg">
-                                        <select name="categoryid">
+                                        <select id="categoryid" onchange="updateInput()">
 
                                             <option th:each="category : ${category}" th:value="${category.category_id}" th:text="${category.categoryname}"></option>
                                         </select>
-                                        <input type="text" class="form-control" id="testname"/>
+                                        <input type="text" class="form-control" id="testname" readonly/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -350,6 +356,7 @@
         function submitForm() {
             console.log("submitForm() 함수가 호출되었습니다.");
             // 시험 정보 부분
+            let categoryid = document.getElementById("categoryid").value;
             let testname = document.getElementById("testname").value;
             let testdate = document.getElementById("testdate").value;
             let testlimit = document.getElementById("testlimit").value;
@@ -438,6 +445,7 @@
             });
 
             let requestData = {
+                categoryid: categoryid,
                 testname: testname,
                 testdate: testdate,
                 testlimit: testlimit,
@@ -446,6 +454,7 @@
             };
 
             // questionDataArray를 formData에 추가
+            formData.append("categoryid", categoryid);
             formData.append("testname", testname);
             formData.append("testdate", testdate);
             formData.append("testlimit", testlimit);

@@ -52,13 +52,17 @@ public class TestController {
 
     // 시험 문제 생성
     @GetMapping("create")
-    public String createTestForm() {
+    public String createTestForm(Model model)
+    {   log.debug("createTest:{}","okay");
+        ArrayList<PrimaryRatio> primaryRatios = testService.selectCategory();
+        log.debug("테스트비중:{}",primaryRatios);
+        model.addAttribute("category",primaryRatios);
         return "boardView/test/createTest";
     }
 
     // 시험 문제 등록
     @PostMapping("insertTest")
-    public String insertTest(
+    public String insertTest(@RequestParam("categoryid") int categoryid,
             @RequestParam("totalpoints") int totalpoints,
             @RequestParam("testname") String testname,
             @RequestParam("testdate") String testdate,
@@ -74,6 +78,7 @@ public class TestController {
         // 시험 등록
 
         Test test = new Test();
+        test.setCategoryid(categoryid);
         test.setTestname(testname);
         test.setTestdate(testdate.replace("T", " "));
         test.setTestlimit(testlimit.replace("T", " "));

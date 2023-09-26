@@ -1,5 +1,6 @@
 package com.scit.lms.service;
 
+import com.scit.lms.domain.PrimaryRatio;
 import com.scit.lms.domain.Test;
 import com.scit.lms.domain.TestpaperList;
 
@@ -34,4 +35,5 @@ public interface TestService {
     void updateTotalpoints(int asnum);
 
 
+    ArrayList<PrimaryRatio> selectCategory();
 }

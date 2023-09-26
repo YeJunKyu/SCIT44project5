@@ -1,6 +1,7 @@
 package com.scit.lms.service;
 
 import com.scit.lms.dao.TestDAO;
+import com.scit.lms.domain.PrimaryRatio;
 import com.scit.lms.domain.Test;
 import com.scit.lms.domain.TestpaperList;
 import lombok.extern.slf4j.Slf4j;
@@ -69,5 +70,10 @@ public class TestServiceImpl implements TestService{
     @Override
     public void updateTotalpoints(int asnum) {
         dao.updateTotalpoints(asnum);
+    }
+
+    @Override
+    public ArrayList<PrimaryRatio> selectCategory() {
+        return dao.selectCategory();
     }
 }
