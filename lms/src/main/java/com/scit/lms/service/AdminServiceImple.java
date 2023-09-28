@@ -1,6 +1,7 @@
 package com.scit.lms.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.scit.lms.dao.AdminDAO;
 import com.scit.lms.domain.*;
@@ -25,8 +26,8 @@ public class AdminServiceImple implements AdminService {
 	}
 
 	@Override
-	public ArrayList<StudentsAll> selectAllAttendance() {
-		return dao.selectAllAttendance();
+	public ArrayList<StudentsAll> selectAllAttendance(String att_date) {
+		return dao.selectAllAttendance(att_date);
 	}
 
 	@Override
@@ -207,6 +208,20 @@ public class AdminServiceImple implements AdminService {
 	@Override
 	public ArrayList<StudentsAll> getStudentsByBatch(String curriculum) {
 		return dao.getStudentsByBatch(curriculum);
+	}
+
+	@Override
+	public ArrayList<StudentsAll> selectAllAttendanceDate(String selectedDate) {
+		return dao.selectAllAttendanceDate(selectedDate);
+	}
+
+	@Override
+	public Attendance findAttendanceByMemberIdAndDate(String memberid, String att_date) {
+		HashMap<String ,String> attendanceMap = new HashMap<>();
+		attendanceMap.put("memberid",memberid);
+		attendanceMap.put("att_date",att_date);
+
+		return dao.findAttendanceByMemberIdAndDate(attendanceMap);
 	}
 
 

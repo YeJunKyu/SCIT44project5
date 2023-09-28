@@ -1,6 +1,7 @@
 package com.scit.lms.dao;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.scit.lms.domain.*;
 import org.apache.ibatis.annotations.Mapper;
@@ -53,7 +54,7 @@ public interface AdminDAO {
 
     void InsertStudentAttendance(Attendance attendances);
 
-    ArrayList<StudentsAll> selectAllAttendance();
+    ArrayList<StudentsAll> selectAllAttendance(String att_date);
 
     ArrayList<StudentsAll> ReadStudentAttendance();
 
@@ -88,4 +89,9 @@ public interface AdminDAO {
     StudentInfo selectOneStudentInfo(String memberid);
 
     ArrayList<StudentsAll> getStudentsByBatch(String curriculum);
+
+    ArrayList<StudentsAll> selectAllAttendanceDate(String selectedDate);
+
+
+    Attendance findAttendanceByMemberIdAndDate(HashMap<String, String> attendanceMap);
 }

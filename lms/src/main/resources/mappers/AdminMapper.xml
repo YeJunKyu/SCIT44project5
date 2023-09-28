@@ -334,16 +334,50 @@ select * from lms_student
 
     <!-- 출결등록폼조회 -->
     <select id="selectAllAttendance" resultType="StudentsAll">
-        select
-        m.memberid as "member.memberid",
-        m.membername as "member.membername", <!-- 이 부분이 잘못되어 있었으므로 수정합니다. -->
-        m.gender as "member.gender",
-        m.rolename as "member.rolename",
-        m.enabled as "member.enabled",
-        a.att_type as "attendance.att_type" <!-- 필드명을 "att.att_type"에서 "attendance.att_type"으로 변경하였습니다. StudentsAll 클래스에 맞게 -->
-        from lms_member m
-        left join attendance a on m.memberid = a.memberid
-        where a.att_type is null
+        SELECT
+        m.memberid AS "member.memberid",
+        m.membername AS "member.membername",
+        m.gender AS "member.gender",
+        m.rolename AS "member.rolename",
+        m.enabled AS "member.enabled",
+        MAX(a.att_type) AS "attendance.att_type",
+        TO_CHAR(MAX(a.att_date), 'YYYY-MM-DD') AS "attendance.att_date"
+        FROM lms_member m
+        LEFT JOIN attendance a ON m.memberid = a.memberid
+        where m.rolename = 'ROLE_student'
+        GROUP BY
+        m.memberid,
+        m.membername,
+        m.gender,
+        m.rolename,
+        m.enabled
+    </select>
+
+<!--    출결등록폼 날짜별조회-->
+    <select id="selectAllAttendanceDate">
+        SELECT
+        m.memberid AS "member.memberid",
+        m.membername AS "member.membername",
+        m.gender AS "member.gender",
+        m.rolename AS "member.rolename",
+        m.enabled AS "member.enabled",
+        a.att_type AS "attendance.att_type",
+        TO_CHAR(a.att_date, 'YYYY-MM-DD') AS "attendance.att_date"
+        FROM
+        lms_member m
+        LEFT JOIN
+        attendance a ON m.memberid = a.memberid AND TO_CHAR(a.att_date, 'YYYY-MM-DD') = #{selectedDate}
+        WHERE
+        m.rolename = 'ROLE_student'
+    </select>
+
+
+
+<!--    출결등록 중복데이터조회-->
+    <select id="findAttendanceByMemberIdAndDate" parameterType="hashmap"
+            resultType="Attendance">
+        select * from
+        attendance where memberid = #{memberid} and att_date = #{att_date}
     </select>
 
 <!--    출결등록다중인설트-->

@@ -10,7 +10,7 @@ public interface AdminService {
 
     ArrayList<Member> selectAll();
 
-    ArrayList<StudentsAll> selectAllAttendance();
+    ArrayList<StudentsAll> selectAllAttendance(String att_date);
 
     void update(Member member);
 
@@ -83,4 +83,8 @@ public interface AdminService {
     StudentInfo selectOneStudentInfo(String memberid);
 
     ArrayList<StudentsAll> getStudentsByBatch(String curriculum);
+
+    ArrayList<StudentsAll> selectAllAttendanceDate(String selectedDate);
+
+    Attendance findAttendanceByMemberIdAndDate(String memberid, String att_date);
 }

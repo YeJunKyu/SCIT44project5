@@ -3,6 +3,8 @@ package com.scit.lms.controller;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -472,13 +474,25 @@ public class AdminController {
 
 	//출결 등록 폼
 	@GetMapping("InsertStudentAttendance")
-	public String InsertStudentAttendance(Model model){
+	public String InsertStudentAttendance(@RequestParam String att_date,Model model){
 		log.debug("출결멤버1:{}","확인");
-		ArrayList<StudentsAll> list = service.selectAllAttendance();
+		ArrayList<StudentsAll> list = service.selectAllAttendance(att_date);
 		log.debug("출결멤버2:{}",list);
 		log.debug("멤버수:{}",list.size());
+
+
 		model.addAttribute("list",list);
 		return "adminView/InsertStudentAttendance";
+	}
+
+	//출결등록 날짜별조회
+	@ResponseBody
+	@GetMapping("selectAllAttendanceDate")
+	public ArrayList<StudentsAll> selectAllAttendanceDate(@RequestParam String selectedDate)
+	{	log.debug("선택날짜확인:{}",selectedDate);
+		ArrayList<StudentsAll> list = service.selectAllAttendanceDate(selectedDate);
+		log.debug("날짜출결:{}",list);
+		return list;
 	}
 	
 	//출결 등록
@@ -490,6 +504,14 @@ public class AdminController {
 		for (String key : allParams.keySet()) {
 			if (key.startsWith("att_type")) {
 				String memberId = key.replace("att_type", "");
+
+				// 이미 출석 정보가 있는지 체크
+				Attendance existingAttendance = service.findAttendanceByMemberIdAndDate(memberId, allParams.get("att_date"));
+				log.debug("출석정보확인:{}",existingAttendance);
+				if (existingAttendance != null) {
+					// 이미 출석 정보가 있으면 현재 반복을 건너뛰고 다음 학생의 처리로 이동
+					continue;
+				}
 
 				Attendance attendance = new Attendance();
 				attendance.setMemberid(memberId);
@@ -505,6 +527,8 @@ public class AdminController {
 					attendance.setAtt_permission(null);  // 혹은 다른 기본값 설정
 				}
 				log.debug("출결데이터:{}",attendance);
+
+
 				attendances.add(attendance);
 			}
 		}
@@ -514,9 +538,10 @@ public class AdminController {
 		}
 		log.debug("출결등록:{}",attendances);
 
+		// 현재 날짜를 문자열로 변환
+		String currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-
-		return "redirect:/admin/InsertStudentAttendance";
+		return "redirect:/admin/InsertStudentAttendance?att_date=" + currentDate;
 	}
 
 	//출결 조회 및 수정폼

@@ -77,6 +77,66 @@
                 $('#select-all-' + column).prop('checked', false);
             }
         });
+
+
+
+        $("#searchDay").on('change', function()
+    {
+        var selectedDate = $(this).val();
+
+        $.ajax
+        (
+        {
+            url: '/lms/admin/selectAllAttendanceDate', // 서버의 API 경로로 수정해야 합니다.
+            type: 'GET',
+            data: {
+                selectedDate: selectedDate
+            },
+            dataType: 'json',
+            success: function(data) {
+                updateTable(data);
+            },
+            error: function(error) {
+                console.error("Error fetching data: ", error);
+            }
+        }
+        );
+    }
+    );
+
+    function updateTable(data)
+    {
+        var tbody = $("#table1 tbody");
+        tbody.empty();
+
+        $.each(data, function(index, member)
+        {
+            // 데이터의 구조와 필드명에 따라 적절하게 수정해야 합니다.
+            if(member.member.rolename == 'ROLE_student' && member.member.enabled == true) {
+                var row = `
+                    <tr>
+                        <td><input type="checkbox" class="att-checkbox" name="att_type${member.member.memberid}" data-column="attendance" value="출석"></td>
+                        <td><input type="checkbox" class="att-checkbox" name="att_type${member.member.memberid}" data-column="absence" value="결석"></td>
+                        <td><input type="checkbox" class="att-checkbox" name="att_type${member.member.memberid}" data-column="halfabsence" value="1/2결석"></td>
+                        <td><input type="checkbox" class="att-checkbox" name="att_type${member.member.memberid}" data-column="late" value="지각"></td>
+                        <td><input type="checkbox" class="att-checkbox" name="att_type${member.member.memberid}" data-column="out" value="외출"></td>
+                        <td><input type="checkbox" class="att-checkbox" name="att_type${member.member.memberid}" data-column="leave" value="조퇴"></td>
+                        <td>
+                            <input type="radio" name="${member.member.memberid}-permission" value="O"> O
+                            <input type="radio" name="${member.member.memberid}-permission" value="X"> X
+                        </td>
+                        <td>${member.member.memberid}</td>
+                        <td>${member.member.membername}</td>
+                        <td>${member.attendance?.att_type || "미등록"}</td>
+                        <td>${member.attendance?.att_permission || "미등록"}</td>
+                        <td>${member.attendance?.att_date || "미등록"}</td>
+                    </tr>
+                `;
+                tbody.append(row);
+            }
+        }
+        );
+        }
     });
 
 
@@ -121,7 +181,7 @@
                             <table class="table table-striped" id="table1">
                                 <thead>
                                     날짜선택
-                                    <input type="date" style="width : 15%; font-size: 12px;" id="birth" name="att_date" class="form-control form-control-xl" required>
+                                    <input type="date" style="width : 15%; font-size: 12px;" id="searchDay" name="att_date" class="form-control form-control-xl" required>
 <!--                                    <div>-->
 <!--                                        <i class="bi bi-calendar-event"></i>-->
 <!--                                    </div>-->
@@ -146,8 +206,9 @@
                                     <th>사전연락유무</th>
                                     <th>아이디</th>
                                     <th>이름</th>
-                                    <th>성별</th>
-                                    <th>직책</th>
+                                    <th>상태</th>
+                                    <th>사전연락</th>
+                                    <th>날짜</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -164,14 +225,18 @@
 
                                     <td>[[${member.member.memberid}]]</td>
                                     <td th:text="${member.member.membername}"></td>
-                                    <td th:if="${member.member.gender == 'male'}">
-                                        남성</td>
-                                    <td th:if="${member.member.gender == 'female'}">
-                                        여성</td>
 
+                                    <td th:if="${member.attendance?.att_type != null}">
+                                        [[${member.attendance?.att_type}]]
+                                    </td>
+                                    <td th:if="${member.attendance?.att_type == null}">
 
-                                    <td th:if="${member.member.rolename == 'ROLE_student'}">
-                                        학생
+                                    </td>
+                                    <td>
+
+                                    </td>
+                                    <td th:text="${member.attendance?.att_date}">
+
                                     </td>
 
                                 </tr>

@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.time.LocalDate;
+
 @Slf4j
 @Controller
 public class BoardController {
@@ -39,6 +41,10 @@ public class BoardController {
         log.debug("인증수1:{}","확인");
         int selectCount = service.selectCount();
         log.debug("인증수2:{}",selectCount);
+
+        // 오늘 날짜 추가하기
+        LocalDate today = LocalDate.now();
+        model.addAttribute("today", today);
         model.addAttribute("countUser",selectCount);
         return "fragments/sidebar";
     }
