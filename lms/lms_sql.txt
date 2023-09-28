@@ -191,7 +191,7 @@ create table lms_test_answer (
     asnum       number  references lms_testpaper_list(asnum),       --시험지 고유번호
     qid         number  references lms_question(qid),               --문제 고유번호
     answer      varchar2(4000),                                     --답변
-    rwc         varchar2(500) check (rwc in ('right', 'wrong', 'check'),  --정답, 오답, 체크필요
+    rwc         varchar2(500) check (rwc in ('right', 'wrong', 'check')),  --정답, 오답, 체크필요
     points      number,                                             --득점
     originalfile varchar2(4000),                                    --첨부파일 원본
     savedfile   varchar2(4000)                                      --저장된 첨부파일

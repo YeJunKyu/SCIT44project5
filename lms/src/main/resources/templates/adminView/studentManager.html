@@ -19,25 +19,7 @@
     <script th:src="@{/privatejs/sidebarLoader.js}"></script>
 <script>
     $(document).ready(function() {
-            // '모두 선택' 체크박스 클릭 이벤트 핸들러
-            $('#selectAll').click(function() {
-                // '모두 선택' 체크박스의 현재 상태를 가져옵니다
-                var isChecked = $(this).prop('checked');
 
-                // 모든 체크박스의 선택 상태를 '모두 선택' 체크박스와 동일하게 설정합니다
-                $('input[name="memberid"]').prop('checked', isChecked);
-            });
-
-            // 개별 체크박스 클릭 이벤트 핸들러
-            $('input[name="memberid"]').click(function() {
-                if ($('input[name="memberid"]:checked').length == $('input[name="memberid"]').length) {
-                    // 모든 체크박스가 선택된 경우 '모두 선택' 체크박스를 선택 상태로 설정합니다
-                    $('#selectAll').prop('checked', true);
-                } else {
-                    // 하나 이상의 체크박스가 선택 해제된 경우 '모두 선택' 체크박스를 선택 해제 상태로 설정합니다
-                    $('#selectAll').prop('checked', false);
-                }
-            });
 
 
             $('#batchSelection').change(function() {
@@ -122,11 +104,8 @@
 
                     <table class="table table-striped" id="table1">
                         <thead>
+
                         <tr>
-                            <input type="checkbox" id="selectAll"> 모두 선택
-                        </tr>
-                        <tr>
-                            <th>선택</th>
                             <th>아이디</th>
                             <th>이름</th>
                             <th>과정</th>
@@ -141,7 +120,6 @@
                         </thead>
                         <tbody>
                         <tr th:each="students : ${students}">
-                            <td><input type="checkbox" name="memberid" th:value="${students.member.memberid}"></td>
                             <td><a th:href="@{/admin/ReadOneStudent/{memberid}(memberid=${students.member.memberid})}" th:text="${students.member.memberid}">
 
                             </a>
