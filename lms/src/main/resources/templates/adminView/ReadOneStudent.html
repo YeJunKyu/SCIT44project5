@@ -58,15 +58,22 @@
         <td th:if="${student.member?.gender == 'male'}">남성</td>
         <td th:text="${student.member?.address}"></td>
         <td>
-            <input type="text" name="student.school" th:value="${student.student?.school}">
+            <input type="text" name="student.school" th:value="${student.student?.school}" required>
             [[${student.student?.school}]]
         </td>
         <td>
-            <input type="text" name="student.major" th:value="${student.student?.major}">
+            <input type="text" name="student.major" th:value="${student.student?.major}" required>
             [[${student.student?.major}]]
         </td>
+        <td th:if="${student.student?.graduation == null}">
+            <select name="student.graduation" required>
+                <option value="0">재학중</option>
+                <option value="1">졸업</option>
+
+            </select>
+        </td>
         <td th:if="${student.student?.graduation == '0'}">
-            <select name="student.graduation">
+            <select name="student.graduation" required>
                 <option value="0">재학중</option>
                 <option value="1">졸업</option>
 
@@ -74,7 +81,7 @@
             재학중
         </td>
         <td th:if="${student.student?.graduation == '1'}">
-            <select name="student.graduation">
+            <select name="student.graduation" required>
                 <option value="1">졸업</option>
                 <option value="0">재학중</option>
 
@@ -82,14 +89,14 @@
             졸업
         </td>
         <td>
-            <select name="student.curriculum">
-                <option th:value="${student.student?.curriculum}" th:text="${student.student.curriculum}"></option>
+            <select name="student.curriculum" required>
+                <option th:value="${student.student?.curriculum}" th:text="${student.student?.curriculum}"></option>
                 <option th:each="i: ${#numbers.sequence(1, 100)}" th:value="'SCIT' + ${i} + '기'" th:text="'SCIT' + ${i} + '기'"></option>
             </select>
-            [[${student.student.curriculum}]]
+            [[${student.student?.curriculum}]]
         </td>
         <td>
-            <select name="jpCategory.jpclassname">
+            <select name="jpCategory.jpclassname" required>
                 <option th:value="${student.jpCategory?.jpclassname}" th:text="${student.jpCategory?.jpclassname}"></option>
                 <option value="기본">해당없음</option>
                 <option value="A">A반</option>
@@ -106,7 +113,7 @@
             [[${student.jpCategory?.jpclassname}]]
         </td>
         <td>
-            <select name="itCategory.itclassname">
+            <select name="itCategory.itclassname" required>
                 <option th:value="${student.itCategory?.itclassname}" th:text="${student.itCategory?.itclassname}"></option>
                 <option value="기본">해당없음</option>
                 <option value="A">A반</option>
@@ -123,7 +130,7 @@
             [[${student.itCategory?.itclassname}]]
         </td>
         <td>
-            <select name="studentInfo.certi_jpname">
+            <select name="studentInfo.certi_jpname" required>
                 <option th:value="${student.studentInfo?.certi_jpname}" th:text="${student.studentInfo?.certi_jpname}"></option>
                 <option value="미보유">미보유</option>
                 <option value="JLPT N1">JLPT N1</option>
@@ -135,7 +142,7 @@
             [[${student.studentInfo?.certi_jpname}]]
         </td>
         <td>
-            <select name="studentInfo.certi_name">
+            <select name="studentInfo.certi_name" required>
                 <option th:value="${student.studentInfo?.certi_name}" th:text="${student.studentInfo?.certi_name}"></option>
                 <option value="미보유">미보유</option>
                 <option value="정보처리기사 필기">정보처리기사 필기</option>
@@ -146,16 +153,16 @@
             [[${student.studentInfo?.certi_name}]]
         </td>
         <td>
-            <input type="text" name="studentInfo.note" th:value="${student.studentInfo?.note}">
+            <input type="text" name="studentInfo.note" th:value="${student.studentInfo?.note}" required>
         </td>
         <td>
-            <input type="text" name="studentInfo.company" th:value="${student.studentInfo?.company}">
+            <input type="text" name="studentInfo.company" th:value="${student.studentInfo?.company}" required>
         </td>
         <td>
-            <input type="text" name="studentInfo.experience" th:value="${student.studentInfo?.experience}">
+            <input type="text" name="studentInfo.experience" th:value="${student.studentInfo?.experience}" required>
         </td>
         <td>
-            <select name="studentInfo.scitgraduation">
+            <select name="studentInfo.scitgraduation" required>
                 <option th:value="${student.studentInfo?.scitgraduation}" th:text="${student.studentInfo?.scitgraduation}"></option>
                 <option value="미수료">미수료</option>
                 <option value="수료">수료</option>

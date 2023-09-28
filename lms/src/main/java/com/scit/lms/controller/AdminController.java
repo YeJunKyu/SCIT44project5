@@ -261,6 +261,7 @@ public class AdminController {
 		}
 
 
+
 		if(jpCategory != null){
 			service.updatejpClass(studentsAll);
 			log.debug("개인정보수정확인2:{}", studentsAll);

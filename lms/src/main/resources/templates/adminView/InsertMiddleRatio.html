@@ -75,6 +75,22 @@
             background-color: #45a049;
         }
 
+
+        .btn {
+    display: inline-block;
+    padding: 10px 15px;
+    margin: 0 10px;
+    background-color: #007BFF;  /* 버튼의 배경 색 */
+    color: white;               /* 글씨 색 */
+    border: none;
+    border-radius: 4px;
+    text-decoration: none;     /* 링크의 밑줄 제거 */
+    transition: background-color 0.3s ease;  /* 호버 애니메이션 효과 */
+}
+
+.btn:hover {
+    background-color: #0056b3;  /* 호버 시 버튼의 배경 색 */
+}
     </style>
 </head>
 <body>
@@ -214,10 +230,10 @@
     </form>
 
 
-    <a th:href="@{ReadTestList}">시험조회로이동</a>
-    <a th:href="@{InsertBigRatio}">대분류로이동</a>
-    <a th:href="@{InsertSmallRatio}">소분류로이동</a>
-
+    <a class="btn" th:href="@{ReadTestList}">시험조회로이동</a>
+    <a class="btn" th:href="@{InsertBigRatio}">대분류로이동</a>
+    <a class="btn" th:href="@{InsertSmallRatio}">소분류로이동</a>
+    <a class="btn" th:href="@{/main}">Home</a>
 
 </body>
 </html>
