@@ -20,6 +20,60 @@
             return true; // 폼 제출 계속
         }
     </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+
+        td {
+            vertical-align: top;
+        }
+
+        select, input[type="text"] {
+            width: 50%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 15px 0;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+    </style>
 </head>
 <body>
     <h1>시험등록</h1>
@@ -41,15 +95,6 @@
                     <input type="text" name="categoryname[]"><br>
                     <input type="text" name="categoryname[]"><br>
                     <input type="text" name="categoryname[]"><br>
-
-                </td>
-                <td>
-                    ========><br>
-                    ========><br>
-                    ========><br>
-                    ========><br>
-                    ========><br>
-                    ========><br>
                 </td>
                 <td>
                     <select name="ratio[]"><option value="0.00">0%</option>
