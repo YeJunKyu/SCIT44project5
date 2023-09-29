@@ -148,6 +148,9 @@
                             <td th:text="${students.student?.school}">
 
                             </td>
+                            <td th:if="${students.student?.graduation == null}">
+                                미등록
+                            </td>
                             <td th:if="${students.student?.graduation == '1'}">
                             졸업
                             </td>
