@@ -90,5 +90,5 @@ public interface AdminService {
 
     ArrayList<StudentsAll> ReadOneStudentAttendance(String memberid);
 
-    ArrayList<StudentsAll> SelectMonthAttendance(String selectedDate, String memberid);
+    ArrayList<StudentsAll> SelectMonthAttendance(String selectedDate,String memberid);
 }
