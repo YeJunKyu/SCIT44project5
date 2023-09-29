@@ -224,5 +224,19 @@ public class AdminServiceImple implements AdminService {
 		return dao.findAttendanceByMemberIdAndDate(attendanceMap);
 	}
 
+	@Override
+	public ArrayList<StudentsAll> ReadOneStudentAttendance(String memberid) {
+		return dao.ReadOneStudentAttendance(memberid);
+	}
+
+	@Override
+	public ArrayList<StudentsAll> SelectMonthAttendance(String selectedDate, String memberid) {
+		HashMap<String,String> map = new HashMap<>();
+		map.put("selectedDate",selectedDate);
+		map.put("memberid",memberid);
+
+		return dao.SelectMonthAttendance(map);
+	}
+
 
 }

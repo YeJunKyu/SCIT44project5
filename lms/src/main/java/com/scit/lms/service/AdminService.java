@@ -87,4 +87,8 @@ public interface AdminService {
     ArrayList<StudentsAll> selectAllAttendanceDate(String selectedDate);
 
     Attendance findAttendanceByMemberIdAndDate(String memberid, String att_date);
+
+    ArrayList<StudentsAll> ReadOneStudentAttendance(String memberid);
+
+    ArrayList<StudentsAll> SelectMonthAttendance(String selectedDate, String memberid);
 }

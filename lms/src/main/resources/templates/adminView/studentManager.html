@@ -41,7 +41,6 @@
     var graduation = student.student.graduation === '1' ? '졸업' : '재학중';
 
     var row = `<tr>
-        <td><input type="checkbox" name="memberid" value="${student.member.memberid}"></td>
         <td><a href="/admin/ReadOneStudent/${student.member.memberid}">${student.member.memberid}</a></td>
         <td>${student.member.membername}</td>
         <td>${student.student.curriculum}</td>

@@ -566,6 +566,31 @@ public class AdminController {
 		return list;
 	}
 
+
+
+	//개인출석조회
+	@GetMapping("ReadOneStudentAttendance/{memberid}")
+	public String ReadOneStudentAttendance(@PathVariable String memberid,Model model)
+	{
+		ArrayList<StudentsAll> readOneStudentAttendance = service.ReadOneStudentAttendance(memberid);
+		log.debug("개인출결:{}",readOneStudentAttendance);
+		model.addAttribute("list",readOneStudentAttendance);
+		model.addAttribute("memberid",memberid);
+
+		return "adminView/ReadOneStudentAttendance";
+	}
+
+	//개인출석조회 달별조회
+	@ResponseBody
+	@GetMapping("SelectMonthAttendance")
+	public ArrayList<StudentsAll> SelectMonthAttendance(String selectedDate,String memberid)
+	{
+		log.debug("선택달확인:{},회원확인:{}",selectedDate,memberid);
+		ArrayList<StudentsAll> list = service.SelectMonthAttendance(selectedDate,memberid);
+		log.debug("달출결:{}",list);
+		return list;
+	}
+
 	// 출결 수정
 	@PostMapping("UpdateStudentAttendance")
 	public String UpdateStudentAttendance(@RequestParam Map<String, String> allParams){

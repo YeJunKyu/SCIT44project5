@@ -80,9 +80,9 @@
                         </td>
                         <td>${member.member.memberid}</td>
                         <td>${member.member.membername}</td>
-                        <td>${member.attendance.att_type}</td>
-                        <td>${member.attendance.att_permission}</td>
-                        <td>${member.attendance.att_date}</td>
+                        <td>${member.attendance?.att_type || "미등록"}</td>
+                        <td>${member.attendance?.att_permission || "미등록"}</td>
+                        <td>${member.attendance?.att_date || "미등록"}</td>
                     </tr>
                 `;
                 tbody.append(row);
@@ -212,15 +212,24 @@ bindCheckboxEvents();
                                     <td><input type="radio" th:name="${member.member?.memberid} + '-' + 'permission'" value="O"> O
                                         <input type="radio" th:name="${member.member?.memberid} + '-' + 'permission'" value="X"> X</td>
 
-                                    <td>[[${member.member?.memberid}]]</td>
+                                    <td><a th:href="@{/admin/ReadOneStudentAttendance/{memberid}(memberid=${member.member.memberid})}" th:text="${member.member.memberid}">
+
+                                    </a></td>
                                     <td th:text="${member.member?.membername}"></td>
-                                    <td th:text="${member.attendance?.att_type}">
+
+                                    <td th:if="${member.attendance?.att_type != null}" th:text="${member.attendance?.att_type}">
                                         </td>
+                                    <td th:if="${member.attendance?.att_type == null}">
+                                        미등록
+                                    </td>
 
 
 
-                                    <td th:text="${member.attendance?.att_permission}">
+                                    <td th:if="${member.attendance?.att_permission !=null}" th:text="${member.attendance?.att_permission}">
 
+                                    </td>
+                                    <td th:if="${member.attendance?.att_permission ==null}">
+                                        미등록
                                     </td>
                                     <td th:text="${member.attendance?.att_date}">
 

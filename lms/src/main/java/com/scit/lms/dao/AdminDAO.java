@@ -94,4 +94,8 @@ public interface AdminDAO {
 
 
     Attendance findAttendanceByMemberIdAndDate(HashMap<String, String> attendanceMap);
+
+    ArrayList<StudentsAll> ReadOneStudentAttendance(String memberid);
+
+    ArrayList<StudentsAll> SelectMonthAttendance(HashMap<String,String> map);
 }

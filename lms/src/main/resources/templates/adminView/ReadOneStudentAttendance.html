@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>출결 조회 및 수정</title>
+
+    <link rel="stylesheet" th:href="@{/assets/css/main/app.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main/app-dark.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main/lms.css}" />
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.svg}" type="image/x-icon">
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png">
+
+    <link rel="stylesheet" th:href="@{/assets/extensions/simple-datatables/style.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/pages/simple-datatables.css}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script th:src="@{/privatejs/sidebarLoader.js}"></script>
+    <script>
+
+        function insertchk()
+        {
+
+		if(confirm('등록하시겠습니까?'))
+		{
+			return true;
+	}
+		return false;
+    }
+
+
+    $(document).ready(function()
+    {
+    $("#searchDay").on('change', function()
+    {
+        var selectedDate = $(this).val();
+        var memberid = $(this).data("memberid");
+        $.ajax
+        (
+        {
+            url: '/lms/admin/SelectMonthAttendance', // 서버의 API 경로로 수정해야 합니다.
+            type: 'GET',
+            data: {
+                selectedDate: selectedDate,
+                memberid: memberid
+            },
+            dataType: 'json',
+            success: function(data) {
+                updateTable(data);
+            },
+            error: function(error) {
+                console.error("Error fetching data: ", error);
+            }
+        }
+        );
+    }
+    );
+
+    function updateTable(data)
+    {
+        var tbody = $("#table1 tbody");
+        tbody.empty();
+
+        $.each(data, function(index, member)
+        {
+            // 데이터의 구조와 필드명에 따라 적절하게 수정해야 합니다.
+            if(member.member.rolename == 'ROLE_student' && member.member.enabled == true) {
+                var row = `
+                    <tr>
+                        <td>${member.member.memberid}</td>
+                        <td>${member.member.membername}</td>
+                        <td>${member.attendance?.att_type || "미등록"}</td>
+                        <td>${member.attendance?.att_permission || "미등록"}</td>
+                        <td>${member.attendance?.att_date || "미등록"}</td>
+                        <td><select name="'att_type' + ${member.member?.memberid}">
+                                        <option value="${member.attendance?.att_type}">${member.attendance?.att_type || "미등록"}</option>
+                                        <option value="출석">출석</option>
+                                        <option value="결석">결석</option>
+                                        <option value="1/2결석">1/2결석</option>
+                                        <option value="지각">지각</option>
+                                        <option value="외출">외출</option>
+                                        <option value="조퇴">조퇴</option>
+                                    </select>
+
+                                    </td>
+                        <td>
+                            <input type="radio" name="${member.member.memberid}-permission" value="O"> O
+                            <input type="radio" name="${member.member.memberid}-permission" value="X"> X
+                        </td>
+                    </tr>
+                `;
+                tbody.append(row);
+            }
+        }
+        );
+    }
+
+
+
+    }
+    );
+
+
+    </script>
+
+</head>
+
+<body>
+<div id="app">
+    <div id="sidebar-placeholder"></div>
+    <div id="main">
+        <header class="mb-3">
+            <a href="#" class="burger-btn d-block d-xl-none">
+                <i class="bi bi-justify fs-3"></i>
+            </a>
+        </header>
+
+        <div class="page-heading">
+            <div class="page-title">
+                <div class="row">
+                    <div class="col-12 col-md-6 order-md-1 order-last">
+                        <h3>출결 조회 및 수정</h3>
+                        <p class="text-subtitle text-muted">학생의 출결현황을 조회 및 수정할수있습니다.</p>
+                    </div>
+                    <div class="col-12 col-md-6 order-md-2 order-first">
+                        <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                            <ol class="breadcrumb">
+
+
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <section class="section">
+                <div class="card">
+                    <div class="card-header">
+                        학생 목록
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{UpdateStudentAttendance}" method="post">
+                            <table class="table table-striped" id="table1">
+                                <thead>
+                                검색월선택
+                                <input type="month" style="width : 15%; font-size: 12px;" id="searchDay" class="form-control form-control-xl" th:data-memberid="${memberid}">
+
+                                <tr>
+                                    <th>아이디</th>
+                                    <th>이름</th>
+                                    <th>상태</th>
+                                    <th>사전연락</th>
+                                    <th>날짜</th>
+                                    <th>출석변경</th>
+                                    <th>사전연락변경</th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="member : ${list}" th:if="${member.member.rolename == 'ROLE_student' and member.member.enabled == true}">
+                                    <td th:text="${member.member.memberid}">
+
+                                    </td>
+                                    <td th:text="${member.member?.membername}"></td>
+                                    <td th:if="${member.attendance?.att_type != null}" th:text="${member.attendance?.att_type}">
+                                    </td>
+                                    <td th:if="${member.attendance?.att_type == null}">
+                                        미등록
+                                    </td>
+                                    <td th:if="${member.attendance?.att_permission !=null}" th:text="${member.attendance?.att_permission}">
+
+                                    </td>
+                                    <td th:if="${member.attendance?.att_permission ==null}">
+                                        미등록
+                                    </td>
+                                    <td th:text="${member.attendance?.att_date}">
+
+                                    </td>
+
+
+                                    <td><select th:name="'att_type' + ${member.member?.memberid}">
+                                        <option th:value="${member.attendance?.att_type}" th:text="${member.attendance?.att_type}"></option>
+                                        <option value="출석">출석</option>
+                                        <option value="결석">결석</option>
+                                        <option value="1/2결석">1/2결석</option>
+                                        <option value="지각">지각</option>
+                                        <option value="외출">외출</option>
+                                        <option value="조퇴">조퇴</option>
+                                    </select>
+
+                                    </td>
+
+                                    <td><input type="radio" th:name="${member.member?.memberid} + '-' + 'permission'" value="O"> O
+
+                                        <input type="radio" th:name="${member.member?.memberid} + '-' + 'permission'" value="X"> X</td>
+
+
+
+
+
+
+
+
+
+                                </tr>
+
+                                </tbody>
+                            </table>
+                            <input type="submit" value="편집">
+
+                        </form>
+
+                    </div>
+                </div>
+
+            </section>
+        </div>
+
+
+    </div>
+</div>
+<script th:src="@{/assets/js/bootstrap.js}"></script>
+<script th:src="@{/assets/js/app.js}"></script>
+
+<script th:src="@{/assets/extensions/simple-datatables/umd/simple-datatables-1.js}"></script>
+<script th:src="@{/assets/js/pages/simple-datatables.js}"></script>
+
+</body>
+
+</html>
