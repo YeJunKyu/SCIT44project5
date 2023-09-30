@@ -119,7 +119,7 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="list: ${list}">
-                                    <td><span class="badge bg-primary" th:text="${list.categories}"></span></td>
+                                    <td><span th:text="${list.categories}"></span></td>
                                     <td class="text-bold-500"><a th:href="@{/notice/read(noticenum=${list.noticenum})}" th:text="${list.noticetitle}"></a></td>
                                     <td th:text="${list.memberid}">관리자</td>
                                     <td th:text="${list.hits}">0</td>
