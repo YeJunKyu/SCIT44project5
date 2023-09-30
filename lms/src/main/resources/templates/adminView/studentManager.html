@@ -93,7 +93,7 @@
             <div class="card-header">
                 <label>회원 목록</label>
                 <div class="col-2 form-group">
-                    <select id="batchSelection" class="form-control">
+                    <select id="batchSelection" class="form-select">
                         <option value="" selected>기수 선택</option>
                         <th:block th:each="i: ${#numbers.sequence(1, 100)}">
                             <option th:value="'SCIT' + ${i} + '기'" th:text="'SCIT' + ${i} + '기'"></option>

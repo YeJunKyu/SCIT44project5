@@ -2,6 +2,7 @@ package com.scit.lms.service;
 
 import com.scit.lms.dao.NoticeDAO;
 import com.scit.lms.domain.Notice;
+import com.scit.lms.domain.Student;
 import com.scit.lms.util.PageNavigator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.RowBounds;
@@ -19,6 +20,12 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Autowired
     NoticeDAO dao;
+
+
+    @Override
+    public ArrayList<Student> selectCg() {
+        return dao.selectCg();
+    }
 
     //공지 글 작성
     @Override

@@ -1,6 +1,7 @@
 package com.scit.lms.dao;
 
 import com.scit.lms.domain.Notice;
+import com.scit.lms.domain.Student;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.RowBounds;
 
@@ -9,6 +10,9 @@ import java.util.HashMap;
 
 @Mapper
 public interface NoticeDAO {
+
+    //과정 불러오기
+    public ArrayList<Student> selectCg();
 
     //공지 글 작성
     public int insert(Notice notice);

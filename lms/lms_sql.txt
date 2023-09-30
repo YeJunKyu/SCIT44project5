@@ -68,7 +68,8 @@ create table lms_notice(
 	viewauthority	number      	default 0, --읽기권한(0:모두, 1:선생)
 	hits	        number	        default 0,
 	originalfile	varchar2(4000),
-	savedfile   	varchar2(4000)
+	savedfile   	varchar2(4000),
+    categories      varchar2(200)
 );
 
 --공지 시퀀스

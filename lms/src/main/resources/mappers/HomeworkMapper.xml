@@ -51,6 +51,8 @@
             lms_student s
         join class_jp_category jp on s.memberid = jp.memberid
         join class_it_category it on s.memberid = it.memberid
+        order by
+            s.curriculum
     </select>
 
     <!-- 특정 학생 이름, 커리큘럼, 일본어 반, IT반 불러오기 -->
