@@ -95,7 +95,7 @@ public class NoticeController {
         }
 
         //카테고리 불러오기
-        ArrayList<Student> category = service.selectCg();
+        ArrayList<Student> category = service.categoryList();
         List<String> categories = category.stream()
                 .map(Student::getCurriculum)
                 .distinct()
@@ -213,7 +213,7 @@ public class NoticeController {
         model.addAttribute("notice", notice);
 
         //카테고리 불러오기
-        ArrayList<Student> category = service.selectCg();
+        ArrayList<Student> category = service.categoryList();
         List<String> categories = category.stream()
                 .map(Student::getCurriculum)
                 .distinct()

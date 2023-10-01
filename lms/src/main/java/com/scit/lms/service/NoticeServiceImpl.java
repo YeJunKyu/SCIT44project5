@@ -23,8 +23,8 @@ public class NoticeServiceImpl implements NoticeService {
 
 
     @Override
-    public ArrayList<Student> selectCg() {
-        return dao.selectCg();
+    public ArrayList<Student> categoryList() {
+        return dao.categoryList();
     }
 
     //공지 글 작성

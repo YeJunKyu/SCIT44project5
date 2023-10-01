@@ -98,12 +98,11 @@
                   //data td에 추가
                   data.forEach(function(list) {
                       const tr = $("<tr>");
-                      tr.append($("<td>").text(list.hw_num));
                       tr.append($("<td>").text(list.hw_curriculum));
                       tr.append($("<td>").text(list.hw_subject));
                       tr.append($("<td>").text(list.hw_class));
 
-                      const titleLink = $("<a>").attr("href", "/homework/read?hw_num=" + list.hw_num).text(list.hw_title);
+                      const titleLink = $("<a>").attr("href", "/lms/homework/read?hw_num=" + list.hw_num).text(list.hw_title);
                       tr.append($("<td>").addClass("text-bold-500").append(titleLink));
 
                       tr.append($("<td>").text(list.memberid));
@@ -238,14 +237,15 @@
                     </div>
                   </div>
                 </div>
+              </div>
 
-                <!-- 테이블 -->
+              <!-- 테이블 -->
+              <div class="card-body">
                 <div class="card-content">
                   <div class="table-responsive">
                     <table class="table mb-0">
                       <thead class="thead-dark">
                         <tr>
-                          <th>번호</th>
                           <th>과정</th>
                           <th>과목</th>
                           <th>반</th>
@@ -256,7 +256,6 @@
                       </thead>
                       <tbody>
                         <tr th:each="list: ${list}">
-                          <td th:text="${list.hw_num}"></td>
                           <td th:text="${list.hw_curriculum}"></td>
                           <td th:text="${list.hw_subject}"></td>
                           <td th:text="${list.hw_class}"></td>
@@ -277,33 +276,33 @@
                     </table>
                   </div>
                 </div>
-                <!-- 테이블 끝 -->
-
-                <div class="card-footer">
-                  <!-- 페이지네이션 -->
-                  <ul class="pagination pagination-primary  justify-content-center" th:unless="${navi.currentPage == 0}">
-                    <li class="page-item">
-                      <a class="page-link" th:href="|javascript:pagingFormSubmit(${navi.currentPage - navi.pagePerGroup})|">&laquo;</a>
-                    </li>
-                    <li class="page-item">
-                      <a class="page-link" th:href="|javascript:pagingFormSubmit(${navi.currentPage - 1})|">&lsaquo;</a>
-                    </li>
-                    <li class="page-item" th:each="counter : ${#numbers.sequence(navi.startPageGroup, navi.endPageGroup)}" th:classappend="${counter == navi.currentPage} ? 'active' : ''">
-                      <th:block th:if="${counter == navi.currentPage}"></th:block>
-                      <a class="page-link" th:text="${counter}" th:href="|javascript:pagingFormSubmit(${counter})|"></a>
-                      <th:block th:if="${counter == navi.currentPage}"></th:block>
-                    </li>
-                    <li class="page-item">
-                      <a class="page-link" th:href="|javascript:pagingFormSubmit(${navi.currentPage + 1})|">&rsaquo;</a>
-                    </li>
-                    <li class="page-item">
-                      <a class="page-link" th:href="|javascript:pagingFormSubmit(${navi.currentPage + navi.pagePerGroup})|">&raquo;</a>
-                    </li>
-                  </ul>
-                  <!-- 페이지네이션 끝 -->
-                </div>
-
               </div>
+              <!-- 테이블 끝 -->
+
+              <!-- 페이지네이션 -->
+              <div class="card-footer">
+                <ul class="pagination pagination-primary  justify-content-center" th:unless="${navi.currentPage == 0}">
+                  <li class="page-item">
+                    <a class="page-link" th:href="|javascript:pagingFormSubmit(${navi.currentPage - navi.pagePerGroup})|">&laquo;</a>
+                  </li>
+                  <li class="page-item">
+                    <a class="page-link" th:href="|javascript:pagingFormSubmit(${navi.currentPage - 1})|">&lsaquo;</a>
+                  </li>
+                  <li class="page-item" th:each="counter : ${#numbers.sequence(navi.startPageGroup, navi.endPageGroup)}" th:classappend="${counter == navi.currentPage} ? 'active' : ''">
+                    <th:block th:if="${counter == navi.currentPage}"></th:block>
+                    <a class="page-link" th:text="${counter}" th:href="|javascript:pagingFormSubmit(${counter})|"></a>
+                    <th:block th:if="${counter == navi.currentPage}"></th:block>
+                  </li>
+                  <li class="page-item">
+                    <a class="page-link" th:href="|javascript:pagingFormSubmit(${navi.currentPage + 1})|">&rsaquo;</a>
+                  </li>
+                  <li class="page-item">
+                    <a class="page-link" th:href="|javascript:pagingFormSubmit(${navi.currentPage + navi.pagePerGroup})|">&raquo;</a>
+                  </li>
+                </ul>
+              </div>
+              <!-- 페이지네이션 끝 -->
+
             </div>
           </div>
         </div>

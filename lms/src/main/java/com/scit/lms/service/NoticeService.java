@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public interface NoticeService {
 
     //과정 불러오기
-    public ArrayList<Student> selectCg();
+    public ArrayList<Student> categoryList();
 
     //공지 글 작성
     public void insert(Notice notice);

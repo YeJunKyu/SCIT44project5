@@ -5,7 +5,7 @@
 <mapper namespace="com.scit.lms.dao.NoticeDAO">
 
     <!-- 과정 불러오기 -->
-    <select id="selectCg" resultType="Student">
+    <select id="categoryList" resultType="Student">
         select * from lms_student
         order by
             to_number(regexp_substr(curriculum, '\d+'))

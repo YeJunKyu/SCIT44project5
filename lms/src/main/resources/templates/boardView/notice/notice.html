@@ -104,34 +104,35 @@
                         </div>
                     </div>
 
-                    <div class="card-content">
-                        <!-- table head dark -->
-                        <div class="table-responsive">
-                            <table class="table mb-0">
-                                <thead class="thead-dark">
-                                <tr>
-                                    <th>카테고리</th>
-                                    <th style="width: 600px">제목</th>
-                                    <th>작성자</th>
-                                    <th>조회수</th>
-                                    <th>작성일</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="list: ${list}">
-                                    <td><span th:text="${list.categories}"></span></td>
-                                    <td class="text-bold-500"><a th:href="@{/notice/read(noticenum=${list.noticenum})}" th:text="${list.noticetitle}"></a></td>
-                                    <td th:text="${list.memberid}">관리자</td>
-                                    <td th:text="${list.hits}">0</td>
-                                    <td th:text="${list.noticedate}"></td>
-                                </tr>
-                                </tbody>
-                            </table>
+                    <div class="card-body">
+                        <div class="card-content">
+                            <!-- table head dark -->
+                            <div class="table-responsive">
+                                <table class="table mb-0">
+                                    <thead class="thead-dark">
+                                    <tr>
+                                        <th>카테고리</th>
+                                        <th style="width: 600px">제목</th>
+                                        <th>작성자</th>
+                                        <th>조회수</th>
+                                        <th>작성일</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="list: ${list}">
+                                        <td><span th:text="${list.categories}"></span></td>
+                                        <td class="text-bold-500"><a th:href="@{/notice/read(noticenum=${list.noticenum})}" th:text="${list.noticetitle}"></a></td>
+                                        <td th:text="${list.memberid}">관리자</td>
+                                        <td th:text="${list.hits}">0</td>
+                                        <td th:text="${list.noticedate}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
 
                     <div class="card-footer">
-
                         <!-- 페이지네이션 -->
                         <ul class="pagination pagination-primary  justify-content-center" th:unless="${navi.currentPage == 0}">
                             <li class="page-item">
@@ -152,7 +153,6 @@
                                 <a class="page-link" th:href="|javascript:pagingFormSubmit(${navi.currentPage + navi.pagePerGroup})|">&raquo;</a>
                             </li>
                         </ul>
-
                     </div>
 
                 </div>

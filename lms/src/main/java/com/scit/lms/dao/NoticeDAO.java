@@ -12,7 +12,7 @@ import java.util.HashMap;
 public interface NoticeDAO {
 
     //과정 불러오기
-    public ArrayList<Student> selectCg();
+    public ArrayList<Student> categoryList();
 
     //공지 글 작성
     public int insert(Notice notice);

@@ -32,6 +32,7 @@
     <script th:src="@{/assets/js/jquery-3.6.0.js}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/assets/calendar/index.global.min.js}"></script>
+    <script th:src="@{/assets/calendar/google-calendar.js}"></script>
     <script>
       // 캘린더
       let calendar;
@@ -50,10 +51,10 @@
           },
           timeZone: "UTC",
           editable: false,
-          dayMaxEvents: true,
+          dayMaxEvents: false,
           selectable: true,
 
-          //날짜 선택해서 이벤트 등록
+          // 날짜 선택해서 이벤트 등록
           select: function (arg) {
             console.log(arg);
 
@@ -75,6 +76,9 @@
           },
 
           eventClick: function (arg) {
+            arg.jsEvent.stopPropagation();
+            arg.jsEvent.preventDefault();
+
             console.log(arg);
             selectedEvent = arg.event;
 
@@ -116,39 +120,152 @@
             calendar.unselect(); // 선택 해제
           },
 
+          googleCalendarApiKey: "AIzaSyAWA097hmFr-7ZGaw5vJatSfmkNY9L0n04",
+
           // DB에 있는 일정 불러오기
-          events: function (info, successCallback, failureCallback) {
-            $.ajax({
-              url: "schedule/list",
-              type: "get",
-              dataType: "json",
-              success: function (data) {
-                console.log(data);
+          eventSources: [
+            function (info, successCallback, failureCallback) {
+              $.ajax({
+                url: "schedule/list",
+                type: "get",
+                dataType: "json",
+                success: function (data) {
+                  console.log(data);
 
-                let transformedData = data.map(function (event) {
-                  return {
-                    id: event.eventid,
-                    title: event.title,
-                    start: event.startdate,
-                    end: event.enddate,
-                    allDay: event.allday,
-                    color: event.color,
-                    textColor: event.textcolor,
-                    description: event.note,
-                    memberID: event.memberid,
-                  };
-                });
+                  let startOfMonth = info.start;
+                  let endOfMonth = info.end;
 
-                successCallback(transformedData);
-              },
-              error: function (e) {
-                alert(JSON.stringify(e));
-              },
-            });
-          },
+                  let transformedData = data.map(function (event) {
+                    return {
+                      id: event.eventid,
+                      title: event.title,
+                      start: event.startdate,
+                      end: event.enddate,
+                      allDay: event.allday,
+                      color: event.color,
+                      textColor: event.textcolor,
+                      description: event.note,
+                      memberID: event.memberid,
+                      category: event.categories,
+                    };
+                  });
+
+                  successCallback(transformedData);
+                },
+                error: function (e) {
+                  alert(JSON.stringify(e));
+                },
+              });
+            },
+            {
+              // 공휴일 불러오기
+              googleCalendarId:
+                "ko.south_korea#holiday@group.v.calendar.google.com",
+              color: "#20c997",
+            },
+          ],
         });
         calendar.render();
+        // calendar 끝
+        recentList();
       });
+
+      // 최근 일정 불러오기
+      function recentList() {
+        $.ajax({
+          url: "schedule/recentList",
+          type: "get",
+          dataType: "json",
+          success: function (data) {
+            console.log(data);
+
+            var recentList = $(".recentList");
+            recentList.empty();
+
+            data.forEach(function (item) {
+              var card =
+                "<div class='card-content' style='margin-bottom: 20px;'>";
+              card += "<div>";
+              card +=
+                "<i class='bi bi-calendar-event'></i><strong style='margin: 5px;'>" +
+                item.title +
+                "</strong></div>";
+
+              if (
+                item.allday === true &&
+                isNextDay(item.startdate, item.enddate)
+              ) {
+                card +=
+                  "<div><span class='badge bg-light-primary'>" +
+                  item.startdate +
+                  "</span></div>";
+              } else if (item.startdate === item.enddate) {
+                card +=
+                  "<div><span class='badge bg-light-primary'>" +
+                  item.startdate +
+                  "</span></div>";
+              } else {
+                card +=
+                  "<div><span class='badge bg-light-primary'>" +
+                  item.startdate +
+                  "</span><i class='bi bi-dash-lg'></i>";
+                card +=
+                  "<span class='badge bg-light-primary'>" +
+                  item.enddate +
+                  "</span></div>";
+              }
+
+              if (item.note) card += "<div>" + item.note + "</div>";
+              card += "</div>";
+
+              recentList.append(card); // 생성된 카드를 cardBody에 삽입
+            });
+          },
+          error: function (e) {
+            console.log(JSON.stringify(e));
+          },
+        });
+      }
+
+      function isNextDay(start, end) {
+        var startDate = new Date(start);
+        var endDate = new Date(end);
+
+        startDate.setDate(startDate.getDate() + 1); // startdate에 1일을 더함
+
+        // Date 객체를 'YYYY-MM-DD' 형식의 문자열로 변환
+        var startString = startDate.toISOString().split("T")[0];
+        var endString = endDate.toISOString().split("T")[0];
+
+        return startString === endString; // 일자 부분만 비교
+      }
+
+      // 카테고리 불러오기
+      function categoryList() {
+        $.ajax({
+          url: "schedule/categoryList",
+          type: "get",
+          dataType: "json",
+          success: function (data) {
+            console.log(data);
+
+            // select 요소 선택
+            var $select = $("#categories");
+
+            // 기존 option 제거 (단, 첫번째 option은 유지)
+            $select.find("option:not(:first)").remove();
+
+            // 받은 데이터를 이용해서 option 요소 추가
+            data.forEach(function (category) {
+              var $option = $("<option>", { value: category, text: category });
+              $select.append($option);
+            });
+          },
+          error: function (e) {
+            console.log(JSON.stringify(e));
+          },
+        });
+      }
 
       // 일정 저장
       function saveEventData() {
@@ -158,7 +275,8 @@
         var allDay = document.getElementById("allDayCheck").checked;
         var startTime = document.getElementById("eventStartTime").value;
         var endTime = document.getElementById("eventEndTime").value;
-        let member = document.getElementById("member").value;
+        var member = document.getElementById("member").value;
+        var categories = document.getElementById("categories").value;
 
         var startTimeFormatted = formatDateToOracle(startTime);
         var endTimeFormatted = formatDateToOracle(endTime);
@@ -170,6 +288,7 @@
           start: startTimeFormatted,
           end: endTimeFormatted,
           memberID: member,
+          categories: categories,
         };
 
         // Calendar에 이벤트 추가
@@ -177,6 +296,10 @@
 
         // 이벤트 데이터를 서버로 전송하여 저장
         saveEventToServer(newEvent);
+
+        // 모달 값 초기화
+        document.getElementById("eventTitle").value = "";
+        document.getElementById("eventDescription").value = "";
 
         closeModal(); // 모달 닫기
       }
@@ -261,6 +384,7 @@
       // 일정 저장 모달 표시
       function openModal() {
         $("#insert").modal("show");
+        categoryList();
       }
 
       // 일정 저장 모달 숨기기
@@ -268,18 +392,72 @@
         $("#insert").modal("hide");
       }
 
+      // 변경 모달 카테고리 불러오기
+      function categoryListUpdate() {
+        $.ajax({
+          url: "schedule/categoryList",
+          type: "get",
+          dataType: "json",
+          success: function (data) {
+            // select 요소 선택
+            var $select = $("#categoriesUpdate");
+
+            // 기존 option 제거 (단, 첫번째 option은 유지)
+            $select.find("option:not(:first)").remove();
+
+            // 받은 데이터를 이용해서 option 요소 추가
+            data.forEach(function (category) {
+              var $option = $("<option>", { value: category, text: category });
+              $select.append($option);
+            });
+          },
+          error: function (e) {
+            console.log(JSON.stringify(e));
+          },
+        });
+      }
+
       // 일정 변경 모달 표시
       function openUpdateModal() {
         $("#update").modal("show");
 
-        let deleteButton = document.getElementById("deleteButton");
-        let updateButton = document.getElementById("updateButton");
-        let eventMemberID = document.getElementById("eventMemberID").value;
-        let currentUsername = deleteButton.getAttribute("data-username");
+        categoryListUpdate();
+
+        var eventTitleUpdate = document.getElementById("eventTitleUpdate");
+        var eventDescriptionUpdate = document.getElementById(
+          "eventDescriptionUpdate"
+        );
+        var eventStartTimeUpdate = document.getElementById(
+          "eventStartTimeUpdate"
+        );
+        var eventEndTimeUpdate = document.getElementById("eventEndTimeUpdate");
+        var allDayCheckUpdate = document.getElementById("allDayCheckUpdate");
+
+        var deleteButton = document.getElementById("deleteButton");
+        var updateButton = document.getElementById("updateButton");
+        var categorySelect = document.getElementById("categoriesUpdate");
+
+        var eventMemberID = document.getElementById("eventMemberID").value;
+        var currentUsername = deleteButton.getAttribute("data-username");
 
         if (eventMemberID === currentUsername) {
           deleteButton.style.display = "block";
           updateButton.style.display = "block";
+          categorySelect.disabled = false;
+          eventTitleUpdate.readOnly = false;
+          eventDescriptionUpdate.readOnly = false;
+          eventStartTimeUpdate.disabled = false;
+          eventEndTimeUpdate.disabled = false;
+          allDayCheckUpdate.disabled = false;
+        } else {
+          deleteButton.style.display = "none";
+          updateButton.style.display = "none";
+          categorySelect.disabled = true;
+          eventTitleUpdate.readOnly = true;
+          eventDescriptionUpdate.readOnly = true;
+          eventStartTimeUpdate.disabled = true;
+          eventEndTimeUpdate.disabled = true;
+          allDayCheckUpdate.disabled = true;
         }
       }
 
@@ -301,6 +479,7 @@
               title: "저장 성공",
               text: "일정이 저장되었습니다!",
             });
+            recentList();
           },
           error: function (e) {
             console.log(JSON.stringify(e));
@@ -325,6 +504,7 @@
               title: "삭제 성공",
               text: "일정이 삭제되었습니다!",
             });
+            recentList();
           },
           error: function (e) {
             console.log(JSON.stringify(e));
@@ -351,6 +531,7 @@
         var updatedEndTime =
           document.getElementById("eventEndTimeUpdate").value;
         var allDay = document.getElementById("allDayCheckUpdate").checked;
+        var categories = document.getElementById("categoriesUpdate").value;
 
         var startTimeFormatted = formatDateToOracle(updatedStartTime);
         var endTimeFormatted = formatDateToOracle(updatedEndTime);
@@ -362,6 +543,7 @@
           start: startTimeFormatted,
           end: endTimeFormatted,
           allDay: allDay,
+          categories: categories,
         };
 
         $.ajax({
@@ -376,6 +558,7 @@
               title: "수정 성공",
               text: "일정이 수정되었습니다!",
             });
+            recentList();
           },
           error: function (e) {
             console.log(JSON.stringify(e));
@@ -459,330 +642,277 @@
         </div>
       </div>
 
-      <section class="section">
-        <div class="row" id="table-head">
-          <div class="col-12">
-            <div class="card">
-              <div class="card-header">
-                <div class="row">
-                  <!-- 일정 등록 버튼 -->
-                  <div class="col-12 col-md-6 order-md-1 order-last">
-                    <div class="float-start float-lg-start">
-                      <div
-                        sec:authorize="hasAnyRole('ROLE_admin', 'ROLE_teacher')"
-                      >
-                        <div class="button">
-                          <button
-                            onclick="openModal()"
-                            class="btn btn-outline-primary"
-                          >
-                            일정 등록
-                          </button>
-                        </div>
-                      </div>
-                    </div>
+      <div class="page-content">
+        <section class="row">
+          <!-- 큰 창 -->
+          <div class="col-12 col-lg-9">
+            <div class="row">
+              <div class="col-12">
+                <div class="card">
+                  <!-- 캘린더 -->
+                  <div class="card-body">
+                    <div id="calendar"></div>
                   </div>
-                  <!-- 검색 창 -->
-                  <div class="col-12 col-md-6 order-md-2 order-first">
-                    <div class="float-start float-lg-end">
-                      <div class="input-group mb-3">
-                        <input
-                          type="text"
-                          id="searchInput"
-                          placeholder="일정 제목을 입력해주세요."
-                          class="form-control"
-                        />
-                        <button
-                          onclick="searchEvent()"
-                          class="btn btn-outline-secondary"
-                        >
-                          검색
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+                  <!-- 캘린더 -->
                 </div>
-              </div>
-
-              <div class="card-content">
-                <!-- 캘린더 -->
-                <div style="margin: 30px">
-                  <div id="calendar"></div>
-                </div>
-
-                <!-- 일정 저장 모달 -->
-                <div sec:authorize="hasAnyRole('ROLE_admin', 'ROLE_teacher')">
-                  <div
-                    aria-labelledby="myModalLabel1"
-                    aria-modal="true"
-                    class="modal fade text-left show"
-                    id="insert"
-                    role="dialog"
-                    style="display: none; padding-right: 17px"
-                    tabindex="-1"
-                  >
-                    <div
-                      class="modal-dialog modal-dialog-scrollable"
-                      role="document"
-                    >
-                      <div class="modal-content" id="eventModal">
-                        <div class="modal-header">
-                          <h5 class="modal-title" id="myModalLabel1">
-                            일정 등록
-                          </h5>
-                          <button
-                            type="button"
-                            class="close rounded-pill"
-                            data-bs-dismiss="modal"
-                            aria-label="Close"
-                            onclick="closeModal()"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              stroke-width="2"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              class="feather feather-x"
-                            >
-                              <line x1="18" y1="6" x2="6" y2="18"></line>
-                              <line x1="6" y1="6" x2="18" y2="18"></line>
-                            </svg>
-                          </button>
-                        </div>
-
-                        <div class="modal-body">
-                          <label>일정 작성자: </label>
-                          <div class="form-group">
-                            <input
-                              type="text"
-                              class="form-control"
-                              id="member"
-                              th:value="${#authentication.name}"
-                              readonly
-                            />
-                          </div>
-                          <label>카테고리: </label>
-                          <div class="form-group">
-                            <select id="categories" class="form-control">
-                              <option value="해당없음">해당없음</option>
-                            </select>
-                          </div>
-                          <label>일정 제목: </label>
-                          <div class="form-group">
-                            <input
-                              type="text"
-                              id="eventTitle"
-                              class="form-control"
-                            />
-                          </div>
-                          <label>일정 내용: </label>
-                          <div class="form-group">
-                            <input
-                              type="text"
-                              id="eventDescription"
-                              class="form-control"
-                            />
-                          </div>
-                          <label>시작 시간: </label>
-                          <div class="form-group">
-                            <input
-                              type="datetime-local"
-                              id="eventStartTime"
-                              class="form-control"
-                            />
-                          </div>
-                          <label>종료 시간: </label>
-                          <div class="form-group">
-                            <input
-                              type="datetime-local"
-                              id="eventEndTime"
-                              class="form-control"
-                            />
-                          </div>
-                          <label for="allDayCheck">하루 종일:</label>
-                          <div class="checkbox">
-                            <input
-                              type="checkbox"
-                              id="allDayCheck"
-                              class="form-check-input"
-                              onchange="toggleTimeInputs()"
-                            />
-                          </div>
-                        </div>
-
-                        <div class="modal-footer">
-                          <button
-                            type="button"
-                            class="btn btn-light-primary"
-                            data-bs-dismiss="modal"
-                            onclick="closeModal()"
-                          >
-                            <i class="bx bx-x d-block d-sm-none"></i>
-                            <span class="d-none d-sm-block">취소</span>
-                          </button>
-                          <button
-                            type="button"
-                            class="btn btn-primary ml-1"
-                            data-bs-dismiss="modal"
-                            onclick="saveEventData()"
-                          >
-                            <i class="bx bx-check d-block d-sm-none"></i>
-                            <span class="d-none d-sm-block">저장</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- 일정 수정/삭제 모달 -->
-                <div sec:authorize="hasAnyRole('ROLE_admin', 'ROLE_teacher')">
-                  <div
-                    class="modal fade text-left show"
-                    id="update"
-                    tabindex="-1"
-                    aria-labelledby="myModalLabel1"
-                    style="display: none; padding-right: 17px"
-                    aria-modal="true"
-                    role="dialog"
-                  >
-                    <div
-                      class="modal-dialog modal-dialog-scrollable"
-                      role="document"
-                    >
-                      <div class="modal-content" id="eventModalUpdate">
-                        <div class="modal-header">
-                          <h5 class="modal-title" id="myModalLabel2">
-                            일정 변경
-                          </h5>
-                          <button
-                            type="button"
-                            class="close rounded-pill"
-                            data-bs-dismiss="modal"
-                            aria-label="Close"
-                            onclick="closeUpdateModal()"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              stroke-width="2"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              class="feather feather-x"
-                            >
-                              <line x1="18" y1="6" x2="6" y2="18"></line>
-                              <line x1="6" y1="6" x2="18" y2="18"></line>
-                            </svg>
-                          </button>
-                        </div>
-
-                        <div class="modal-body">
-                          <label>일정 작성자: </label>
-                          <div class="form-group">
-                            <input
-                              type="text"
-                              id="eventMemberID"
-                              class="form-control"
-                              readonly
-                            />
-                          </div>
-                          <label>일정 제목: </label>
-                          <div class="form-group">
-                            <input
-                              type="text"
-                              id="eventTitleUpdate"
-                              class="form-control"
-                            />
-                          </div>
-                          <label>일정 내용: </label>
-                          <div class="form-group">
-                            <input
-                              type="text"
-                              id="eventDescriptionUpdate"
-                              class="form-control"
-                            />
-                          </div>
-                          <label>시작 시간: </label>
-                          <div class="form-group">
-                            <input
-                              type="datetime-local"
-                              id="eventStartTimeUpdate"
-                              class="form-control"
-                            />
-                          </div>
-                          <label>종료 시간: </label>
-                          <div class="form-group">
-                            <input
-                              type="datetime-local"
-                              id="eventEndTimeUpdate"
-                              class="form-control"
-                            />
-                          </div>
-                          <label for="allDayCheck">하루 종일:</label>
-                          <input
-                            type="checkbox"
-                            id="allDayCheckUpdate"
-                            class="form-check-input"
-                            onchange="toggleTimeInputsUpdate()"
-                          />
-                        </div>
-
-                        <div class="modal-footer">
-                          <button
-                            type="button"
-                            class="btn btn-light-primary"
-                            data-bs-dismiss="modal"
-                            onclick="closeUpdateModal()"
-                          >
-                            <i class="bx bx-x d-block d-sm-none"></i>
-                            <span class="d-none d-sm-block">취소</span>
-                          </button>
-                          <button
-                            type="button"
-                            class="btn btn-danger ml-1"
-                            data-bs-dismiss="modal"
-                            onclick="deleteSelectedEvent()"
-                            id="deleteButton"
-                            th:data-username="${#authentication.name}"
-                            style="display: none"
-                          >
-                            <i class="bx bx-check d-block d-sm-none"></i>
-                            <span class="d-none d-sm-block">삭제</span>
-                          </button>
-                          <button
-                            type="button"
-                            class="btn btn-primary ml-1"
-                            data-bs-dismiss="modal"
-                            onclick="updateEventInServer()"
-                            id="updateButton"
-                            th:data-username="${#authentication.name}"
-                            style="display: none"
-                          >
-                            <i class="bx bx-check d-block d-sm-none"></i>
-                            <span class="d-none d-sm-block">수정</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="card-content"></div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+          <!-- 큰 창 끝 -->
+          <!-- 작은 창 -->
+          <div class="col-12 col-lg-3">
+            <div class="card">
+              <div class="card-header">
+                <h5>일정 목록</h5>
+              </div>
+              <div class="card-body">
+                <div class="recentList"></div>
+              </div>
+            </div>
+          </div>
+          <!-- 작은 창 끝 -->
+        </section>
+      </div>
     </div>
+
+    <!-- 일정 저장 모달 -->
+    <div sec:authorize="hasAnyRole('ROLE_admin', 'ROLE_teacher')">
+      <div
+        aria-labelledby="myModalLabel1"
+        aria-modal="true"
+        class="modal fade text-left show"
+        id="insert"
+        role="dialog"
+        style="display: none; padding-right: 17px"
+        tabindex="-1"
+      >
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
+          <div class="modal-content" id="eventModal">
+            <div class="modal-header">
+              <h5 class="modal-title" id="myModalLabel1">일정 등록</h5>
+              <button
+                type="button"
+                class="close rounded-pill"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+                onclick="closeModal()"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="feather feather-x"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+
+            <div class="modal-body">
+              <input
+                type="hidden"
+                id="member"
+                th:value="${#authentication.name}"
+              />
+              <label>카테고리: </label>
+              <div class="form-group">
+                <select id="categories" class="form-select">
+                  <option value="전체">전체</option>
+                </select>
+              </div>
+              <label>일정 제목: </label>
+              <div class="form-group">
+                <input type="text" id="eventTitle" class="form-control" />
+              </div>
+              <label>일정 내용: </label>
+              <div class="form-group">
+                <input type="text" id="eventDescription" class="form-control" />
+              </div>
+              <label>시작 시간: </label>
+              <div class="form-group">
+                <input
+                  type="datetime-local"
+                  id="eventStartTime"
+                  class="form-control"
+                />
+              </div>
+              <label>종료 시간: </label>
+              <div class="form-group">
+                <input
+                  type="datetime-local"
+                  id="eventEndTime"
+                  class="form-control"
+                />
+              </div>
+              <label for="allDayCheck">하루 종일:</label>
+              <div class="checkbox">
+                <input
+                  type="checkbox"
+                  id="allDayCheck"
+                  class="form-check-input"
+                  onchange="toggleTimeInputs()"
+                />
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-light-primary"
+                data-bs-dismiss="modal"
+                onclick="closeModal()"
+              >
+                <i class="bx bx-x d-block d-sm-none"></i>
+                <span class="d-none d-sm-block">취소</span>
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary ml-1"
+                data-bs-dismiss="modal"
+                onclick="saveEventData()"
+              >
+                <i class="bx bx-check d-block d-sm-none"></i>
+                <span class="d-none d-sm-block">저장</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 일정 등록 모달 끝 -->
+
+    <!-- 일정 변경 모달 -->
+    <div sec:authorize="hasAnyRole('ROLE_admin', 'ROLE_teacher')">
+      <div
+        class="modal fade text-left show"
+        id="update"
+        tabindex="-1"
+        aria-labelledby="myModalLabel1"
+        style="display: none; padding-right: 17px"
+        aria-modal="true"
+        role="dialog"
+      >
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
+          <div class="modal-content" id="eventModalUpdate">
+            <div class="modal-header">
+              <h5 class="modal-title" id="myModalLabel2">일정 상세</h5>
+              <button
+                type="button"
+                class="close rounded-pill"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+                onclick="closeUpdateModal()"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="feather feather-x"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+
+            <div class="modal-body">
+              <input type="hidden" id="eventMemberID" />
+              <label>카테고리: </label>
+              <div class="form-group">
+                <select id="categoriesUpdate" class="form-select">
+                  <option value="전체">전체</option>
+                </select>
+              </div>
+              <label>일정 제목: </label>
+              <div class="form-group">
+                <input type="text" id="eventTitleUpdate" class="form-control" />
+              </div>
+              <label>일정 내용: </label>
+              <div class="form-group">
+                <input
+                  type="text"
+                  id="eventDescriptionUpdate"
+                  class="form-control"
+                />
+              </div>
+              <label>시작 시간: </label>
+              <div class="form-group">
+                <input
+                  type="datetime-local"
+                  id="eventStartTimeUpdate"
+                  class="form-control"
+                />
+              </div>
+              <label>종료 시간: </label>
+              <div class="form-group">
+                <input
+                  type="datetime-local"
+                  id="eventEndTimeUpdate"
+                  class="form-control"
+                />
+              </div>
+              <label for="allDayCheck">하루 종일:</label>
+              <input
+                type="checkbox"
+                id="allDayCheckUpdate"
+                class="form-check-input"
+                onchange="toggleTimeInputsUpdate()"
+              />
+            </div>
+
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-light-primary"
+                data-bs-dismiss="modal"
+                onclick="closeUpdateModal()"
+              >
+                <i class="bx bx-x d-block d-sm-none"></i>
+                <span class="d-none d-sm-block">취소</span>
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger ml-1"
+                data-bs-dismiss="modal"
+                onclick="deleteSelectedEvent()"
+                id="deleteButton"
+                th:data-username="${#authentication.name}"
+                style="display: none"
+              >
+                <i class="bx bx-check d-block d-sm-none"></i>
+                <span class="d-none d-sm-block">삭제</span>
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary ml-1"
+                data-bs-dismiss="modal"
+                onclick="updateEventInServer()"
+                id="updateButton"
+                th:data-username="${#authentication.name}"
+                style="display: none"
+              >
+                <i class="bx bx-check d-block d-sm-none"></i>
+                <span class="d-none d-sm-block">수정</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 일정 변경 모달 끝 -->
 
     <script th:src="@{/assets/js/bootstrap.js}"></script>
     <script th:src="@{/assets/js/app.js}"></script>

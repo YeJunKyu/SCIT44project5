@@ -63,7 +63,7 @@ create table lms_notice(
 	noticenum	    number	        primary key,
 	memberid	    varchar2(20)	not null,
 	noticetitle 	varchar2(200)	not null,
-	noticecontents	varchar2(1000)	not null,
+	noticecontents	varchar2(4000)	not null,
 	noticedate	    date	        default sysdate,
 	viewauthority	number      	default 0, --읽기권한(0:모두, 1:선생)
 	hits	        number	        default 0,
@@ -89,8 +89,8 @@ create table lms_schedule (
     allday          number(1),
     color           varchar2(100),
     textcolor       varchar2(100),
-    categories      varchar2(200),
-	memberid        varchar2(100)   not null
+	memberid        varchar2(100)   not null,
+    categories      varchar2(200)
 );
 
 --일정 테이블 시퀀스

@@ -35,11 +35,27 @@
                 })
                 return false;
             }
-            if(c.length<10) {
+            if(t.length>200) {
+                Swal.fire({
+                  icon: 'error',
+                  title: '제목을 입력해주세요',
+                  text: '내용을 200자 이내로 입력해주세요',
+                })
+                return false;
+            }
+            if(c.length<5) {
                 Swal.fire({
                   icon: 'error',
                   title: '내용을 입력해주세요',
                   text: '내용을 10자 이상 입력해주세요',
+                })
+                return false;
+            }
+            if(c.length>4000) {
+                Swal.fire({
+                  icon: 'error',
+                  title: '내용을 입력해주세요',
+                  text: '내용을 4000자 이내로 입력해주세요',
                 })
                 return false;
             }
@@ -98,7 +114,7 @@
                                             </div>
                                             <div class="col-md-10 form-group">
                                                 <select name="categories" id="categories" class="form-select">
-                                                    <option value="해당없음">해당없음</option>
+                                                    <option value="전체">전체</option>
                                                     <option th:each="category : ${categories}" th:value="${category}" th:text="${category}"></option>
                                                 </select>
                                             </div>

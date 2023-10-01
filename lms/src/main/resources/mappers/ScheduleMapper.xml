@@ -3,6 +3,12 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.scit.lms.dao.ScheduleDAO">
+    <!-- 카테고리 목록 -->
+    <select id="categoryList" resultType="Student">
+        select * from lms_student
+        order by
+        to_number(regexp_substr(curriculum, '\d+'))
+    </select>
 
     <!-- 일정 목록 -->
     <select id="list" resultType="Schedule">
@@ -15,9 +21,35 @@
             allday,
             color,
             textcolor,
-            memberid
+            memberid,
+            categories
         from
             lms_schedule
+    </select>
+
+    <!-- 최근 일정 목록 -->
+    <select id="recentList" parameterType="hashmap" resultType="Schedule">
+        select
+            eventid,
+            title,
+            note,
+            to_char(startdate, 'YYYY-MM-DD') startdate,
+            to_char(enddate, 'YYYY-MM-DD') enddate,
+            allday,
+            color,
+            textcolor,
+            memberid,
+            categories
+        from
+            lms_schedule
+        where
+            (startdate &gt; TO_DATE(#{start}, 'YYYY-MM-DD HH24:MI:SS') and
+            startdate &lt; TO_DATE(#{end}, 'YYYY-MM-DD HH24:MI:SS'))
+            or
+            (enddate &gt; TO_DATE(#{start}, 'YYYY-MM-DD HH24:MI:SS') and
+            enddate &lt; TO_DATE(#{end}, 'YYYY-MM-DD HH24:MI:SS'))
+        order by
+            startdate
     </select>
 
     <!-- 일정 등록 -->
@@ -33,7 +65,8 @@
             , #{allday}
             , #{color}
             , #{textcolor}
-            , #{memberid})
+            , #{memberid}
+            , #{categories})
     </insert>
 
     <!-- 일정 선택 -->
@@ -47,7 +80,8 @@
             allday,
             color,
             textcolor,
-            memberid
+            memberid,
+            categories
         from
             lms_schedule
         where eventid=#{eventid}
@@ -70,8 +104,9 @@
             , startdate=to_date(#{startdate}, 'YYYY-MM-DD HH24:MI:SS')
             , enddate=to_date(#{enddate}, 'YYYY-MM-DD HH24:MI:SS')
             , allday=#{allday}
+            , categories=#{categories}
         where
-            eventid=7 and memberid=#{memberid}
+            eventid=#{eventid} and memberid=#{memberid}
     </update>
 
 </mapper>
