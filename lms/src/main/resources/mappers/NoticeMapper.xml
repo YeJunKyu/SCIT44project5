@@ -4,6 +4,13 @@
 
 <mapper namespace="com.scit.lms.dao.NoticeDAO">
 
+    <!-- 과정 불러오기 -->
+    <select id="selectCg" resultType="Student">
+        select * from lms_student
+        order by
+            to_number(regexp_substr(curriculum, '\d+'))
+    </select>
+
     <!-- 공지 글 작성 -->
     <insert id="insert" parameterType="Notice">
         insert into lms_notice
@@ -13,6 +20,7 @@
         , noticetitle
         , noticecontents
         , viewauthority
+        , categories
         <if test="originalfile != null and savedfile != null">
             , originalfile
             , savedfile
@@ -25,6 +33,7 @@
         , #{noticetitle}
         , #{noticecontents}
         , #{viewauthority}
+        , #{categories}
         <if test="originalfile != null and savedfile != null">
             , #{originalfile}
             , #{savedfile}
@@ -35,10 +44,13 @@
     <!-- 공지 글 목록 -->
     <select id="list" resultType="Notice">
         select
-            noticenum, memberid, noticetitle, noticecontents, to_char(noticedate, 'yyyy-mm-dd') noticedate, viewauthority, hits
+            noticenum, memberid, noticetitle, noticecontents, to_char(noticedate, 'yyyy-mm-dd') noticedate, viewauthority, hits, categories
         from
             lms_notice
         <where>
+            <if test="type == 'categories'">
+                and upper(categories) like upper('%' || #{searchWord} || '%')
+            </if>
             <if test="type == 'title'">
                 and upper(noticetitle) like upper('%' || #{searchWord} || '%')
             </if>
@@ -64,11 +76,14 @@
     <!-- 공지 글 목록(학생용) -->
     <select id="studentlist" resultType="Notice">
         select
-            noticenum, memberid, noticetitle, noticecontents, to_char(noticedate, 'yyyy-mm-dd') noticedate, viewauthority, hits
+            noticenum, memberid, noticetitle, noticecontents, to_char(noticedate, 'yyyy-mm-dd') noticedate, viewauthority, hits, categories
         from
             lms_notice
         <where>
             viewauthority = 0
+            <if test="type == 'categories'">
+                and upper(categories) like upper('%' || #{searchWord} || '%')
+            </if>
             <if test="type == 'title'">
                 and upper(noticetitle) like upper('%' || #{searchWord} || '%')
             </if>
@@ -99,6 +114,9 @@
             lms_notice
         <where>
             viewauthority = 0
+            <if test="type == 'categories'">
+                and upper(categories) like upper('%' || #{searchWord} || '%')
+            </if>
             <if test="type == 'title'">
                 and upper(noticetitle) like upper('%' || #{searchWord} || '%')
             </if>
@@ -126,6 +144,9 @@
         from
             lms_notice
         <where>
+            <if test="type == 'categories'">
+                and upper(categories) like upper('%' || #{searchWord} || '%')
+            </if>
             <if test="type == 'title'">
                 and upper(noticetitle) like upper('%' || #{searchWord} || '%')
             </if>
@@ -149,7 +170,7 @@
     <!-- 공지 글 조회 -->
     <select id="read" resultType="Notice">
         select
-            noticenum, memberid, noticetitle, noticecontents, noticedate, viewauthority, hits, originalfile, savedfile
+            noticenum, memberid, noticetitle, noticecontents, noticedate, viewauthority, hits, originalfile, savedfile, categories
         from
             lms_notice
         where
@@ -168,6 +189,7 @@
         noticetitle=#{noticetitle}
         , noticecontents=#{noticecontents}
         , viewauthority=#{viewauthority}
+        , categories=#{categories}
         , noticedate=sysdate
         <if test="originalfile != null and savedfile != null">
             , originalfile=#{originalfile}

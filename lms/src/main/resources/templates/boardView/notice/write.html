@@ -94,6 +94,15 @@
                                     <div class="form-body">
                                         <div class="row">
                                             <div class="col-md-2">
+                                                <label>카테고리</label>
+                                            </div>
+                                            <div class="col-md-10 form-group">
+                                                <select name="categories" id="categories" class="form-select">
+                                                    <option value="해당없음">해당없음</option>
+                                                    <option th:each="category : ${categories}" th:value="${category}" th:text="${category}"></option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-2">
                                                 <label>제목</label>
                                             </div>
                                             <div class="col-md-10 form-group">

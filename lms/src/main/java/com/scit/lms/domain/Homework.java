@@ -20,4 +20,5 @@ public class Homework {
     String originalfile;
     String savedfile;
     String memberid;
+    String hw_students;
 }

@@ -17,4 +17,5 @@ public class Notice {
     int hits;
     String originalfile;
     String savedfile;
+    String categories;
 }

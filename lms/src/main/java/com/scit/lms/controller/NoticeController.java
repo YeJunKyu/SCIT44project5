@@ -1,6 +1,8 @@
 package com.scit.lms.controller;
 
+import com.scit.lms.domain.HomeworkCategory;
 import com.scit.lms.domain.Notice;
+import com.scit.lms.domain.Student;
 import com.scit.lms.service.NoticeService;
 import com.scit.lms.util.FileService;
 import com.scit.lms.util.PageNavigator;
@@ -26,6 +28,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -83,11 +86,22 @@ public class NoticeController {
 
     //공지 글 작성 폼
     @GetMapping("write")
-    public String write(@AuthenticationPrincipal UserDetails user) {
+    public String write(@AuthenticationPrincipal UserDetails user,
+                        Model model) {
+
         //학생이 공지 등록 접근 금지
         if (user.getAuthorities().stream().anyMatch(auth -> "ROLE_student".equals(auth.getAuthority()))) {
             return "redirect:/notice";
         }
+
+        //카테고리 불러오기
+        ArrayList<Student> category = service.selectCg();
+        List<String> categories = category.stream()
+                .map(Student::getCurriculum)
+                .distinct()
+                .collect(Collectors.toList());
+
+        model.addAttribute("categories", categories);
 
         return "boardView/notice/write";
     }
@@ -194,8 +208,18 @@ public class NoticeController {
     public String update(@RequestParam(name="noticenum", defaultValue="0") int noticenum
             , Model model) {
 
+        //수정할 공지 글 불러오기
         Notice notice = service.select(noticenum);
         model.addAttribute("notice", notice);
+
+        //카테고리 불러오기
+        ArrayList<Student> category = service.selectCg();
+        List<String> categories = category.stream()
+                .map(Student::getCurriculum)
+                .distinct()
+                .collect(Collectors.toList());
+
+        model.addAttribute("categories", categories);
 
         return "boardView/notice/update";
     }

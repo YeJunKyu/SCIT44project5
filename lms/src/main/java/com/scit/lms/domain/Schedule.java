@@ -17,5 +17,5 @@ public class Schedule {
     String color;
     String textcolor;
     String memberid;
-
+    String categories;
 }
