@@ -190,7 +190,7 @@
     <update id="updateResult" parameterType="TestAnswer">
         UPDATE lms_test_answer
         SET
-            points = #{points}
+            points = #{points},
             rwc = #{rwc}
         WHERE
             asnum = #{asnum}
