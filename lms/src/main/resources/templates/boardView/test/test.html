@@ -74,7 +74,7 @@
                                                         <a th:if="${#authorization.expression('hasRole(''ROLE_teacher'')') || #authorization.expression('hasRole(''ROLE_admin'')')}" th:href="@{/test/testList(testid=${test.testid})}">
                                                             <p th:text="${test.testname}"></p>
                                                         </a>
-                                                        <a th:if="${#authorization.expression('hasRole(''ROLE_student'')')}" th:href="@{/test/viewTest(testid=${test.testid})}">
+                                                        <a th:if="${#authorization.expression('hasRole(''ROLE_student'')')}" class="disabled" th:href="@{/test/viewTest(testid=${test.testid})}">
                                                             <p th:text="${test.testname}"></p>
                                                         </a>
                                                     </td>
@@ -118,49 +118,63 @@
 
         <script>
             // 현재 시간을 가져오는 함수
-            function getCurrentTimeFormatted() {
-                var now = new Date();
-                var year = now.getFullYear();
-                var month = String(now.getMonth() + 1).padStart(2, '0');
-                var day = String(now.getDate()).padStart(2, '0');
-                var hours = String(now.getHours()).padStart(2, '0');
-                var minutes = String(now.getMinutes()).padStart(2, '0');
-                return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes;
-            }
-            // 현재 시간을 가져와서 <span> 태그에 출력
-            var currentTimeFormatted = getCurrentTimeFormatted();
-            console.log(currentTimeFormatted);
-            document.getElementById('current-time').textContent = currentTimeFormatted;
+     function getCurrentTimeFormatted() {
+         var now = new Date();
+         var year = now.getFullYear();
+         var month = String(now.getMonth() + 1).padStart(2, '0');
+         var day = String(now.getDate()).padStart(2, '0');
+         var hours = String(now.getHours()).padStart(2, '0');
+         var minutes = String(now.getMinutes()).padStart(2, '0');
+         return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes;
+     }
 
-            // 각 시험 행을 처리하는 함수
-    function processTestRow(testRow) {
-        // 현재 시간을 가져옴
-        var currentTimeFormatted = getCurrentTimeFormatted();
-        console.log("현재 시간:", currentTimeFormatted);
+     // 현재 시간을 가져와서 <span> 태그에 출력
+     var currentTimeFormatted = getCurrentTimeFormatted();
+     console.log(currentTimeFormatted);
+     document.getElementById('current-time').textContent = currentTimeFormatted;
 
-        // 시험의 시작일과 마감일을 가져옴
-        var testStartDate = testRow.querySelector('.text-bold-500:nth-child(2)').textContent.trim(); // 두 번째 열에 있는 시작일
-        var testEndDate = testRow.querySelector('.text-bold-500:nth-child(3)').textContent.trim();   // 세 번째 열에 있는 마감일
+     // 각 시험 행을 처리하는 함수
+function processTestRow(testRow) {
+    // 현재 시간을 가져옴
+    var currentTimeFormatted = getCurrentTimeFormatted();
+    console.log("현재 시간:", currentTimeFormatted);
 
-        console.log("시험 시작일:", testStartDate);
-        console.log("시험 마감일:", testEndDate);
+    // 시험의 시작일과 마감일을 가져옴
+    var testStartDate = testRow.querySelector('.text-bold-500:nth-child(2)').textContent.trim(); // 두 번째 열에 있는 시작일
+    var testEndDate = testRow.querySelector('.text-bold-500:nth-child(3)').textContent.trim();   // 세 번째 열에 있는 마감일
 
-        // 시작일과 마감일을 현재 시간과 비교
-        if (currentTimeFormatted >= testStartDate && currentTimeFormatted <= testEndDate) {
-            // 조건에 맞으면 시험 링크를 활성화
-            var testLink = testRow.querySelector('a');
-            if (testLink) {
-                testLink.classList.remove('disabled'); // 시험 링크 활성화
-                console.log("링크 활성화");
-            }
-        } else {
-            console.log("조건에 맞지 않음");
-        }
+    console.log("시험 시작일:", testStartDate);
+    console.log("시험 마감일:", testEndDate);
+
+    // 시작일과 마감일을 현재 시간과 비교
+    if (currentTimeFormatted >= testStartDate && currentTimeFormatted <= testEndDate) {
+        // 조건에 맞으면 아무것도 하지 않고 그대로 둠
+    } else {
+        // 조건에 맞지 않으면 링크를 비활성화하고 클릭 이벤트 처리기를 추가
+        var testLinks = testRow.querySelectorAll('.disabled'); // class="disabled"인 링크 선택
+        console.log(testLinks);
+        testLinks.forEach(function(testLink) {
+    // href 속성 제거
+    testLink.removeAttribute('th:href');
+    // 클릭 이벤트 처리기를 추가하여 링크 비활성화
+    testLink.addEventListener('click', function(event) {
+        event.preventDefault(); // 기본 클릭 동작 방지
+        alert('시험 시간이 아닙니다.'); // 경고 메시지 표시
+    });
+});
+console.log("링크 비활성화");
+
     }
+}
 
-    // 모든 시험 행을 처리
-    var testRows = document.querySelectorAll('#table-hover-row1 tr');
-    testRows.forEach(processTestRow);
+// 모든 시험 행을 처리
+var testRows = document.querySelectorAll('#table-hover-row1 tr');
+testRows.forEach(function(testRow) {
+    processTestRow(testRow); // 각 시험 행에 대한 처리 함수 호출
+});
+
+
+
         </script>
         <script src="assets/js/bootstrap.js"></script>
         <script src="assets/js/app.js"></script>

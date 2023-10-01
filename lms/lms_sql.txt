@@ -178,8 +178,8 @@ CREATE SEQUENCE lms_q_options_seq START WITH 1 INCREMENT BY 1;
 --학생 답안지 등록 테이블
 create table lms_testpaper_list (
     asnum       number      primary key,                                        --시험지 고유번호
-    testid      number      references lms_test(testid),                        --시험 고유번호
-    memberid    varchar2(500) references lms_member(memberid),                   --제출자 아이디
+    testid      number      references lms_test(testid) on delete cascade,                        --시험 고유번호
+    memberid    varchar2(500) references lms_member(memberid) on delete cascade,                   --제출자 아이디
     totalscore       number                                                     --점수
 );
 
@@ -189,8 +189,8 @@ create sequence lms_testpaper_list_seq;
 --학생 제출 답 등록 테이블
 create table lms_test_answer (
     answernum   number  primary key,                                --답변 고유번호
-    asnum       number  references lms_testpaper_list(asnum),       --시험지 고유번호
-    qid         number  references lms_question(qid),               --문제 고유번호
+    asnum       number  references lms_testpaper_list(asnum) on delete cascade,       --시험지 고유번호
+    qid         number  references lms_question(qid) on delete cascade,               --문제 고유번호
     answer      varchar2(4000),                                     --답변
     rwc         varchar2(500) check (rwc in ('right', 'wrong', 'check')),  --정답, 오답, 체크필요
     points      number,                                             --득점
