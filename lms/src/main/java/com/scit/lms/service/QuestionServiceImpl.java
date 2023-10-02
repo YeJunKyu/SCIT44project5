@@ -124,5 +124,11 @@ public class QuestionServiceImpl implements QuestionService{
         return dao.selectOneAnswer(answernum);
     }
 
+    // 점수 변경
+    @Override
+    public void setScore(TestAnswer testAnswer) {
+        dao.setScore(testAnswer);
+    }
+
 
 }

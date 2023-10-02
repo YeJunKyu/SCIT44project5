@@ -58,4 +58,7 @@ public interface QuestionDAO {
 
     // 제출된 시험지 문제 하나 선택
     TestAnswer selectOneAnswer(int answernum);
+
+    // 점수 변경
+    void setScore(TestAnswer testAnswer);
 }

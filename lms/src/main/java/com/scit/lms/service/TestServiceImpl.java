@@ -81,4 +81,23 @@ public class TestServiceImpl implements TestService{
     public int updateCategory(PrimaryRatio primaryRatio) {
         return dao.updateCategory(primaryRatio);
     }
+
+    // 선택한 답변 정보 가져오기
+    @Override
+    public TestpaperList getTestpaperList(int asnum) {
+        return dao.getTestpaperList(asnum);
+    }
+
+    // 제출된 응답 확인 상태 변경
+    @Override
+    public void completeCheck(int asnum) {
+        dao.completeCheck(asnum);
+    }
+
+    // 정답지 번호 가져오기
+    @Override
+    public int getAsnum(String answernum) {
+        return dao.getAsnum(answernum);
+    }
+
 }

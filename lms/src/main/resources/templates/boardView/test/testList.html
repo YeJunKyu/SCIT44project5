@@ -73,7 +73,11 @@
                                                             </a>
                                                         </td>
                                                         <td class="text-bold-500" th:text="${test.totalscore}">0</td>
-                                                        <td class="text-bold-500"></td>
+                                                        <td class="text-bold-500">
+                                                            <span th:if="${test.checked} == 'complete'">
+                                                                <i class="bi bi-check-lg"></i>
+                                                            </span>
+                                                        </td>
                                                     </tr>
                                                 </tbody>
                                             </table>

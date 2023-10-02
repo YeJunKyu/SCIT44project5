@@ -51,27 +51,27 @@ public class TestController {
 
     // 시험 문제 생성
     @GetMapping("create")
-    public String createTestForm(Model model)
-    {   log.debug("createTest:{}","okay");
+    public String createTestForm(Model model) {
+        log.debug("createTest:{}", "okay");
         ArrayList<PrimaryRatio> primaryRatios = testService.selectCategory();
-        log.debug("테스트비중:{}",primaryRatios);
-        model.addAttribute("category",primaryRatios);
+        log.debug("테스트비중:{}", primaryRatios);
+        model.addAttribute("category", primaryRatios);
         return "boardView/test/createTest";
     }
 
     // 시험 문제 등록
     @PostMapping("insertTest")
     public String insertTest(@RequestParam("categoryid") int categoryid,
-            @RequestParam("totalpoints") int totalpoints,
-            @RequestParam("testname") String testname,
-            @RequestParam("testdate") String testdate,
-            @RequestParam("testlimit") String testlimit,
-            @RequestParam("requestData") String requestDataString,
-            @RequestParam Map<String, MultipartFile> fileMap) throws JsonProcessingException {
+                             @RequestParam("totalpoints") int totalpoints,
+                             @RequestParam("testname") String testname,
+                             @RequestParam("testdate") String testdate,
+                             @RequestParam("testlimit") String testlimit,
+                             @RequestParam("requestData") String requestDataString,
+                             @RequestParam Map<String, MultipartFile> fileMap) throws JsonProcessingException {
         // 문제 배열 추출
         ObjectMapper objectMapper = new ObjectMapper();
         TestRequestObject requestObject = objectMapper.readValue(requestDataString, TestRequestObject.class);
-        log.debug("파일확인:{}",requestObject);
+        log.debug("파일확인:{}", requestObject);
         // requestDataString 대신에 requestObject에서 데이터 추출
 
         // 시험 등록
@@ -91,10 +91,8 @@ public class TestController {
         log.debug("시험아이디:{}", testid);
 
 
-
-
         // 문제 배열 등록
-        for (Question q: requestObject.getQuestionDataArray()) {
+        for (Question q : requestObject.getQuestionDataArray()) {
 
 
             MultipartFile currentFile = fileMap.get("file[" + q.getPapernum() + "]");
@@ -121,7 +119,7 @@ public class TestController {
             log.debug("문제등록확인:{}", question);
 
             int opid = questionService.opidUp();
-            log.debug("옵션id:{}",opid);
+            log.debug("옵션id:{}", opid);
 
             // 타입이 1, 2, 3인 경우만 option 및 answer 등록
             if (q.getOptions() != null && !q.getOptions().isEmpty() && (q.getType() == 1 || q.getType() == 2 || q.getType() == 3)) {
@@ -139,7 +137,7 @@ public class TestController {
                         options.add(option);
                     }
                 }
-                log.debug("옵션확인:{}",options);
+                log.debug("옵션확인:{}", options);
                 // 옵션 등록
                 questionService.insertOptions(options);
                 log.debug("옵션등록확인:{}", options);
@@ -181,15 +179,15 @@ public class TestController {
     @GetMapping("download")
     public void download(long qid, HttpServletRequest request
             , HttpServletResponse response
-                         ){
-        log.debug("{}",request.getRemoteAddr());//다운요청보낸ip문자열
+    ) {
+        log.debug("{}", request.getRemoteAddr());//다운요청보낸ip문자열
 
         Question question = questionService.selectOneQuestion(qid);
 
         String fullPath = uploadPath + "/" + question.getSavedfile();
 
         try {
-            response.setHeader("Content-Disposition", " attachment;filename="+ URLEncoder.encode(question.getOriginalfile(), "UTF-8"));
+            response.setHeader("Content-Disposition", " attachment;filename=" + URLEncoder.encode(question.getOriginalfile(), "UTF-8"));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -210,7 +208,7 @@ public class TestController {
 
     //시험문제 수정폼
     @GetMapping("updateTest")
-    public String updateTest(@RequestParam("testid") int testid, Model model){
+    public String updateTest(@RequestParam("testid") int testid, Model model) {
         // 시험 정보
         Test test = testService.selectTest(testid);
 
@@ -225,8 +223,8 @@ public class TestController {
         }
 //        log.debug("{}", allOptions);
         ArrayList<PrimaryRatio> primaryRatios = testService.selectCategory();
-        log.debug("테스트비중:{}",primaryRatios);
-        model.addAttribute("category",primaryRatios);
+        log.debug("테스트비중:{}", primaryRatios);
+        model.addAttribute("category", primaryRatios);
         model.addAttribute("test", test);
         model.addAttribute("questions", questions);
         model.addAttribute("options", allOptions);
@@ -236,153 +234,147 @@ public class TestController {
     }
 
 
-        //시험문제 수정html요청
+    //시험문제 수정html요청
 
-        @PostMapping("updateTestHtml")
-        public String updateTest(@RequestParam("category_id") int category_id,
-                                 @RequestParam("testid") int testid,
-                                 @RequestParam("testname") String testname,
-                                 @RequestParam("testdate") String testdate,
-                                 @RequestParam("testlimit") String testlimit,
-                                 @RequestParam("totalpoints") int totalpoints,
-                                 @RequestParam("qid[]") List<Long> qid,
-                                 @RequestParam("papernum[]") List<Integer> papernum,
-                                 @RequestParam("type[]") List<Integer> type,
-                                 @RequestParam("contents[]") List<String> contents,
-                                 @RequestParam("points[]") List<Integer> points,
-                                 @RequestParam("optionid[]") List<Integer> optionid,
-                                 @RequestParam("content[]") List<String> content,
-                                 @RequestParam("value[]") List<String> value,
-                                 @RequestParam Map<String, MultipartFile> fileMap,
-                                 @RequestParam Map<String, String> paramMap) throws JsonProcessingException
-        {
-            log.debug("testname:{},categoryid:{}",testname,category_id);
+    @PostMapping("updateTestHtml")
+    public String updateTest(@RequestParam("category_id") int category_id,
+                             @RequestParam("testid") int testid,
+                             @RequestParam("testname") String testname,
+                             @RequestParam("testdate") String testdate,
+                             @RequestParam("testlimit") String testlimit,
+                             @RequestParam("totalpoints") int totalpoints,
+                             @RequestParam("qid[]") List<Long> qid,
+                             @RequestParam("papernum[]") List<Integer> papernum,
+                             @RequestParam("type[]") List<Integer> type,
+                             @RequestParam("contents[]") List<String> contents,
+                             @RequestParam("points[]") List<Integer> points,
+                             @RequestParam("optionid[]") List<Integer> optionid,
+                             @RequestParam("content[]") List<String> content,
+                             @RequestParam("value[]") List<String> value,
+                             @RequestParam Map<String, MultipartFile> fileMap,
+                             @RequestParam Map<String, String> paramMap) throws JsonProcessingException {
+        log.debug("testname:{},categoryid:{}", testname, category_id);
 
-            Set<Integer> checkedOptionIds = new HashSet<>();
+        Set<Integer> checkedOptionIds = new HashSet<>();
 
-            // paramMap에서 checked[]로 시작하는 모든 키를 찾고, 그 키의 옵션 ID 부분을 추출하여 checkedOptionIds에 저장
-            for (String key : paramMap.keySet()) {
-                if (key.startsWith("checked[")) {
-                    int optionId = Integer.parseInt(key.substring(8, key.length() - 1));  // "checked[123]"에서 123 부분 추출
-                    checkedOptionIds.add(optionId);
-                }
+        // paramMap에서 checked[]로 시작하는 모든 키를 찾고, 그 키의 옵션 ID 부분을 추출하여 checkedOptionIds에 저장
+        for (String key : paramMap.keySet()) {
+            if (key.startsWith("checked[")) {
+                int optionId = Integer.parseInt(key.substring(8, key.length() - 1));  // "checked[123]"에서 123 부분 추출
+                checkedOptionIds.add(optionId);
             }
-            log.debug("checked :{},checked size:{}",checkedOptionIds,checkedOptionIds.size());
+        }
+        log.debug("checked :{},checked size:{}", checkedOptionIds, checkedOptionIds.size());
 
-            //시험종목 수정 (카테고리)
-            PrimaryRatio primaryRatio = new PrimaryRatio();
-            primaryRatio.setCategory_id(category_id);
-            primaryRatio.setCategoryname(primaryRatio.assignTestNameToCategoryName(testname));
-            log.debug("primaryRatio:{}",primaryRatio);
-            testService.updateCategory(primaryRatio);
-            log.debug("카테고리수정:{}",primaryRatio);
-            // 문제 배열 추출
-            Test test = new Test();
-            test.setTestid(testid);
-            test.setTestname(testname);
-            test.setTestdate(testdate.replace("T", " "));
-            test.setTestlimit(testlimit.replace("T", " "));
+        //시험종목 수정 (카테고리)
+        PrimaryRatio primaryRatio = new PrimaryRatio();
+        primaryRatio.setCategory_id(category_id);
+        primaryRatio.setCategoryname(primaryRatio.assignTestNameToCategoryName(testname));
+        log.debug("primaryRatio:{}", primaryRatio);
+        testService.updateCategory(primaryRatio);
+        log.debug("카테고리수정:{}", primaryRatio);
+        // 문제 배열 추출
+        Test test = new Test();
+        test.setTestid(testid);
+        test.setTestname(testname);
+        test.setTestdate(testdate.replace("T", " "));
+        test.setTestlimit(testlimit.replace("T", " "));
 
-            test.setTotalpoints(totalpoints);
+        test.setTotalpoints(totalpoints);
 
-            log.debug("시험:{}", test);
+        log.debug("시험:{}", test);
 
-            //시험 수정
-            int n = testService.updateTest(test);
-
-
-            //문제수
-            int questionCount = questionService.countQuestion(testid);
-            log.debug("문제수:{}", questionCount);
-
-            //총보기수
-            int optionCount = questionService.countOption(testid);
-
-            int o = 0;
-            // 문제 배열 등록
-            for (int t = 0; t < questionCount; t++) {
-                //보기수
-
-                MultipartFile currentFile = fileMap.get("file[" + papernum.get(t) + "]");
-                log.debug("현파일:{}", currentFile);
-                Question question = new Question();
-                question.setQid(qid.get(t));
-                question.setPapernum(papernum.get(t));
-                question.setContents(contents.get(t));
-                question.setPoints(points.get(t));
-                question.setType(type.get(t));
+        //시험 수정
+        int n = testService.updateTest(test);
 
 
-                log.debug("Processing question: {}", t);
-                log.debug("qid.size(): {}", qid.size());
-                log.debug("Current qid: {}", qid.get(t));
-                // 파일이 있다면 처리합니다.
-                if (currentFile != null && !currentFile.isEmpty()) {
-                    String savedfile = FileService.saveFile(currentFile, uploadPath);
-                    log.debug("현파일:{}", currentFile.getOriginalFilename());
-                    question.setOriginalfile(currentFile.getOriginalFilename());
-                    question.setSavedfile(savedfile);
-                } else {
-                    log.debug("현파일 없음");
-                }
+        //문제수
+        int questionCount = questionService.countQuestion(testid);
+        log.debug("문제수:{}", questionCount);
 
-                questionService.updateQuestion(question);
-                log.debug("문제수정확인:{}", question);
+        //총보기수
+        int optionCount = questionService.countOption(testid);
 
-                int oneQidOptionCount = questionService.countQidOption(qid.get(t));
-                log.debug("문제당보기수:{}", oneQidOptionCount);
+        int o = 0;
+        // 문제 배열 등록
+        for (int t = 0; t < questionCount; t++) {
+            //보기수
 
-
-
-
-                // 타입이 1, 2, 3인 경우만 option 및 answer 등록
-                if ((type.get(t) == 1 || type.get(t) == 2 || type.get(t) == 3)) {
-                    log.debug("optionid size: {}", optionid.size());
-                    log.debug("value size: {}", value.size());
-                    log.debug("content size: {}", content.size());
-                    log.debug("Current index: {}", o);
-                    for (int k = 0; k < oneQidOptionCount; k++) {
-                        Option option = new Option();
-                        option.setOptionid(optionid.get(o));
-                        option.setValue(value.get(o));
-                        option.setContent(content.get(o));
-                        if (checkedOptionIds.contains(optionid.get(o))) {
-                            option.setChecked(String.valueOf(true));
-                        } else {
-                            option.setChecked(String.valueOf(false));
-                        }
-                        log.debug("option:{}", option);
-                        questionService.updateOptions(option);
-                        log.debug("option:{}", option);
-                        log.debug("보기인덱스:{}",o);
-                        o++;
-                        // 옵션 등록
+            MultipartFile currentFile = fileMap.get("file[" + papernum.get(t) + "]");
+            log.debug("현파일:{}", currentFile);
+            Question question = new Question();
+            question.setQid(qid.get(t));
+            question.setPapernum(papernum.get(t));
+            question.setContents(contents.get(t));
+            question.setPoints(points.get(t));
+            question.setType(type.get(t));
 
 
+            log.debug("Processing question: {}", t);
+            log.debug("qid.size(): {}", qid.size());
+            log.debug("Current qid: {}", qid.get(t));
+            // 파일이 있다면 처리합니다.
+            if (currentFile != null && !currentFile.isEmpty()) {
+                String savedfile = FileService.saveFile(currentFile, uploadPath);
+                log.debug("현파일:{}", currentFile.getOriginalFilename());
+                question.setOriginalfile(currentFile.getOriginalFilename());
+                question.setSavedfile(savedfile);
+            } else {
+                log.debug("현파일 없음");
+            }
 
+            questionService.updateQuestion(question);
+            log.debug("문제수정확인:{}", question);
+
+            int oneQidOptionCount = questionService.countQidOption(qid.get(t));
+            log.debug("문제당보기수:{}", oneQidOptionCount);
+
+
+            // 타입이 1, 2, 3인 경우만 option 및 answer 등록
+            if ((type.get(t) == 1 || type.get(t) == 2 || type.get(t) == 3)) {
+                log.debug("optionid size: {}", optionid.size());
+                log.debug("value size: {}", value.size());
+                log.debug("content size: {}", content.size());
+                log.debug("Current index: {}", o);
+                for (int k = 0; k < oneQidOptionCount; k++) {
+                    Option option = new Option();
+                    option.setOptionid(optionid.get(o));
+                    option.setValue(value.get(o));
+                    option.setContent(content.get(o));
+                    if (checkedOptionIds.contains(optionid.get(o))) {
+                        option.setChecked(String.valueOf(true));
+                    } else {
+                        option.setChecked(String.valueOf(false));
                     }
-                    // 답변 갱신
-                    questionService.updateAnswer();
-                    log.debug("답변등록확인:{}", "okay");
+                    log.debug("option:{}", option);
+                    questionService.updateOptions(option);
+                    log.debug("option:{}", option);
+                    log.debug("보기인덱스:{}", o);
+                    o++;
+                    // 옵션 등록
+
+
                 }
-
-
-
+                // 답변 갱신
+                questionService.updateAnswer();
+                log.debug("답변등록확인:{}", "okay");
             }
 
-            return "redirect:/test/updateTest?testid=" + testid;
+
         }
 
+        return "redirect:/test/updateTest?testid=" + testid;
+    }
 
 
     //시험문제 삭제
     @GetMapping("deleteTest")
-    public String deleteTest(@RequestParam("testid") int testid){
-        log.debug("삭제컨트롤러:{}",testid);
+    public String deleteTest(@RequestParam("testid") int testid) {
+        log.debug("삭제컨트롤러:{}", testid);
         int m = questionService.deleteQuestion(testid);
-        log.debug("문제삭제확인:{}",m);
+        log.debug("문제삭제확인:{}", m);
         int n = testService.deleteTest(testid);
-        log.debug("시험삭제확인:{}",n);
+        log.debug("시험삭제확인:{}", n);
 
 
         return "redirect:/test";
@@ -501,31 +493,33 @@ public class TestController {
         }
 
 //        log.debug("{}", allOptions);
+        // 선택한 답변 정보 가져오기
+        TestpaperList testpaperList = testService.getTestpaperList(asnum);
 
         // 선택한 답 가져오기
         ArrayList<TestAnswer> testAnswers = questionService.getAllTestAnswers(asnum);
         log.debug("테스트 배열 : {}", testAnswers);
 
 
-
         model.addAttribute("test", test);
         model.addAttribute("questions", questions);
         model.addAttribute("options", allOptions);
         model.addAttribute("testAnswers", testAnswers);
+        model.addAttribute("testpaperList", testpaperList);
         return "boardView/test/submittedAnswer";
     }
 
     // 제출된 시험지 첨부파일 다운로드
     @GetMapping("downloadAnswerfile")
-    public void downloadAnswerfile(int answernum, HttpServletRequest request, HttpServletResponse response){
-        log.debug("{}",request.getRemoteAddr());//다운요청보낸ip문자열
+    public void downloadAnswerfile(int answernum, HttpServletRequest request, HttpServletResponse response) {
+        log.debug("{}", request.getRemoteAddr());//다운요청보낸ip문자열
 
         TestAnswer testAnswer = questionService.selectOneAnswer(answernum);
 
         String fullPath = uploadPath + "/" + testAnswer.getSavedfile();
 
         try {
-            response.setHeader("Content-Disposition", " attachment;filename="+ URLEncoder.encode(testAnswer.getOriginalfile(), "UTF-8"));
+            response.setHeader("Content-Disposition", " attachment;filename=" + URLEncoder.encode(testAnswer.getOriginalfile(), "UTF-8"));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -542,5 +536,27 @@ public class TestController {
             e.printStackTrace();
         }
 
+    }
+
+    // 점수 변경
+    @PostMapping("setScore")
+    @ResponseBody
+    public void setScore(
+            @RequestParam("answernum") String answernum,
+            @RequestParam("points") String points
+    ) {
+        TestAnswer testAnswer = new TestAnswer();
+        testAnswer.setAnswernum(Integer.parseInt(answernum));
+        testAnswer.setPoints(Integer.parseInt(points));
+        questionService.setScore(testAnswer);
+        testService.updateTotalpoints(testService.getAsnum(answernum));
+    }
+
+    // 제출된 응답 확인 상태 변경
+    @PostMapping("completeCheck")
+    @ResponseBody
+    public int completeCheck(int asnum){
+        testService.completeCheck(asnum);
+        return testService.getTestid(asnum);
     }
 }

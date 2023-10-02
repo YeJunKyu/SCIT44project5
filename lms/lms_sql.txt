@@ -180,7 +180,8 @@ create table lms_testpaper_list (
     asnum       number      primary key,                                        --시험지 고유번호
     testid      number      references lms_test(testid) on delete cascade,                        --시험 고유번호
     memberid    varchar2(500) references lms_member(memberid) on delete cascade,                   --제출자 아이디
-    totalscore       number                                                     --점수
+    totalscore       number,                                                     --점수
+    checked     varchar2(300) default 'yet' check(checked in ('complete', 'yet')) --시험 체크 완료/미완료
 );
 
 --학생 답안지 등록 테이블 시퀀스

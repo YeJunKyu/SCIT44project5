@@ -220,4 +220,13 @@
         WHERE
             answernum = #{answernum}
     </select>
+
+    <!--점수 변경-->
+    <update id="setScore" parameterType="TestAnswer">
+        UPDATE lms_test_answer
+        SET
+            points = #{points}
+        WHERE
+            answernum = #{answernum}
+    </update>
 </mapper>

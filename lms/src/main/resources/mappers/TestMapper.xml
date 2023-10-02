@@ -95,6 +95,7 @@
             , memberid
             , totalscore
             , (SELECT membername FROM lms_member m WHERE t.memberid = m.memberid) membername
+            , checked
         FROM lms_testpaper_list t
         WHERE
             testid = #{testid}
@@ -125,4 +126,29 @@
         WHERE
             asnum = #{asnum}
     </update>
+
+    <!--선택한 답변 정보 가져오기-->
+    <select id="getTestpaperList" resultType="TestpaperList">
+        SELECT *
+        FROM lms_testpaper_list
+        WHERE
+            asnum =#{asnum}
+    </select>
+
+    <!--제출된 응답 확인 상태 변경-->
+    <update id="completeCheck" parameterType="int">
+        UPDATE lms_testpaper_list
+        SET
+            checked = 'complete'
+        WHERE
+            asnum = #{asnum}
+    </update>
+
+    <!--정답지 번호 가져오기-->
+    <select id="getAsnum" parameterType="String">
+        SELECT asnum
+        FROM lms_test_answer
+        WHERE
+            answernum = #{answernum}
+    </select>
 </mapper>

@@ -26,6 +26,55 @@
                     }
                 })
             }
+            function completeCheck(asnum) {
+                if(confirm("확인을 끝내시겠습니까?")){
+                    $.ajax({
+                        url : "completeCheck",
+                        method: "POST",
+                        data: {asnum: asnum},
+                        success: function (response) {
+                            alert('확인 완료되었습니다.');
+                            window.location.href = "testList?testid=" + response;
+                        },
+                        error: function (e) {
+                            console.log(JSON.stringify(e))
+                        },
+                    })
+                }
+
+            }
+
+            function setScore(answernum, maxpoints) {
+                console.log(answernum);
+                let points = document.getElementById(answernum).value;
+
+                console.log('포인트' + points);
+                console.log('맥스포인트' + maxpoints);
+
+                if (points > maxpoints) {
+                    alert("배점보다 큰 값은 입력할 수 없습니다.");
+                }
+                if (points == null) {
+                    alert("숫자를 입력해주세요");
+                }
+
+                if (points != null) {
+                    $.ajax({
+                        url: "setScore",
+                        method: "POST",
+                        data: {
+                            answernum: answernum,
+                            points: points
+                        },
+                        success: function () {
+                            console.log("점수 설정 성공");
+                        },
+                        error: function (e) {
+                            console.log(JSON.stringify(e));
+                        },
+                    });
+                }
+            }
         </script>
     </head>
     <body>
@@ -44,7 +93,6 @@
                             <div class="col-12 col-md-6 order-md-1 order-last">
                                 <h3 th:text="${test.testname}"></h3>
                                 <div id="testid" th:text="${test.testid}" style="display: none"></div>
-                                <p class="text-subtitle text-muted">Customize the native &laquo;select&raquo; with custom CSS that changes the element’s initial appearance..</p>
                             </div>
                             <div class="col-12 col-md-6 order-md-2 order-first">
                                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
@@ -106,7 +154,22 @@
                                         </div>
                                     </div>
                                     <!--문제 출력 부분-->
-                                    <h6 th:text="${q.contents}"></h6>
+                                    <div class="d-flex justify-content-between">
+                                        <h6 th:text="${q.contents}"></h6>
+                                        <div th:each="ta : ${testAnswers}" th:if="${q.qid == ta.qid}">
+                                            <div>
+                                                <div th:if="${ta.rwc == 'right'}">
+                                                    <i class="bi bi-circle"></i>
+                                                </div>
+                                                <div th:if="${ta.rwc == 'wrong'}">
+                                                    <i class="bi bi-x-lg"></i>
+                                                </div>
+                                                <div th:if="${ta.rwc == 'check'}">
+                                                    <i class="bi bi-check"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="col-md-2 icon">
                                         <img th:if="${q.savedfile !=null}" th:src="@{'/noticefiles/' + ${q.savedfile}}" alt="첨부 이미지" style="width: 100px; height: auto;">
 
@@ -170,11 +233,18 @@
                                         </label>
                                     </div>
                                     <p th:if="${q.type == 1 || q.type == 2 || q.type == 3}">정답 : <span th:text="${q.answer}"></span></p>
+                                    <div class="d-flex align-items-center col-3" th:if="${q.type == 4 || q.type == 5}">
+                                        <div class="d-flex align-items-center" th:each="ta : ${testAnswers}" th:if="${q.qid == ta.qid}">
+                                            <input type="number" class="form-control inputpoint" th:id="${ta.answernum}">
+                                            <span>점</span>
+                                            <button class="form-control" type="button" th:onclick="setScore([[${ta.answernum}]], [[${q.points}]])">점수 변경</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <section class="d-flex justify-content-between">
-                            <button class="btn btn-primary" type="button" onclick="submitForm();">확인 완료</button>
+                            <button class="btn btn-primary" type="button" th:onclick="completeCheck([[${testpaperList.asnum}]]);">확인 완료</button>
                         </section>
                     </form>
                 </div>
