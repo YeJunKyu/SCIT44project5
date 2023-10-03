@@ -9,6 +9,8 @@ import com.scit.lms.util.FileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -384,7 +386,7 @@ public class TestController {
     //시험문제 제출(학생) 및 자동채점
     @ResponseBody
     @PostMapping("submitTest")
-    public String submitTest(
+    public ResponseEntity<String> submitTest(
             @AuthenticationPrincipal UserDetails user,
             @RequestParam("testid") String testid,
             @RequestParam("answerArray") String answerArray,
@@ -398,6 +400,15 @@ public class TestController {
         TestpaperList testpaperList = new TestpaperList();
         testpaperList.setMemberid(user.getUsername());
         testpaperList.setTestid(Integer.parseInt(testid));
+        // 중복 제출 체크
+        TestpaperList existingSubmission = testService.checkDuplicateSubmission(testpaperList);
+        log.debug("답안지확인:{}",existingSubmission);
+        if (existingSubmission != null) {
+            // 이미 제출한 답안이 있을 경우 에러 메시지 반환
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("You have already submitted answers for this test.");
+        }
+
+
         testService.submitTest(testpaperList); // 답안지 고유번호 반환
         int asnum = testpaperList.getAsnum();
         log.debug("앤서넘버가져오기 : {}", asnum);
@@ -462,7 +473,7 @@ public class TestController {
 
         }
 
-        return "";
+        return ResponseEntity.ok("");
     }
 
     //시험 하나의 제출된 답변들 목록으로 이동
@@ -507,6 +518,54 @@ public class TestController {
         model.addAttribute("testAnswers", testAnswers);
         model.addAttribute("testpaperList", testpaperList);
         return "boardView/test/submittedAnswer";
+    }
+
+    //학생용 제출시험 조회
+    @GetMapping("submitTestList")
+    public String submitTestList(@AuthenticationPrincipal UserDetails userDetails,Model model) {
+        String memberid = userDetails.getUsername();
+        log.debug("현재회원:{}",memberid);
+        AllOfTest allOfTest = new AllOfTest();
+        allOfTest.setMemberid(memberid);
+        ArrayList<AllOfTest> test = testService.submitTestList(memberid);
+        model.addAttribute("test", test);
+
+        return "boardView/test/submitTestList";
+    }
+
+    //학생용 제출시험지 조회
+    // 제출된 학생의 시험지 보기
+    @GetMapping("submittedMyAnswer")
+    public String submittedMyAnswer(@RequestParam("asnum") int asnum, Model model) {
+        int testid = testService.getTestid(asnum);
+        // 시험 정보
+        Test test = testService.selectTest(testid);
+
+        // 시험의 문제
+        ArrayList<Question> questions = questionService.selectQuestions(testid);
+
+        // 객관식 유형 문제의 보기 가져오기
+        ArrayList<Option> allOptions = new ArrayList<>();
+        for (Question q : questions) {
+            ArrayList<Option> options = questionService.selectOptions(q.getQid());
+            allOptions.addAll(options);
+        }
+
+//        log.debug("{}", allOptions);
+        // 선택한 답변 정보 가져오기
+        TestpaperList testpaperList = testService.getTestpaperList(asnum);
+
+        // 선택한 답 가져오기
+        ArrayList<TestAnswer> testAnswers = questionService.getAllTestAnswers(asnum);
+        log.debug("테스트 배열 : {}", testAnswers);
+
+
+        model.addAttribute("test", test);
+        model.addAttribute("questions", questions);
+        model.addAttribute("options", allOptions);
+        model.addAttribute("testAnswers", testAnswers);
+        model.addAttribute("testpaperList", testpaperList);
+        return "boardView/test/submittedMyAnswer";
     }
 
     // 제출된 시험지 첨부파일 다운로드

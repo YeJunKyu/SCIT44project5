@@ -1,6 +1,7 @@
 package com.scit.lms.service;
 
 import com.scit.lms.dao.TestDAO;
+import com.scit.lms.domain.AllOfTest;
 import com.scit.lms.domain.PrimaryRatio;
 import com.scit.lms.domain.Test;
 import com.scit.lms.domain.TestpaperList;
@@ -98,6 +99,16 @@ public class TestServiceImpl implements TestService{
     @Override
     public int getAsnum(String answernum) {
         return dao.getAsnum(answernum);
+    }
+
+    @Override
+    public ArrayList<AllOfTest> submitTestList(String memberid) {
+        return dao.submitTestList(memberid);
+    }
+
+    @Override
+    public TestpaperList checkDuplicateSubmission(TestpaperList testpaperList) {
+        return dao.checkDuplicateSubmission(testpaperList);
     }
 
 }

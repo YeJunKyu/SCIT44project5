@@ -87,6 +87,12 @@
         )
     </insert>
 
+<!--    답안지 중복등록 방지용 조회쿼리-->
+<select id="checkDuplicateSubmission" parameterType="TestpaperList"
+        resultType="TestpaperList">
+    SELECT * FROM lms_testpaper_list WHERE memberid = #{memberid} AND testid = #{testid}
+</select>
+
     <!--시험 하나의 제출된 답변들 목록으로 이동-->
     <select id="testList" parameterType="int" resultType="TestpaperList">
         SELECT
@@ -100,6 +106,26 @@
         WHERE
             testid = #{testid}
     </select>
+
+<!--    학생용 제출시험조회-->
+<select id="submitTestList" resultType="AllOfTest">
+    SELECT
+    tl.memberid as "testpaperList.memberid",
+    tl.testid as "testpaperList.testid",
+    tl.asnum AS "testpaperList.asnum",
+    tl.totalscore AS "testpaperList.totalscore",
+    tl.checked AS "testpaperList.checked",
+    t.testname AS "test.testname",
+    t.testdate as "test.testdate",
+    t.testlimit as "test.testlimit"
+    FROM
+    lms_testpaper_list tl
+    JOIN
+    lms_test t ON tl.testid = t.testid
+    WHERE
+    tl.memberid = #{memberid}
+
+</select>
 
     <!--testid 가져오기-->
     <select id="getTestid" parameterType="int" resultType="int">
@@ -151,4 +177,6 @@
         WHERE
             answernum = #{answernum}
     </select>
+
+
 </mapper>

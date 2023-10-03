@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>테스트 - SCIT</title>
+    <link rel="stylesheet" th:href="@{/assets/extensions/choices.js/public/assets/styles/choices.css}" />
+
+    <link rel="stylesheet" th:href="@{/assets/css/main/app.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/main/app-dark.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/main/lms.css}" />
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.svg}" type="image/x-icon" />
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png" />
+    <script th:src="@{/assets/js/jquery-3.6.0.js}"></script>
+    <script th:src="@{/privatejs/sidebarLoader.js}"></script>
+    <script th:inline="javascript">
+
+    </script>
+</head>
+<body>
+<div id="app">
+    <div id="sidebar-placeholder"></div>
+    <div id="main">
+        <header class="mb-3">
+            <a href="#" class="burger-btn d-block d-xl-none">
+                <i class="bi bi-justify fs-3"></i>
+            </a>
+        </header>
+
+        <div class="page-heading">
+            <div class="page-title">
+                <div class="row">
+                    <div class="col-12 col-md-6 order-md-1 order-last">
+                        <h3 th:text="${test.testname}"></h3>
+                        <div id="testid" th:text="${test.testid}" style="display: none"></div>
+                    </div>
+                    <div class="col-12 col-md-6 order-md-2 order-first">
+                        <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a th:href="@{/test}">시험</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">문제등록</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <form>
+                <section class="section">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h4 class="card-title">시험명</h4>
+                                    <div class="form-group input-group-lg">
+                                        <h6 class="card-title" th:text="${test.testname}"></h6>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <h4 class="card-title">총점</h4>
+                                    <span id="totalPoints" th:text="${test.totalpoints}">0</span>점
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h4 class="card-title">시험일시</h4>
+                                    <div class="form-group input-group">
+                                        <span th:text="${test.testdate}"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h4 class="card-title">마감일시</h4>
+                                    <div class="form-group input-group">
+                                        <span th:text="${test.testlimit}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body"></div>
+                    </div>
+                </section>
+                <div class="section" id="questions" th:each="q : ${questions}">
+                    <div class="card qPlace" th:id="${q.qid}" th:value="${q.qid}">
+                        <div class="card-header justify-content-between">
+                            <div class="d-flex mb-3 align-items-center" >
+                                <h6 class="col-md-8" th:id="|${q.qid}-papernum|" th:text="${q.papernum}"></h6>
+                                <div class="col-md-2 icon" th:if="${q.originalfile} != null">
+                                    <div class="btn btn-primary btn-sm rounded-pill">
+                                        <a th:if="${q.originalfile != null}"
+                                           th:text="${q.originalfile}"
+                                           th:href="@{/test/download(qid=${q.qid})}"
+                                           class="btn btn-primary"
+                                           role="button">[Download Link]</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--문제 출력 부분-->
+                            <div class="d-flex justify-content-between">
+                                <h6 th:text="${q.contents}"></h6>
+                                <div th:each="ta : ${testAnswers}" th:if="${q.qid == ta.qid}">
+                                    <div>
+
+                                        <div th:if="${ta.rwc == 'check'}">
+                                            <i class="bi bi-check"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 icon">
+                                <img th:if="${q.savedfile !=null}" th:src="@{'/noticefiles/' + ${q.savedfile}}" alt="첨부 이미지" style="width: 100px; height: auto;">
+
+                            </div>
+                        </div>
+                        <!--문제 유형별 답 입력 부분-->
+                        <div id="qPlace" class="card-body">
+                            <div th:switch="${q.type}" th:each="ta : ${testAnswers}">
+                                <!-- 객관식 (q.type == 1) -->
+                                <div th:case="1">
+                                    <div th:if="${q.qid == o.qid}" th:each="o :${options}">
+                                        <div class="d-flex justify-content-between mb-1 optionItem" th:if="${ta.qid == q.qid}">
+                                            <label class="d-flex align-items-center">
+                                                <input type="radio" class="form-check-input m-lg-1 optionCount" th:value="${o.value}" th:checked="${o.value == ta.answer}" disabled/>
+                                                <span th:text="${o.content}"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 객관식 복수정답 (q.type == 2) -->
+                                <div th:case="2">
+                                    <div th:if="${q.qid == o.qid}" th:each="o :${options}">
+                                        <div class="d-flex justify-content-between mb-1 multiOptionItem"th:if="${ta.qid == q.qid}">
+                                            <label class="d-flex align-items-center">
+                                                <input type="checkbox" class="form-check-input m-lg-1 optionCount" th:value="${o.value}" th:checked="${#strings.contains(ta.answer, o.value)}" disabled/>
+                                                <span th:text="${o.content}"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 단답형 (q.type == 3) -->
+                                <div th:case="3">
+                                    <div class="d-flex justify-content-between mb-1" th:if="${ta.qid == q.qid}">
+                                        <span th:text="${ta.answer}"></span>
+                                    </div>
+                                </div>
+                                <!-- 서술형 (q.type == 4) -->
+                                <div th:case="4">
+                                    <div class="d-flex justify-content-between mb-1" th:if="${ta.qid == q.qid}">
+                                        <span th:text="${ta.answer}"></span>
+                                    </div>
+                                </div>
+                                <!-- 파일 첨부형 (q.type == 5) -->
+                                <div th:case="5">
+                                    <div class="d-flex justify-content-between mb-1" th:if="${ta.qid == q.qid}">
+                                        <!-- 파일 첨부형식 -->
+                                        <a th:if="${ta.originalfile != null}"
+                                           th:text="${ta.originalfile}"
+                                           th:href="@{/test/downloadAnswerfile(answernum=${ta.answernum})}"
+                                           class="btn btn-primary"
+                                           role="button">[Download Link]</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between">
+                            <div class="col-md-2">
+                                <label class="d-flex align-items-center">
+                                    <span class="col-md-3">배점</span>
+                                    <b><span th:text="${q.points}"></span></b>점
+                                </label>
+                            </div>
+                            <p th:if="${q.type == 1 || q.type == 2 || q.type == 3}">정답 : <span th:text="${q.answer}"></span></p>
+                            <div class="d-flex align-items-center col-3" th:if="${q.type == 4 || q.type == 5}">
+                                <div class="d-flex align-items-center" th:each="ta : ${testAnswers}" th:if="${q.qid == ta.qid}">
+                                    <input type="number" class="form-control inputpoint" th:id="${ta.answernum}">
+                                    <span>점</span>
+                                    <button class="form-control" type="button" th:onclick="setScore([[${ta.answernum}]], [[${q.points}]])">점수 변경</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <section class="d-flex justify-content-between">
+                    <button class="btn btn-primary" type="button" th:onclick="completeCheck([[${testpaperList.asnum}]]);">수정</button>
+                </section>
+            </form>
+        </div>
+    </div>
+    <script th:src="@{/assets/js/bootstrap.js}"></script>
+    <script th:src="@{/assets/js/app.js}"></script>
+
+    <script th:src="@{/assets/extensions/choices.js/public/assets/scripts/choices.js}"></script>
+    <script th:src="@{/assets/js/pages/form-element-select.js}"></script>
+</div>
+</body>
+</html>

@@ -131,9 +131,13 @@
                         alert('성공적으로 제출되었습니다.');
                         window.location.href = "/lms/test";
                     },
-                    error: function(error) {
-                        // Ajax 요청이 실패했을 때 수행할 작업을 여기에 추가하세요.
+                    error: function(xhr, textStatus, errorThrown) {
+                        if (xhr.status == 409) {
+                        // 중복 제출 확인
+                        alert(xhr.responseText);  // "You have already submitted answers for this test."
+                    } else {
                         alert('제출 중 오류가 발생했습니다.');
+                    }
                     }
                 });
             }

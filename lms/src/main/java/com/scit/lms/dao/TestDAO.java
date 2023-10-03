@@ -1,5 +1,6 @@
 package com.scit.lms.dao;
 
+import com.scit.lms.domain.AllOfTest;
 import com.scit.lms.domain.PrimaryRatio;
 import com.scit.lms.domain.Test;
 import com.scit.lms.domain.TestpaperList;
@@ -49,4 +50,8 @@ public interface TestDAO {
 
     // 정답지 번호 가져오기
     int getAsnum(String answernum);
+
+    ArrayList<AllOfTest> submitTestList(String memberid);
+
+    TestpaperList checkDuplicateSubmission(TestpaperList testpaperList);
 }
