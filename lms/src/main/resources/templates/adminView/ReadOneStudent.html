@@ -248,7 +248,9 @@
                                         </div>
                                         <div class="col-sm-12 d-flex justify-content-end">
                                             <button type="submit" class="btn btn-primary me-1 mb-1">편집</button>
-                                            <button type="reset" class="btn btn-light-secondary me-1 mb-1"><a th:href="@{/admin/studentManager}">취소</a></button>
+                                            <button type="reset" class="btn btn-light-secondary me-1 mb-1">
+                                                <a th:href="@{/admin/studentInfo/{memberid}(memberid=${student.member?.memberid})}">취소</a>
+                                            </button>
                                         </div>
                                 </div>
                                 </div>

@@ -313,7 +313,7 @@ public class AdminController {
 
 
 
-		return "redirect:/admin/studentManager/";
+		return "redirect:/admin/studentInfo/" + studentsAll.getMember().getMemberid();
 	}
 
 	//시험비중등록폼
