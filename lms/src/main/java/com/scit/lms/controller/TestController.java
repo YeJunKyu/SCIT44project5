@@ -28,6 +28,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
 
+import static org.apache.coyote.http11.Constants.a;
+
 @Controller
 @RequestMapping("test")
 @Slf4j
@@ -614,8 +616,17 @@ public class TestController {
     // 제출된 응답 확인 상태 변경
     @PostMapping("completeCheck")
     @ResponseBody
-    public int completeCheck(int asnum){
+    public int completeCheck(int asnum) {
         testService.completeCheck(asnum);
         return testService.getTestid(asnum);
+    }
+
+
+    // (학생) 시험 결과 확인
+    @GetMapping("testGrade")
+    public String testGrade(Model model, @AuthenticationPrincipal UserDetails user) {
+        ArrayList<TestpaperList> testpaperList = testService.selectTestByStudent(user.getUsername());
+        model.addAttribute("test", testpaperList);
+        return "boardView/test/testGrade";
     }
 }

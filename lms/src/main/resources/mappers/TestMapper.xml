@@ -179,4 +179,18 @@
     </select>
 
 
+
+    <!--학생이 본인 성적 확인-->
+    <select id="selectTestByStudent" parameterType="String" resultType="TestpaperList">
+        SELECT
+            asnum
+             , testid
+             , memberid
+             , totalscore
+             , (SELECT membername FROM lms_member m WHERE t.memberid = m.memberid) membername
+             , checked
+        FROM lms_testpaper_list t
+        WHERE
+            memberid = #{memberid}
+    </select>
 </mapper>

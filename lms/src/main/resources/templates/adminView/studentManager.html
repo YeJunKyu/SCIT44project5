@@ -80,10 +80,7 @@
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
-                    <ol class="breadcrumb">
-
-
-                    </ol>
+                    <ol class="breadcrumb"></ol>
                 </nav>
             </div>
         </div>
@@ -102,10 +99,8 @@
                 </div>
             </div>
             <div class="card-body">
-
-                    <table class="table table-striped" id="table1">
-                        <thead>
-
+                <table class="table table-striped" id="table1">
+                    <thead>
                         <tr>
                             <th>아이디</th>
                             <th>이름</th>
@@ -118,8 +113,8 @@
                             <th>졸업여부</th>
                             <th>주소</th>
                         </tr>
-                        </thead>
-                        <tbody>
+                    </thead>
+                    <tbody>
                         <tr th:each="students : ${students}">
                             <td><a th:href="@{/admin/ReadOneStudent/{memberid}(memberid=${students.member.memberid})}" th:text="${students.member.memberid}">
 
@@ -162,19 +157,9 @@
                             <td th:text="${students.member?.address}">
 
                             </td>
-
-
-
-
-
                         </tr>
-
-                        </tbody>
-                    </table>
-
-
-
-
+                    </tbody>
+                </table>
             </div>
         </div>
 
