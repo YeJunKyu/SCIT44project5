@@ -103,7 +103,7 @@ public class TestServiceImpl implements TestService{
 
     // 학생이 본인 성적 확인
     @Override
-    public ArrayList<TestpaperList> selectTestByStudent(String username) {
+    public ArrayList<Test> selectTestByStudent(String username) {
         return dao.selectTestByStudent(username);
     }
 

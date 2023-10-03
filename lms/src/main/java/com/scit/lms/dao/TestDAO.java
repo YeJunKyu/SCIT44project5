@@ -56,5 +56,5 @@ public interface TestDAO {
     TestpaperList checkDuplicateSubmission(TestpaperList testpaperList);
 
     // 학생이 본인 성적 확인
-    ArrayList<TestpaperList> selectTestByStudent(String username);
+    ArrayList<Test> selectTestByStudent(String username);
 }

@@ -116,9 +116,8 @@
                     </thead>
                     <tbody>
                         <tr th:each="students : ${students}">
-                            <td><a th:href="@{/admin/ReadOneStudent/{memberid}(memberid=${students.member.memberid})}" th:text="${students.member.memberid}">
-
-                            </a>
+                            <td>
+                                <a th:href="@{/admin/studentInfo/{memberid}(memberid=${students.member.memberid})}" th:text="${students.member.memberid}"></a>
                             </td>
 
                             <td th:text="${students.member?.membername}">

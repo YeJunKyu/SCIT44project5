@@ -181,16 +181,18 @@
 
 
     <!--학생이 본인 성적 확인-->
-    <select id="selectTestByStudent" parameterType="String" resultType="TestpaperList">
+    <select id="selectTestByStudent" parameterType="String" resultType="Test">
         SELECT
-            asnum
-             , testid
-             , memberid
-             , totalscore
-             , (SELECT membername FROM lms_member m WHERE t.memberid = m.memberid) membername
-             , checked
-        FROM lms_testpaper_list t
+            testname,
+            totalpoints,
+            testdate,
+            (SELECT totalscore FROM lms_testpaper_list l WHERE l.testid = t.testid) totalscore
+        FROM lms_test t
         WHERE
-            memberid = #{memberid}
+            (SELECT testid
+             FROM lms_testpaper_list l
+             WHERE
+                 l.memberid = #{memberid}
+            ) = t.testid
     </select>
 </mapper>

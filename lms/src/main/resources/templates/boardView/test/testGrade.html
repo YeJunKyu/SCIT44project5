@@ -64,16 +64,11 @@
 
                                         <tr>
                                             <td class="text-bold-500">
-                                                <a th:if="${#authorization.expression('hasRole(''ROLE_teacher'')') || #authorization.expression('hasRole(''ROLE_admin'')')}" th:href="@{/test/testList(testid=${test.testid})}">
-                                                    <p th:text="${test.testname}"></p>
-                                                </a>
-                                                <a th:if="${#authorization.expression('hasRole(''ROLE_student'')')}" class="disabled" th:href="@{/test/viewTest(testid=${test.testid})}">
-                                                    <p th:text="${test.testname}"></p>
-                                                </a>
+                                                <p th:text="${test.testname}"></p>
                                             </td>
                                             <td class="text-bold-500" th:text="${test.testdate}"></td>
                                             <td>
-                                                <!--시험점수-->
+                                                <p th:text="${test.totalscore}"></p>
                                             </td>
                                         </tr>
                                         </tbody>

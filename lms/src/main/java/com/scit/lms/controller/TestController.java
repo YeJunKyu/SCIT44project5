@@ -625,8 +625,8 @@ public class TestController {
     // (학생) 시험 결과 확인
     @GetMapping("testGrade")
     public String testGrade(Model model, @AuthenticationPrincipal UserDetails user) {
-        ArrayList<TestpaperList> testpaperList = testService.selectTestByStudent(user.getUsername());
-        model.addAttribute("test", testpaperList);
+        ArrayList<Test> test = testService.selectTestByStudent(user.getUsername());
+        model.addAttribute("test", test);
         return "boardView/test/testGrade";
     }
 }
