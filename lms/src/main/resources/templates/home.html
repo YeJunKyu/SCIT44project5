@@ -18,13 +18,11 @@
 <div id="auth">
 
 	<div class="row h-100">
-		<div class="col-lg-5 col-12">
+		<div class="col-lg-5 col-12 d-flex align-items-center">
 			<div id="auth-left">
 				<div class="auth-logo">
-					<a th:href="@{/home2.html}"><img th:src="@{/assets/images/logo/logo.svg}" alt="Logo"></a>
+					<a th:href="@{/home2.html}"><img th:src="@{/assets/images/logo/logo.svg}" alt="Logo" style="height: 3rem"></a>
 				</div>
-				<h1 class="auth-title">Log in.</h1>
-				<p class="auth-subtitle mb-5">Log in with your data that you entered during registration.</p>
 
 				<form th:action="@{/member/login}" method="post">
 					<div class="form-group position-relative has-icon-left mb-4">
@@ -45,14 +43,14 @@
 					<div class="form-check form-check-lg d-flex align-items-end">
 						<input class="form-check-input me-2" type="checkbox" value="" id="flexCheckDefault">
 						<label class="form-check-label text-gray-600" for="flexCheckDefault">
-							Keep me logged in
+							로그인 유지
 						</label>
 					</div>
 					<input type="submit" class="btn btn-primary btn-block btn-lg shadow-lg mt-5" value="로그인">
 <!--					<button class="btn btn-primary btn-block btn-lg shadow-lg mt-5">Log in</button>-->
 				</form>
 <!--				<div class="text-center mt-5 text-lg fs-4">-->
-					<p class="text-gray-600">Don't have an account? <a th:href="@{/member/join}" class="font-bold">회원가입</a>.</p>
+					<p class="text-gray-600">아직 회원이 아니신가요? <a th:href="@{/member/join}" class="font-bold">회원가입</a></p>
 <!--					<p><a class="font-bold" href="">Forgot password?</a>.</p>-->
 <!--				</div>-->
 			</div>
@@ -65,62 +63,6 @@
 	</div>
 
 </div>
-
-
-
-<!--	<h1>SCIT MASTER</h1>-->
-
-
-<!--	<div sec:authorize="!isAuthenticated()">-->
-<!--		<form th:action="@{/member/login}" method="post" >-->
-<!--			<table>-->
-<!--				<tr>-->
-<!--					<th>ID</th>-->
-<!--					<td>-->
-<!--						<input type="text" id="id" name="memberid"  required>-->
-<!--					</td>-->
-<!--				</tr>-->
-<!--				<tr>-->
-<!--					<th>비밀번호</th>-->
-<!--					<td>-->
-<!--						<input type="password" id="password" name="memberpw">-->
-<!--					</td>-->
-<!--				</tr>-->
-
-<!--				<tr>-->
-<!--					<td colspan="2" style="text-align: center;">-->
-<!--						<input type="submit" value="로그인">-->
-<!--					</td>-->
-<!--				</tr>-->
-<!--			</table>-->
-<!--		</form>-->
-<!--	</div>-->
-
-
-
-<!--	<div th:if="${param.error}" style="color:red;">-->
-<!--		<p>ID 또는 비밀번호가 틀렸습니다.</p>-->
-<!--	</div>-->
-
-
-<!--	<div th:if="${param.error}">-->
-<!--		<script>-->
-<!--			alert("에러");-->
-<!--		</script>-->
-<!--	</div>-->
-
-
-
-<!--	<p sec:authorize="!isAuthenticated()">-->
-<!--		<a th:href="@{/member/join}">회원가입</a>-->
-<!--	</p>-->
-<!--	<p sec:authorize="isAuthenticated()">-->
-<!--		<a th:href="@{/member/logout}">로그아웃</a>-->
-<!--	</p>-->
-
-
-
-
 
 </body>
 </html>
