@@ -31,6 +31,8 @@ public class WebSecurityConfig {
                 "/member/join",
                 "/member/idcheck",
                 "/member/checkMemberid",
+                "/member/main2",
+                "/data/**",
                 "/assets/**",
                 "/image/**",
                 "/css/**",

@@ -17,7 +17,18 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
+<!--    document.addEventListener("DOMContentLoaded", function () {
+        var genderValue = document.getElementById("gender-id-icon").value;
+        alert(genderValue);
 
+        if (genderValue === "male") {
+            document.getElementById("gender-id-icon").value = "남성";
+        } else {
+            // 기본값 또는 다른 경우에 대한 처리
+            document.getElementById("gender-id-icon").value = "여성";
+        }
+    });
+-->
     $(document).ready(function(){
 
     });
@@ -170,7 +181,7 @@
                                         <div class="form-group has-icon-left">
                                             <label for="address-id-icon">주소</label>
                                             <div class="position-relative">
-                                                <input type="text" class="form-control" th:placeholder="${user.address}"
+                                                <input type="text" class="form-control" th:placeholder="${user.address}" th:value="${user.address}"
                                                        id="address-id-icon" readonly>
                                                 <div class="form-control-icon">
                                                     <i class="bi bi-house-door"></i>
