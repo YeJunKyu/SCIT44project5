@@ -195,9 +195,10 @@
             testname,
             totalpoints,
             testdate,
-            (SELECT totalscore FROM lms_testpaper_list l WHERE l.testid = t.testid and l.memberid = #{memberid}) totalscore
+            (SELECT totalscore FROM lms_testpaper_list l WHERE l.testid = t.testid and l.memberid = #{memberid} AND l.checked = 'complete') totalscore
         FROM lms_test t
         WHERE
-        t.testid IN (SELECT testid FROM lms_testpaper_list l WHERE l.memberid = #{memberid})
+        t.testid IN (SELECT testid FROM lms_testpaper_list l WHERE l.memberid = #{memberid} AND l.checked = 'complete')
+
     </select>
 </mapper>
