@@ -204,6 +204,21 @@
                   "<div><span class='badge bg-light-primary'>" +
                   item.startdate +
                   "</span></div>";
+              } else if (
+                item.allday === true &&
+                !isNextDay(item.startdate, item.enddate)
+              ) {
+                var endDate = new Date(item.enddate);
+                endDate.setDate(endDate.getDate() - 1);
+                var endString = endDate.toISOString().split("T")[0];
+                card +=
+                  "<div><span class='badge bg-light-primary'>" +
+                  item.startdate +
+                  "</span><i class='bi bi-dash-lg'></i>";
+                card +=
+                  "<span class='badge bg-light-primary'>" +
+                  endString +
+                  "</span></div>";
               } else {
                 card +=
                   "<div><span class='badge bg-light-primary'>" +
@@ -218,7 +233,7 @@
               if (item.note) card += "<div>" + item.note + "</div>";
               card += "</div>";
 
-              recentList.append(card); // 생성된 카드를 cardBody에 삽입
+              recentList.append(card);
             });
           },
           error: function (e) {
@@ -789,7 +804,7 @@
     <!-- 일정 등록 모달 끝 -->
 
     <!-- 일정 변경 모달 -->
-    <div sec:authorize="hasAnyRole('ROLE_admin', 'ROLE_teacher')">
+    <div>
       <div
         class="modal fade text-left show"
         id="update"

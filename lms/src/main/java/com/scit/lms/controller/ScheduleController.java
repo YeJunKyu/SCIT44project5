@@ -31,8 +31,16 @@ public class ScheduleController {
     // 일정 목록 불러오기
     @ResponseBody
     @GetMapping("list")
-    public ArrayList<Schedule> list() {
-        ArrayList<Schedule> list = service.list();
+    public ArrayList<Schedule> list(@AuthenticationPrincipal UserDetails user) {
+        ArrayList<Schedule> list;
+        list = service.list();
+
+        // 학생은 자기 과정 일정만 보이게
+        if (user.getAuthorities().stream().anyMatch(auth -> "ROLE_student".equals(auth.getAuthority()))) {
+            String curriculum = service.studentCurriculum(user.getUsername());
+            list = service.listStudent(curriculum);
+        }
+
         log.debug("스케줄 리스트: {}", list);
         return list;
     }
@@ -40,7 +48,7 @@ public class ScheduleController {
     // 최근 일정 목록
     @ResponseBody
     @GetMapping("recentList")
-    public ArrayList<Schedule> recentList() {
+    public ArrayList<Schedule> recentList(@AuthenticationPrincipal UserDetails user) {
         HashMap<String, String> map = new HashMap<>();
 
         // 현재 날짜 및 시간 얻기
@@ -59,9 +67,19 @@ public class ScheduleController {
         map.put("start", start);
         map.put("end", end);
 
-        ArrayList<Schedule> list = service.recentList(map);
-        log.debug("한달 스케줄 리스트: {}", list);
+        ArrayList<Schedule> list;
+        list = service.recentList(map);
 
+        // 학생은 자기 과정 일정만 보이게
+        if (user.getAuthorities().stream().anyMatch(auth -> "ROLE_student".equals(auth.getAuthority()))) {
+            String curriculum = service.studentCurriculum(user.getUsername());
+            map.put("curriculum", curriculum);
+            list = service.recentList(map);
+
+            return list;
+        }
+
+        log.debug("한달 스케줄 리스트: {}", list);
         return list;
     }
 

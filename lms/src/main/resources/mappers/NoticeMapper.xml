@@ -113,7 +113,6 @@
         from
             lms_notice
         <where>
-            viewauthority = 0
             <if test="type == 'categories'">
                 and upper(categories) like upper('%' || #{searchWord} || '%')
             </if>
@@ -144,6 +143,7 @@
         from
             lms_notice
         <where>
+            viewauthority = 0
             <if test="type == 'categories'">
                 and upper(categories) like upper('%' || #{searchWord} || '%')
             </if>
