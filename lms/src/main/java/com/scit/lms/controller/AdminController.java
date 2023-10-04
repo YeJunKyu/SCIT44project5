@@ -247,8 +247,11 @@ public class AdminController {
 	public String studentInfo(@PathVariable String memberid, Model model) {
 		log.debug("학생아이디확인:{}",memberid);
 		StudentsAll studentsAll = service.ReadOneStudent(memberid);
+		ArrayList<TestpaperList> studentsGrade = service.getStudentsGrade(memberid);
 		log.debug("학생정보확인:{}",studentsAll);
+		log.debug("학생성적확인:{}", studentsGrade);
 		model.addAttribute("student",studentsAll);
+		model.addAttribute("grade", studentsGrade);
 		return "adminView/studentInfo";
 	}
 

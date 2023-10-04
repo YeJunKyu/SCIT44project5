@@ -238,5 +238,10 @@ public class AdminServiceImple implements AdminService {
 		return dao.SelectMonthAttendance(map);
 	}
 
+	@Override
+	public ArrayList<TestpaperList> getStudentsGrade(String memberid) {
+		return dao.getStudentsGrade(memberid);
+	}
+
 
 }
