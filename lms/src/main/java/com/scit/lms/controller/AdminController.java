@@ -664,4 +664,36 @@ public class AdminController {
 		return "adminView/SelectGrade";
 	}
 
+	//점수등록폼이동
+	//성적조회및수정
+	@GetMapping("InsertGrade")
+	public String InsertGrade(Model model){
+		ArrayList<GradeAll> gradeAlls = service.SelectGrade();
+		log.debug("성적리스트:{}",gradeAlls);
+
+		HashMap<String, StudentGrade> studentGradeMap = new HashMap<>();
+		for(GradeAll grade : gradeAlls) {
+			String key = grade.getMember().getMemberid(); // 이부분은 GradeAll에 해당하는 학생 이름 가져오는 메서드로 수정 필요
+			if(!studentGradeMap.containsKey(key)) {
+				StudentGrade studentGrade = new StudentGrade();
+				studentGrade.setMemberid(grade.getMember().getMemberid());
+				studentGrade.setMembername(grade.getMember().getMembername());
+				studentGrade.setCurriculum(grade.getStudent().getCurriculum());
+				studentGrade.setTests(new ArrayList<>());
+				studentGradeMap.put(key, studentGrade);
+			}
+			studentGradeMap.get(key).getTests().add(grade);
+		}
+		log.debug("가공데이터확인:{}",studentGradeMap);
+		model.addAttribute("list", new ArrayList<>(studentGradeMap.values()));
+		return "adminView/InsertGrade";
+	}
+
+	//상위시험에 점수등록
+	@PostMapping("InsertGrade")
+	public String InsertGrade(){
+
+		return "adminView/InsertGrade";
+	}
+
 }
