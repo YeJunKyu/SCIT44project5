@@ -398,9 +398,9 @@ public class AdminController {
 	@GetMapping("InsertSmallRatio")
 	public String InsertSmallRatio(Model model){
 		log.debug("컨트롤러 확인:{}","okay");
-		ArrayList<PrimaryRatio>  primaryRatio = service.ReadMiddleRatio();
-		log.debug("중분류데이터:{}",primaryRatio);
-		model.addAttribute("pri",primaryRatio);
+		ArrayList<PrimaryRatio>  primaryBigRatio = service.ReadBigRatio();
+		log.debug("대분류데이터:{}",primaryBigRatio);
+		model.addAttribute("pri",primaryBigRatio);
 		
 		return "adminView/InsertSmallRatio";
 	}
