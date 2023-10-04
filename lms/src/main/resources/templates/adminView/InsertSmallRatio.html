@@ -95,7 +95,7 @@
     <h1>시험등록</h1>
     <h2>소분류</h2>
     <!-- 첫 번째 폼 -->
-    <form th:action="@{InsertSmallRatio}" method="post" onsubmit="return saveValue()">
+    <form id="myForm" th:action="@{InsertSmallRatio}" method="post" onsubmit="return saveValue()">
         <table>
             <tr>
 
@@ -239,42 +239,57 @@
     <a class="btn" th:href="@{InsertMiddleRatio}">중분류로이동</a>
     <a class="btn" th:href="@{/main}">Home</a>
     <script>
-        function updateSecondaryCategory() {
-                    const primaryId = document.getElementById('primaryCategory').value;
-                    console.log(primaryId);
-                    const secondarySelect = document.getElementById('secondaryCategory');
+        document.getElementById('myForm').addEventListener('submit', function(event) {
+    const secondaryCategorySelect = document.getElementById('secondaryCategory');
+    // 선택된 중분류 이름을 가져옵니다.
+    const selectedSecondaryCategoryText = secondaryCategorySelect.options[secondaryCategorySelect.selectedIndex].text;
 
-                // 기존의 선택박스 항목들을 모두 제거합니다.
-                while (secondarySelect.firstChild) {
-                    secondarySelect.removeChild(secondarySelect.firstChild);
-                }
-                    // "선택" 옵션을 추가합니다.
-                    let defaultOption = document.createElement('option');
-                    defaultOption.text = "선택";
-                    defaultOption.value = "";  // 값이 없는 상태로 설정
-                    secondarySelect.appendChild(defaultOption);
+    // 모든 소분류 입력 필드에 대해 중분류 이름을 추가합니다.
+    document.querySelectorAll('input[name="categoryname[]"]').forEach(function(input) {
+        // 만약 입력 필드가 비어 있지 않다면 중분류 이름을 추가합니다.
+        if (input.value.trim() !== "") {
+            input.value = selectedSecondaryCategoryText + " " + input.value;
+        }
+    });
+});
+    </script>
+    <script>
+            function updateSecondaryCategory() {
+                        const primaryId = document.getElementById('primaryCategory').value;
+                        console.log(primaryId);
+                        const secondarySelect = document.getElementById('secondaryCategory');
 
-                    // AJAX 호출을 사용하여 서버에서 중분류 항목을 불러오기
-                    fetch(`/lms/test/secondaryCategory?primaryId=${primaryId}`)
-                        .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        // 데이터를 사용하여 secondaryCategory 드롭다운에 항목을 추가합니다.
-                        data.forEach(category => {
-                            let option = document.createElement('option');
-                            option.value = category.category_id; // category_id는 예시입니다. 실제 데이터의 필드 이름을 사용해야 합니다.
-                            option.text = category.categoryname; // categoryname은 예시입니다. 실제 데이터의 필드 이름을 사용해야 합니다.
-                            secondarySelect.appendChild(option);
+                    // 기존의 선택박스 항목들을 모두 제거합니다.
+                    while (secondarySelect.firstChild) {
+                        secondarySelect.removeChild(secondarySelect.firstChild);
+                    }
+                        // "선택" 옵션을 추가합니다.
+                        let defaultOption = document.createElement('option');
+                        defaultOption.text = "선택";
+                        defaultOption.value = "";  // 값이 없는 상태로 설정
+                        secondarySelect.appendChild(defaultOption);
+
+                        // AJAX 호출을 사용하여 서버에서 중분류 항목을 불러오기
+                        fetch(`/lms/test/secondaryCategory?primaryId=${primaryId}`)
+                            .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            // 데이터를 사용하여 secondaryCategory 드롭다운에 항목을 추가합니다.
+                            data.forEach(category => {
+                                let option = document.createElement('option');
+                                option.value = category.category_id; // category_id는 예시입니다. 실제 데이터의 필드 이름을 사용해야 합니다.
+                                option.text = category.categoryname; // categoryname은 예시입니다. 실제 데이터의 필드 이름을 사용해야 합니다.
+                                secondarySelect.appendChild(option);
+                            });
+                        })
+                        .catch(error => {
+                            console.log('Fetch error: ', error);
                         });
-                    })
-                    .catch(error => {
-                        console.log('Fetch error: ', error);
-                    });
-                }
+                    }
 
 
     </script>

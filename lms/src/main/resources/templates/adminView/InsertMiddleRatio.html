@@ -97,7 +97,7 @@
     <h1>시험등록</h1>
     <h2>중분류</h2>
     <!-- 첫 번째 폼 -->
-    <form th:action="@{InsertMiddleRatio}" method="post" onsubmit="return saveValue()">
+    <form id="myForm" th:action="@{InsertMiddleRatio}" method="post" onsubmit="return saveValue()">
         <table>
             <tr>
 
@@ -109,7 +109,7 @@
                 </tr>
             <tr>
                 <td>
-                    <select name="parent_id">
+                    <select id="secondaryCategory" name="parent_id">
 
                         <option th:each="ratio : ${pri}" th:value="${ratio.category_id}" th:text="${ratio.categoryname}"></option>
                     </select>
@@ -235,5 +235,20 @@
     <a class="btn" th:href="@{InsertSmallRatio}">소분류로이동</a>
     <a class="btn" th:href="@{/main}">Home</a>
 
+    <script>
+        document.getElementById('myForm').addEventListener('submit', function(event) {
+    const secondaryCategorySelect = document.getElementById('secondaryCategory');
+    // 선택된 대분류 이름을 가져옵니다.
+    const selectedSecondaryCategoryText = secondaryCategorySelect.options[secondaryCategorySelect.selectedIndex].text;
+
+    // 모든 소분류 입력 필드에 대해 중분류 이름을 추가합니다.
+    document.querySelectorAll('input[name="categoryname[]"]').forEach(function(input) {
+        // 만약 입력 필드가 비어 있지 않다면 중분류 이름을 추가합니다.
+        if (input.value.trim() !== "") {
+            input.value = selectedSecondaryCategoryText + " " + input.value;
+        }
+    });
+});
+    </script>
 </body>
 </html>
