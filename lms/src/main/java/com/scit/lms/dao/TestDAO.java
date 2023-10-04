@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface TestDAO {
@@ -59,4 +60,7 @@ public interface TestDAO {
     ArrayList<Test> selectTestByStudent(String username);
 
     ArrayList<PrimaryRatio> secondaryCategory(int primaryId);
+
+    // 카테고리별 시험 조회
+    ArrayList<TestpaperList> getTestpaperListByCategoryId(Map<String, String> map);
 }

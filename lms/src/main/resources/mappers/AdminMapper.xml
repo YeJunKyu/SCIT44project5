@@ -475,14 +475,16 @@ select * from lms_student
 <!--학생 성적 조회-->
     <select id="getStudentsGrade" parameterType="String" resultType="TestpaperList">
         SELECT
-            testid
+            asnum
+            ,testid
             , (SELECT testname FROM lms_test t WHERE t.testid LIKE l.testid) testname
+            , (SELECT to_char(testdate, 'YYYY-MM-DD') testdate FROM lms_test t2 WHERE t2.testid LIKE l.testid) testdate
             , totalscore
         FROM lms_testpaper_list l
         WHERE
             memberid = #{memberid}
         ORDER BY
-            testid DESC
+            testdate DESC
     </select>
 
 <!--    성적전체조회-->

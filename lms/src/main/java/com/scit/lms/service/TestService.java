@@ -7,6 +7,7 @@ import com.scit.lms.domain.TestpaperList;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public interface TestService {
 
@@ -57,4 +58,8 @@ public interface TestService {
     TestpaperList checkDuplicateSubmission(TestpaperList testpaperList);
 
     ArrayList<PrimaryRatio> secondaryCategory(int primaryId);
+
+    // 테스트 카테고리에 따라 보여줄 요소 변함
+    ArrayList<TestpaperList> getTestpaperListByCategoryId(Map<String, String> map);
+
 }

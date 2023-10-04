@@ -15,4 +15,5 @@ public class TestpaperList {
     String membername; //제출자 이름
     int totalscore;  //시험 점수
     String checked; //시험 체크 여부
+    String testdate;
 }
