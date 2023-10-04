@@ -66,18 +66,33 @@ public class TestController {
     //대분류선택후 하위카테고리 선택란생성 
     @ResponseBody
     @GetMapping("secondaryCategory")
-    public ArrayList<PrimaryRatio> secondaryCategory(@RequestParam int primaryId)
-    {   log.debug("카테고리id:{}",primaryId);
+    public ArrayList<PrimaryRatio> secondaryCategory(@RequestParam int primaryId) {
+        log.debug("카테고리id:{}",primaryId);
         return testService.secondaryCategory(primaryId);
     }
 
     //중분류선택후 하위카테고리 선택란생성
     @ResponseBody
     @GetMapping("lastCategory")
-    public ArrayList<PrimaryRatio> lastCategory(@RequestParam int primaryId)
-    {   log.debug("카테고리id:{}",primaryId);
+    public ArrayList<PrimaryRatio> lastCategory(@RequestParam int primaryId) {
+        log.debug("카테고리id:{}",primaryId);
         return testService.secondaryCategory(primaryId);
     }
+
+    //분류 선택시 보이는 값 변경
+    @ResponseBody
+    @GetMapping("getDataByCategory")
+    public ArrayList<TestpaperList> getDataByCategory(@RequestParam int category_id, @RequestParam String memberid) {
+        log.debug("카테고리id:{}", category_id);
+        log.debug("멤버id:{}", memberid);
+        Map<String, String> map = new HashMap<>();
+        map.put("category_id", String.valueOf(category_id));
+        map.put("memberid", memberid);
+        log.debug("맵 : {}", map);
+        return testService.getTestpaperListByCategoryId(map);
+    }
+
+
     // 시험 문제 등록
     @PostMapping("insertTest")
     public String insertTest(@RequestParam("categoryid") int categoryid,

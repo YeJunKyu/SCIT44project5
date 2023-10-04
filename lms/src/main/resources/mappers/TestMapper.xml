@@ -201,4 +201,25 @@
         t.testid IN (SELECT testid FROM lms_testpaper_list l WHERE l.memberid = #{memberid} AND l.checked = 'complete')
 
     </select>
+
+    <!--카테고리별 시험 확인-->
+    <select id="getTestpaperListByCategoryId" parameterType="hashmap" resultType="TestpaperList">
+        select *
+        from lms_testpaper_list t
+        where
+            t.memberid = #{memberid}
+          and testid in (
+            select testid
+            from lms_test
+            where categoryid in (
+                select category_id
+                FROM primary_ratio_category
+                WHERE parent_id IN (
+                    SELECT category_id
+                    FROM primary_ratio_category
+                    WHERE parent_id = #{category_id}
+                )
+            )
+        )
+    </select>
 </mapper>

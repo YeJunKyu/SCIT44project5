@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -120,6 +121,11 @@ public class TestServiceImpl implements TestService{
     @Override
     public ArrayList<PrimaryRatio> secondaryCategory(int primaryId) {
         return dao.secondaryCategory(primaryId);
+    }
+
+    @Override
+    public ArrayList<TestpaperList> getTestpaperListByCategoryId(Map<String, String> map) {
+        return dao.getTestpaperListByCategoryId(map);
     }
 
 }

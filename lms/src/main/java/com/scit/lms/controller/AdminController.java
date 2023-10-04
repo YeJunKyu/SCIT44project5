@@ -12,6 +12,7 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.scit.lms.domain.*;
+import com.scit.lms.service.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,6 +36,9 @@ public class AdminController {
 	
 	@Autowired
 	AdminService service;
+
+	@Autowired
+	TestService testService;
 
 
 
@@ -248,12 +252,15 @@ public class AdminController {
 		log.debug("학생아이디확인:{}",memberid);
 		StudentsAll studentsAll = service.ReadOneStudent(memberid);
 		ArrayList<TestpaperList> studentsGrade = service.getStudentsGrade(memberid);
+		ArrayList<PrimaryRatio> primaryRatios = testService.selectCategory();
 		log.debug("학생정보확인:{}",studentsAll);
 		log.debug("학생성적확인:{}", studentsGrade);
 		model.addAttribute("student",studentsAll);
 		model.addAttribute("grade", studentsGrade);
+		model.addAttribute("category", primaryRatios);
 		return "adminView/studentInfo";
 	}
+
 
 	//학생개인정보수정
 	@PostMapping("updateInformation")
