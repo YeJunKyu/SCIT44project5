@@ -243,5 +243,10 @@ public class AdminServiceImple implements AdminService {
 		return dao.getStudentsGrade(memberid);
 	}
 
+	@Override
+	public ArrayList<GradeAll> SelectGrade() {
+		return dao.SelectGrade();
+	}
+
 
 }

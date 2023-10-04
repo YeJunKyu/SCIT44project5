@@ -43,8 +43,8 @@
     <div class="page-title">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3>회원인증 및 직책선택</h3>
-                <p class="text-subtitle text-muted">인증하고자하는 대상의 승인체크 후 직책을 선택하여 저장해주세요.</p>
+                <h3>성적조회</h3>
+                <p class="text-subtitle text-muted">학생 종합성적 조회</p>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
@@ -62,45 +62,33 @@
                 회원 목록
             </div>
             <div class="card-body">
-                <form th:action="@{updateScore}" method="post">
                     <table class="table table-striped" id="table1">
                         <thead>
-                        <tr>
-                            <th>시험종목</th>
-                            <th>기수</th>
-                            <th>아이디</th>
-                            <th>이름</th>
 
-                            <th>일본어반</th>
-                            <th>IT반</th>
-                            <th>점수</th>
-                        </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="students : ${students}">
-                            <td th:text="${students.test?.testname}">
+                        <tr>
+                            <th>아이디</th>
+                            <th>이름</th>
+                            <th>기수</th>
+                            <!-- 동적으로 과목명 헤더를 추가 -->
+                            <th:block th:each="test : ${list[0].tests}">
+                                <th th:text="${test.primaryRatio.categoryname}"></th>
+                            </th:block>
+                        </tr>
+                        <tr th:each="studentGrade : ${list}">
+                            <td th:text="${studentGrade.memberid}"></td>
+                            <td th:text="${studentGrade.membername}"></td>
+                            <td th:text="${studentGrade.curriculum}"></td>
 
-                            </td>
-                            <td>[[${students.member.memberid}]]</td>
-                            <td>[[${member.membername}]]</td>
-                            <td th:text="${students.student?.curriculum}">
-
-                            </td>
-                            <td th:text="${students.jpCategory?.jpclassname}">
-
-                            </td>
-                            <td th:text="${students.itCategory?.itclassname}">
-
-                            </td>
-                            <td th:text="${students.testpaper?.totalscore}">
-
-                            </td>
-
+                            <th:block th:each="test : ${studentGrade.tests}">
+                                <td th:text="${test.testpaperList.totalscore}"></td>
+                            </th:block>
                         </tr>
 
                         </tbody>
                     </table>
-                    <input type="submit" value="저장">
+
 
                 </form>
 
@@ -116,7 +104,7 @@
     <script th:src="@{/assets/js/bootstrap.js}"></script>
     <script th:src="@{/assets/js/app.js}"></script>
     
-<script th:src="@{/assets/extensions/simple-datatables/umd/simple-datatables.js}"></script>
+<script th:src="@{/assets/extensions/simple-datatables/umd/simple-datatables-1.js}"></script>
 <script th:src="@{/assets/js/pages/simple-datatables.js}"></script>
 
 </body>

@@ -100,4 +100,6 @@ public interface AdminDAO {
     ArrayList<StudentsAll> SelectMonthAttendance(HashMap<String,String> map);
 
     ArrayList<TestpaperList> getStudentsGrade(String memberid);
+
+    ArrayList<GradeAll> SelectGrade();
 }

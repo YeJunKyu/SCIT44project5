@@ -93,4 +93,6 @@ public interface AdminService {
     ArrayList<StudentsAll> SelectMonthAttendance(String selectedDate,String memberid);
 
     ArrayList<TestpaperList> getStudentsGrade(String memberid);
+
+    ArrayList<GradeAll> SelectGrade();
 }

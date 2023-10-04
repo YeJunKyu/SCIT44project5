@@ -485,4 +485,27 @@ select * from lms_student
             testid DESC
     </select>
 
+<!--    성적전체조회-->
+<select id="SelectGrade" resultType="GradeAll">
+    SELECT
+    m.memberid "member.memberid",
+    m.membername "member.membername",
+    s.curriculum "student.curriculum",
+    t.testid "test.testid",
+    t.categoryid "test.categoryid",
+    tpl.totalscore "testpaperList.totalscore",
+    tpl.checked "testpaperList.checked",
+    prc.categoryname "primaryRatio.categoryname",
+    prc.ratio "primaryRatio.ratio",
+    prc.divname "primaryRatio.divname"
+    FROM
+    lms_member m
+    JOIN lms_student s ON m.memberid = s.memberid
+    JOIN lms_testpaper_list tpl ON m.memberid = tpl.memberid
+    JOIN lms_test t ON tpl.testid = t.testid
+    JOIN primary_ratio_category prc ON t.categoryid = prc.category_id
+    where tpl.checked = 'complete'
+    order by categoryname
+</select>
+
 </mapper>

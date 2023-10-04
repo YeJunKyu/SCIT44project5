@@ -118,6 +118,18 @@
                         <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
                             <a href="#" class="sidebar-link">
                                 <i class="bi bi-stack"></i>
+                                <span>성적관리</span>
+                            </a>
+                            <ul class="submenu">
+                                <li class="submenu-item">
+                                    <a th:href="@{/admin/SelectGrade}">성적</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
+                            <a href="#" class="sidebar-link">
+                                <i class="bi bi-stack"></i>
                                 <span>시험</span>
                             </a>
                             <ul class="submenu">
