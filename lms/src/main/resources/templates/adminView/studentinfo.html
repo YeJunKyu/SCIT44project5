@@ -70,8 +70,8 @@
         <div class="row" id="table-head">
             <div class="col-12">
                 <div class="card">
-
                     <!-- 테이블 -->
+                    <h1>학생 정보</h1>
                     <div class="card-content d-flex justify-content-center align-items-center">
                         <table class="stdinfo_table">
                             <tr>
@@ -217,16 +217,39 @@
                         </table>
                     </div>
                 </div>
-            </div>
-            <div class="col-sm-12 d-flex justify-content-end">
-                <button type="submit" class="btn btn-primary me-1 mb-1">
-                    <a th:href="@{/admin/ReadOneStudent/{memberid}(memberid=${student.member?.memberid})}" style="color: white">편집</a>
-                </button>
-                <button type="reset" class="btn btn-light-secondary me-1 mb-1"><a th:href="@{/admin/studentManager}">목록으로</a></button>
+                <div class="card">
+                    <h1>성적</h1>
+                    <div class="card-content d-flex justify-content-center align-items-center">
+                        <table style="width: 80%">
+                            <tr>
+                                <th class="col-6">시험명</th>
+                                <th class="col-2">점수</th>
+                                <th class="col-3">합/불</th>
+                            </tr>
+                            <tr th:each="grade : ${grade}">
+                                <td>
+                                    <span th:text="${grade.testname}"></span>
+                                </td>
+                                <td>
+                                    <span th:text="${grade.totalscore}"></span>
+                                </td>
+                                <td>
+                                    <span th:if="${grade.totalscore >= 70}">합격</span>
+                                    <span th:if="${grade.totalscore < 70}">불합격</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
+        <div class="col-sm-12 d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary me-1 mb-1">
+                <a th:href="@{/admin/ReadOneStudent/{memberid}(memberid=${student.member?.memberid})}" style="color: white">편집</a>
+            </button>
+            <button type="reset" class="btn btn-light-secondary me-1 mb-1"><a th:href="@{/admin/studentManager}">목록으로</a></button>
+        </div>
     </section>
-
 </div>
 
 <script th:src="@{/assets/js/bootstrap.js}"></script>

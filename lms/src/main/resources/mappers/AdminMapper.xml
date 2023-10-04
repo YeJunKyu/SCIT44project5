@@ -472,5 +472,17 @@ select * from lms_student
 
 <!--    단체성적조회-->
 
+<!--학생 성적 조회-->
+    <select id="getStudentsGrade" parameterType="String" resultType="TestpaperList">
+        SELECT
+            testid
+            , (SELECT testname FROM lms_test t WHERE t.testid LIKE l.testid) testname
+            , totalscore
+        FROM lms_testpaper_list l
+        WHERE
+            memberid = #{memberid}
+        ORDER BY
+            testid DESC
+    </select>
 
 </mapper>

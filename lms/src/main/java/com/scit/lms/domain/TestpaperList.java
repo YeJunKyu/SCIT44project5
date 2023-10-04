@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class TestpaperList {
     int asnum;  //답안지 고유번호(시퀀스, PK)
     int testid; //시험 고유번호(FK)
+    String testname;
     String memberid; //제출자 id
     String membername; //제출자 이름
     int totalscore;  //시험 점수
