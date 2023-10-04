@@ -26,11 +26,11 @@ import java.util.Map;
 import java.util.UUID;
 
 //회원정보 관련 콘트롤러
+
 @Slf4j
 @Controller
 @RequestMapping("member")
 public class MemberController {
-
 
     @Autowired
     MemberService service;
@@ -142,7 +142,7 @@ public class MemberController {
             , @RequestParam("inputAddress") String inputAddress
             , @RequestParam("detailAddress") String detailAddress){
 
-        String fullAddress = (postcode + " " + inputAddress + " " + detailAddress).trim();
+        String fullAddress = "(" + postcode + ") " + inputAddress + " " + detailAddress;
         log.debug("주소:{}", fullAddress);
         member.setAddress(fullAddress);
 
@@ -326,10 +326,6 @@ public class MemberController {
 
 
         return "redirect:/";
-    }
-    @GetMapping("main2")
-    public String main(){
-        return "memberView/main2";
     }
 
 
