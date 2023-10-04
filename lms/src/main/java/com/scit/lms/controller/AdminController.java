@@ -122,8 +122,8 @@ public class AdminController {
 		return "adminView/studentManager";
 	}
 
-	//학생관리 기수별조회
 
+	//학생관리 기수별조회
 	@ResponseBody
 	@GetMapping("/getStudentsByBatch")
 	public ArrayList<StudentsAll> getStudentsByBatch(@RequestParam("curriculum") String curriculum) {
@@ -242,6 +242,16 @@ public class AdminController {
 		return "adminView/ReadOneStudent";
 	}
 
+	// 학생 한명 개인정보 조회
+	@GetMapping("studentInfo/{memberid}")
+	public String studentInfo(@PathVariable String memberid, Model model) {
+		log.debug("학생아이디확인:{}",memberid);
+		StudentsAll studentsAll = service.ReadOneStudent(memberid);
+		log.debug("학생정보확인:{}",studentsAll);
+		model.addAttribute("student",studentsAll);
+		return "adminView/studentInfo";
+	}
+
 	//학생개인정보수정
 	@PostMapping("updateInformation")
 	public String updateInformation(StudentsAll studentsAll) throws Exception
@@ -303,7 +313,7 @@ public class AdminController {
 
 
 
-		return "redirect:/admin/studentManager/";
+		return "redirect:/admin/studentInfo/" + studentsAll.getMember().getMemberid();
 	}
 
 	//시험비중등록폼

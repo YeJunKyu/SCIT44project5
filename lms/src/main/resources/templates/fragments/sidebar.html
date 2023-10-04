@@ -112,7 +112,6 @@
                                 <li class="submenu-item">
                                     <a th:href="@{'/admin/InsertStudentAttendance?att_date=' + ${today}}">출결등록</a>
                                 </li>
-
                             </ul>
                         </li>
 
@@ -143,7 +142,6 @@
                                 <li class="submenu-item">
                                     <a th:href="@{/test}">시험</a>
                                 </li>
-
                             </ul>
                         </li>
 
@@ -299,7 +297,6 @@
                             <a href="#" class="sidebar-link">
                                 <i class="bi bi-collection-fill"></i>
                                 <span>시험</span>
-
                             </a>
                             <ul class="submenu">
                                 <li class="submenu-item">
@@ -307,6 +304,9 @@
                                 </li>
                                 <li class="submenu-item">
                                     <a th:href="@{/test/submitTestList}">제출한시험</a>
+                                </li>
+                                <li class="submenu-item">
+                                    <a th:href="@{/test/testGrade}">시험 결과</a>
                                 </li>
                             </ul>
                         </li>

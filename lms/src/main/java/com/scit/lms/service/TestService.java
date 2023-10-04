@@ -49,6 +49,9 @@ public interface TestService {
     // 정답지 번호 가져오기
     int getAsnum(String answernum);
 
+    // 학생이 본인 성적 확인
+    ArrayList<Test> selectTestByStudent(String username);
+
     ArrayList<AllOfTest> submitTestList(String memberid);
 
     TestpaperList checkDuplicateSubmission(TestpaperList testpaperList);

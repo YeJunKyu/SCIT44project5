@@ -54,4 +54,7 @@ public interface TestDAO {
     ArrayList<AllOfTest> submitTestList(String memberid);
 
     TestpaperList checkDuplicateSubmission(TestpaperList testpaperList);
+
+    // 학생이 본인 성적 확인
+    ArrayList<Test> selectTestByStudent(String username);
 }

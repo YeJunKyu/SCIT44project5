@@ -179,4 +179,20 @@
     </select>
 
 
+
+    <!--학생이 본인 성적 확인-->
+    <select id="selectTestByStudent" parameterType="String" resultType="Test">
+        SELECT
+            testname,
+            totalpoints,
+            testdate,
+            (SELECT totalscore FROM lms_testpaper_list l WHERE l.testid = t.testid) totalscore
+        FROM lms_test t
+        WHERE
+            (SELECT testid
+             FROM lms_testpaper_list l
+             WHERE
+                 l.memberid = #{memberid}
+            ) = t.testid
+    </select>
 </mapper>

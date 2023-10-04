@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>학생개인정보</title>
+
+    <link rel="stylesheet" th:href="@{/assets/css/main/app.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main/app-dark.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main/lms.css}" />
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.svg}" type="image/x-icon">
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png">
+    <link rel="stylesheet" th:href="@{/assets/css/shared/iconly.css}">
+
+    <script th:src="@{/assets/js/jquery-3.6.0.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .form-body {
+            margin: 50px;
+        }
+        label {
+            font-weight: bold;
+        }
+
+        tr {
+            height: 2.5rem;
+        }
+
+        .stdinfo_table {
+            width: 80%;
+
+        }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <div th:replace="~{/fragments/sidebar.html :: sidebarFrag}"></div>
+</div>
+
+<div id="main">
+    <header class="mb-3">
+        <a href="#" class="burger-btn d-block d-xl-none">
+            <i class="bi bi-justify fs-3"></i>
+        </a>
+    </header>
+
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <h3>학생 정보</h3>
+                    <p class="text-subtitle text-muted">학생 정보를 편집할 수 있습니다.</p>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-th="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a th:href="@{/main}">메인</a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/admin/studentManager}">학생 관리</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">학생 정보 편집</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="section">
+        <div class="row" id="table-head">
+            <div class="col-12">
+                <div class="card">
+
+                    <!-- 테이블 -->
+                    <div class="card-content d-flex justify-content-center align-items-center">
+                        <table class="stdinfo_table">
+                            <tr>
+                                <td class="col-3">
+                                    <label>아이디</label>
+                                </td>
+                                <td class="col-8">
+                                    <input type="hidden" name="member.memberid" th:value="${student.member?.memberid}" readonly>
+                                    [[${student.member?.memberid}]]
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>이름</label>
+                                </td>
+                                <td>
+                                    <span th:text="${student.member?.membername}"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>생년월일</label>
+                                </td>
+                                <td>
+                                    <span th:text="${student.member?.birthday}"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>성별</label>
+                                </td>
+                                <td>
+                                    <span th:if="${student.member?.gender == 'female'}">여성</span>
+                                    <span th:if="${student.member?.gender == 'male'}">남성</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>주소</label>
+                                </td>
+                                <td>
+                                    <span th:text="${student.member?.address}"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>학교</label>
+                                </td>
+                                <td>
+                                    <span th:text="${student.student?.school}"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>전공</label>
+                                </td>
+                                <td>
+                                    <span th:text="${student.student?.major}"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>졸업 여부</label>
+                                </td>
+                                <td>
+                                    <span th:if="${student.student?.graduation == '0'}">재학중</span>
+                                    <span th:if="${student.student?.graduation == '1'}">졸업</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>과정</label>
+                                </td>
+                                <td>
+                                    <span th:text="${student.student?.curriculum}"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>일본어 분반</label>
+                                </td>
+                                <td>
+                                    <span th:text="${student.jpCategory?.jpclassname}"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>IT 분반</label>
+                                </td>
+                                <td>
+                                    <span th:text="${student.itCategory?.itclassname}"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>공인어학자격증</label>
+                                </td>
+                                <td>
+                                    <span th:text="${student.studentInfo?.certi_jpname}"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>IT자격증</label>
+                                </td>
+                                <td>
+                                    <span th:text="${student.studentInfo?.certi_name}"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>특이사항</label>
+                                </td>
+                                <td>
+                                    <span th:text="${student.studentInfo?.note}"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>내정 회사</label>
+                                </td>
+                                <td>
+                                    <span th:text="${student.studentInfo?.company}"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>해외경력 및 취업경험</label>
+                                </td>
+                                <td>
+                                    <span th:text="${student.studentInfo?.experience}"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>학원 졸업 여부</label>
+                                </td>
+                                <td>
+                                    <span th:if="${student.studentInfo?.scitgraduation == '미수료'}">미수료</span>
+                                    <span th:if="${student.studentInfo?.scitgraduation == '수료'}">수료</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary me-1 mb-1">
+                    <a th:href="@{/admin/ReadOneStudent/{memberid}(memberid=${student.member?.memberid})}" style="color: white">편집</a>
+                </button>
+                <button type="reset" class="btn btn-light-secondary me-1 mb-1"><a th:href="@{/admin/studentManager}">목록으로</a></button>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<script th:src="@{/assets/js/bootstrap.js}"></script>
+<script th:src="@{/assets/js/app.js}"></script>
+
+</body>
+</html>

@@ -101,6 +101,12 @@ public class TestServiceImpl implements TestService{
         return dao.getAsnum(answernum);
     }
 
+    // 학생이 본인 성적 확인
+    @Override
+    public ArrayList<Test> selectTestByStudent(String username) {
+        return dao.selectTestByStudent(username);
+    }
+
     @Override
     public ArrayList<AllOfTest> submitTestList(String memberid) {
         return dao.submitTestList(memberid);
