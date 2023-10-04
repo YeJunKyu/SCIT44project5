@@ -59,4 +59,8 @@ public interface QuestionService {
 
     // 점수 변경
     void setScore(TestAnswer testAnswer);
+
+    void updateSubmittedQuestion(TestAnswer testAnswer);
+
+    TestAnswer selectUpdatedTestAnswer(TestAnswer testAnswer);
 }

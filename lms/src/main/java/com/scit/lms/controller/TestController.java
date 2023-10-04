@@ -476,6 +476,91 @@ public class TestController {
         return ResponseEntity.ok("");
     }
 
+    //시험 수정제출
+    @ResponseBody
+    @PostMapping("updateSubmittedTest")
+    public String updateSubmittedTest(@AuthenticationPrincipal UserDetails user,
+                                      @RequestParam("testid") String testid,
+                                      @RequestParam("answerArray") String answerArray,
+                                      @RequestParam Map<String, MultipartFile> fileMap
+    ) throws JsonProcessingException{
+        log.debug("테스트 : {}", testid);
+        log.debug("어레이 : {}", answerArray);
+        log.debug("파일 : {}", fileMap);
+
+        TestpaperList testpaperList = new TestpaperList();
+        testpaperList.setMemberid(user.getUsername());
+        testpaperList.setTestid(Integer.parseInt(testid));
+        // 중복 제출 체크
+        TestpaperList existingSubmission = testService.checkDuplicateSubmission(testpaperList);
+        log.debug("답안지확인:{}",existingSubmission);
+
+
+        int asnum = testpaperList.getAsnum();
+        log.debug("앤서넘버가져오기 : {}", asnum);
+
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        AnswerObject[] answerObjects = objectMapper.readValue(answerArray, AnswerObject[].class);
+        for (AnswerObject answerObject : answerObjects) {
+            log.debug("파일 확인: {}", answerObject);
+            TestAnswer testAnswer = new TestAnswer();
+            testAnswer.setAsnum(asnum);
+            testAnswer.setQid(answerObject.getQid());
+
+            String answer = String.join(",", answerObject.getAnswer());
+            log.debug("정답 {}", answer);
+            testAnswer.setAnswer(answer);
+
+            MultipartFile currentFile = fileMap.get("file[" + answerObject.getQid() + "]");
+
+            if (currentFile != null && !currentFile.isEmpty()) {
+                String savedfile = FileService.saveFile(currentFile, uploadPath);
+                log.debug("현파일:{}", currentFile.getOriginalFilename());
+                testAnswer.setOriginalfile(currentFile.getOriginalFilename());
+                testAnswer.setSavedfile(savedfile);
+            } else {
+                log.debug("현파일 없음");
+            }
+
+            log.debug("앤서 : {}", testAnswer);
+            questionService.updateSubmittedQuestion(testAnswer);
+            log.debug("답안수정확인:{}",testAnswer);
+            //수정답안 가져오기
+            TestAnswer updatedTestAnswer = questionService.selectUpdatedTestAnswer(testAnswer);
+            log.debug("수정된답안확인:{}",updatedTestAnswer);
+            
+            
+            Question question = questionService.getQuestionByQid(updatedTestAnswer.getQid());
+            if (question.getType() == 1 || question.getType() == 2 || question.getType() == 3) {
+                if (question.getAnswer().equals(updatedTestAnswer.getAnswer())) {
+                    updatedTestAnswer.setPoints(question.getPoints());
+                    updatedTestAnswer.setRwc("right");
+
+                    questionService.updateResult(updatedTestAnswer);
+                    log.debug("답안결과수정:{}",updatedTestAnswer);
+                } else if (!question.getAnswer().equals(answer)) {
+                    updatedTestAnswer.setPoints(0);
+                    updatedTestAnswer.setRwc("wrong");
+
+                    questionService.updateResult(updatedTestAnswer);
+                    log.debug("답안결과수정:{}",updatedTestAnswer);
+                }
+            } else if (question.getType() == 4 || question.getType() == 5) {
+                updatedTestAnswer.setRwc("check");
+
+                questionService.updateResult(updatedTestAnswer);
+                log.debug("답안결과수정:{}",updatedTestAnswer);
+
+            }
+
+            testService.updateTotalpoints(asnum);
+
+        }
+
+        return "";
+    }
+
     //시험 하나의 제출된 답변들 목록으로 이동
     @GetMapping("testList")
     public String testList(@RequestParam("testid") int testid, Model model) {

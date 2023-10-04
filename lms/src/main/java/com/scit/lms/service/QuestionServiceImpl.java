@@ -130,5 +130,15 @@ public class QuestionServiceImpl implements QuestionService{
         dao.setScore(testAnswer);
     }
 
+    @Override
+    public void updateSubmittedQuestion(TestAnswer testAnswer) {
+        dao.updateSubmittedQuestion(testAnswer);
+    }
+
+    @Override
+    public TestAnswer selectUpdatedTestAnswer(TestAnswer testAnswer) {
+        return dao.selectUpdatedTestAnswer(testAnswer);
+    }
+
 
 }

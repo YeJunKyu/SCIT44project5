@@ -13,7 +13,145 @@
     <script th:src="@{/assets/js/jquery-3.6.0.js}"></script>
     <script th:src="@{/privatejs/sidebarLoader.js}"></script>
     <script th:inline="javascript">
+        function submitForm() {
+                        let answerArray = [];
 
+                        // FormData 객체 생성
+                        let formData = new FormData();
+
+                        let testid = document.getElementById("testid").innerText;
+                        console.log(testid);
+                        formData.append("testid", testid);
+
+                        // 파일 업로드를 formData에 추가 (originalfile)
+                        $(".card").each(function (index) {
+                            let cardId = $(this).attr("id");
+                            // console.log(cardId);
+                            let fileInput = $("#" + cardId + "-file-input")[0];
+                            // console.log(fileInput)
+                            if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+                                return;
+                            }
+                            // let papernum = $(this).closest(".card").find("#" + cardId + "-papernum").text();
+                            if (fileInput.files.length > 0) {
+                                formData.append(`file[${cardId}]`, fileInput.files[0]);
+                            }
+                        });
+
+                        // 모든 문제를 루프를 돌며 처리합니다.
+                        let questions = [[${questions}]];
+                        // console.log(questions);
+                        questions.forEach(function (question) {
+                            let qid = question.qid;
+                            let questionType = question.type;
+                            let answer = [];
+
+                            // console.log(qid);
+                            // console.log(questionType);
+
+
+                            // 문제 유형에 따라 값을 추출합니다.
+                            switch (questionType) {
+                                case 1: // 객관식
+                                    let selectedOption = document.querySelector(`input[name="${qid}-answer"]:checked`);
+                                    // console.log(selectedOption);
+                                    if (selectedOption) {
+                                        answer.push(selectedOption.value);
+                                    }
+                                    break;
+
+                                case 2: // 객관식 복수 선택형
+                                    let selectedOptions = document.querySelectorAll(`input[name="${qid}-answer"]:checked`);
+                                    // console.log(selectedOptions);
+                                    if (selectedOptions.length > 0) {
+                                        selectedOptions.forEach(function (selectedOption) {
+                                            answer.push(selectedOption.value);
+                                            // console.log(answer);
+                                        });
+                                    }
+                                    break;
+
+                                case 3: // 단답형
+                                    let textAnswer = document.querySelector(`input[name="${qid}-answer"].form-control`);
+                                    if (textAnswer) {
+                                        answer.push(textAnswer.value);
+                                    }
+                                    break;
+
+                                case 4: // 서술형
+                                    let textareaAnswer = document.querySelector(`textarea[name="${qid}-answer"].form-control`);
+                                    if (textareaAnswer) {
+                                        answer.push(textareaAnswer.value);
+                                    }
+                                    break;
+                                //
+                                // case 5: // 파일 첨부형
+                                //     // 파일 입력값을 추출하려면` 해당 파일 입력 요소에 접근해야 합니다.
+                                //     // 파일 입력 요소의 ID를 사용하여 접근할 수 있습니다.
+                                //     // let fileInput = document.getElementById(`${qid}-file-input`).files;
+                                //     // console.log(fileInput);
+                                //     // if (fileInput.length > 0) {
+                                //     //     answer.push(fileInput);
+                                //     // }
+                                //     break;
+
+                                default:
+                                    break;
+                            }
+
+                            // 문제와 답을 데이터 배열에 추가
+                            answerArray.push({
+                                qid: qid,
+                                answer: answer,
+                            });
+
+
+
+
+                        });
+                        formData.append("answerArray", JSON.stringify(answerArray));
+
+                        console.log("폼데이터", [...formData]);
+
+
+
+                        // 권한에 따라 요청 URL을 결정합니다.
+                        let requestUrl = '';
+
+
+                // Ajax 요청을 보냅니다.
+                        $.ajax({
+                            type: 'POST',
+                            url: 'updateSubmittedTest',
+                            data: formData,
+                            contentType: false,
+                            processData: false,
+                            success: function(response) {
+                                // 성공적으로 서버에서 응답을 받았을 때 수행할 작업을 여기에 추가하세요.
+                                alert('성공적으로 제출되었습니다.');
+                                window.location.href = "/lms/test/submitTestList";
+                            },
+                            error: function(error) {
+                                // Ajax 요청이 실패했을 때 수행할 작업을 여기에 추가하세요.
+                                alert('제출 중 오류가 발생했습니다.');
+                            }
+                        });
+                }
+
+            // 첨부파일 다운로드
+            function download(qid) {
+                $.ajax({
+                    url : "download",
+                    method : "GET",
+                    data: {qid : qid},
+                    success: function (data) {
+
+                    },
+                    error: function (e){
+                        console.log(JSON.stringify(e));
+                    }
+                })
+            }
     </script>
 </head>
 <body>
@@ -97,7 +235,6 @@
                                 <h6 th:text="${q.contents}"></h6>
                                 <div th:each="ta : ${testAnswers}" th:if="${q.qid == ta.qid}">
                                     <div>
-
                                         <div th:if="${ta.rwc == 'check'}">
                                             <i class="bi bi-check"></i>
                                         </div>
@@ -117,7 +254,7 @@
                                     <div th:if="${q.qid == o.qid}" th:each="o :${options}">
                                         <div class="d-flex justify-content-between mb-1 optionItem" th:if="${ta.qid == q.qid}">
                                             <label class="d-flex align-items-center">
-                                                <input type="radio" class="form-check-input m-lg-1 optionCount" th:value="${o.value}" th:checked="${o.value == ta.answer}" disabled/>
+                                                <input type="checkbox" class="form-check-input m-lg-1 optionCount" th:name="|${o?.qid}-answer|" th:value="${o.value}" th:checked="${o.value == ta.answer}">
                                                 <span th:text="${o.content}"></span>
                                             </label>
                                         </div>
@@ -128,7 +265,7 @@
                                     <div th:if="${q.qid == o.qid}" th:each="o :${options}">
                                         <div class="d-flex justify-content-between mb-1 multiOptionItem"th:if="${ta.qid == q.qid}">
                                             <label class="d-flex align-items-center">
-                                                <input type="checkbox" class="form-check-input m-lg-1 optionCount" th:value="${o.value}" th:checked="${#strings.contains(ta.answer, o.value)}" disabled/>
+                                                <input type="checkbox" class="form-check-input m-lg-1 optionCount" th:name="|${o?.qid}-answer|" th:value="${o.value}" th:checked="${#strings.contains(ta.answer, o.value)}">
                                                 <span th:text="${o.content}"></span>
                                             </label>
                                         </div>
@@ -137,13 +274,13 @@
                                 <!-- 단답형 (q.type == 3) -->
                                 <div th:case="3">
                                     <div class="d-flex justify-content-between mb-1" th:if="${ta.qid == q.qid}">
-                                        <span th:text="${ta.answer}"></span>
+                                        <input type="text" class="form-control" th:name="|${q?.qid}-answer|" th:value="${ta.answer}">
                                     </div>
                                 </div>
                                 <!-- 서술형 (q.type == 4) -->
                                 <div th:case="4">
                                     <div class="d-flex justify-content-between mb-1" th:if="${ta.qid == q.qid}">
-                                        <span th:text="${ta.answer}"></span>
+                                        <textarea th:text="${ta.answer}" class="form-control" th:name="|${q?.qid}-answer|"></textarea>
                                     </div>
                                 </div>
                                 <!-- 파일 첨부형 (q.type == 5) -->
@@ -155,6 +292,7 @@
                                            th:href="@{/test/downloadAnswerfile(answernum=${ta.answernum})}"
                                            class="btn btn-primary"
                                            role="button">[Download Link]</a>
+                                        <input class="form-control" type="file" th:name="|${q?.qid}-answer|" th:id="|${q?.qid}-file-input|">
                                     </div>
                                 </div>
                             </div>
@@ -166,19 +304,12 @@
                                     <b><span th:text="${q.points}"></span></b>점
                                 </label>
                             </div>
-                            <p th:if="${q.type == 1 || q.type == 2 || q.type == 3}">정답 : <span th:text="${q.answer}"></span></p>
-                            <div class="d-flex align-items-center col-3" th:if="${q.type == 4 || q.type == 5}">
-                                <div class="d-flex align-items-center" th:each="ta : ${testAnswers}" th:if="${q.qid == ta.qid}">
-                                    <input type="number" class="form-control inputpoint" th:id="${ta.answernum}">
-                                    <span>점</span>
-                                    <button class="form-control" type="button" th:onclick="setScore([[${ta.answernum}]], [[${q.points}]])">점수 변경</button>
-                                </div>
-                            </div>
+
                         </div>
                     </div>
                 </div>
                 <section class="d-flex justify-content-between">
-                    <button class="btn btn-primary" type="button" th:onclick="completeCheck([[${testpaperList.asnum}]]);">수정</button>
+                    <button class="btn btn-primary" type="button" onclick="submitForm();">수정</button>
                 </section>
             </form>
         </div>

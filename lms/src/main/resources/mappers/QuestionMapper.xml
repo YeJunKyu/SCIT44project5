@@ -155,6 +155,24 @@
         )
     </insert>
 
+<!--    제출답안수정-->
+    <update id="updateSubmittedQuestion" parameterType="TestAnswer">
+        update lms_test_answer
+        set answer = #{answer}
+        <if test="originalfile != null">
+                ,originalfile = #{originalfile},
+        savedfile = #{savedfile}
+        </if>
+        where qid = #{qid}
+    </update>
+
+<!--    수정제출답안조회-->
+<select id="selectUpdatedTestAnswer" parameterType="TestAnswer" resultType="TestAnswer">
+    select * from lms_test_answer
+    where qid = #{qid}
+
+</select>
+
 
 <!--    문제수 조회-->
     <select id="countQuestion" parameterType="int" resultType="int">
