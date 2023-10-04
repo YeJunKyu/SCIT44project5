@@ -1,13 +1,17 @@
 package com.scit.lms.controller;
 
+import com.scit.lms.domain.Notice;
 import com.scit.lms.service.BoardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 @Slf4j
 @Controller
@@ -22,19 +26,22 @@ public class BoardController {
         return "boardView/main";
     }
 
-    // 학생 관리 페이지 이동
-    @GetMapping("manage")
-    public String manage() {
-        return "boardView/manage/manage";
+    // 메인 테스트
+    @GetMapping("maintest")
+    public String mainTest(Model model, @AuthenticationPrincipal UserDetails user) {
+        ArrayList<Notice> noticeList;
+        noticeList = service.noticeList();
+
+        //학생은 학생 공지, 자기 과정 공지만 보이게
+        if (user.getAuthorities().stream().anyMatch(auth -> "ROLE_student".equals(auth.getAuthority()))) {
+            String curriculum = service.studentCurriculum(user.getUsername());
+            noticeList = service.noticeListStudent(curriculum);
+        }
+
+        log.debug("공지 리스트: {}", noticeList);
+        model.addAttribute("noticeList", noticeList);
+        return "main/main";
     }
-
-    // 강의 페이지 이동
-    @GetMapping("lecture")
-    public String lecture() {
-        return "boardView/lecture/lecture";
-    }
-
-
 
     @GetMapping("sidebar")
     public String sidebar(Model model){

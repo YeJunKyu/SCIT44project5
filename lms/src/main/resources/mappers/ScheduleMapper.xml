@@ -27,6 +27,26 @@
             lms_schedule
     </select>
 
+    <!-- 일정 목록(학생) -->
+    <select id="listStudent" resultType="Schedule">
+        select
+            eventid,
+            title,
+            note,
+            to_char(startdate, 'YYYY-MM-DD HH24:MI:SS') startdate,
+            to_char(enddate, 'YYYY-MM-DD HH24:MI:SS') enddate,
+            allday,
+            memberid,
+            categories
+        from lms_schedule
+        where categories = '전체' or categories=#{curriculum}
+    </select>
+
+    <!-- 학생 커리큘럼 조회 -->
+    <select id="studentCurriculum">
+        select curriculum from lms_student where memberid=#{memberid}
+    </select>
+
     <!-- 최근 일정 목록 -->
     <select id="recentList" parameterType="hashmap" resultType="Schedule">
         select
@@ -43,11 +63,15 @@
         from
             lms_schedule
         where
-            (startdate &gt; TO_DATE(#{start}, 'YYYY-MM-DD HH24:MI:SS') and
+        <if test="curriculum != null">
+            (categories='전체' or categories=#{curriculum})
+            and
+        </if>
+            ((startdate &gt; TO_DATE(#{start}, 'YYYY-MM-DD HH24:MI:SS') and
             startdate &lt; TO_DATE(#{end}, 'YYYY-MM-DD HH24:MI:SS'))
             or
             (enddate &gt; TO_DATE(#{start}, 'YYYY-MM-DD HH24:MI:SS') and
-            enddate &lt; TO_DATE(#{end}, 'YYYY-MM-DD HH24:MI:SS'))
+            enddate &lt; TO_DATE(#{end}, 'YYYY-MM-DD HH24:MI:SS')))
         order by
             startdate
     </select>

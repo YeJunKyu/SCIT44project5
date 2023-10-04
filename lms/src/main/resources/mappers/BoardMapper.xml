@@ -6,8 +6,55 @@
 
 <select id="selectCount" resultType="int">
     SELECT COUNT(*) FROM lms_member WHERE rolename = 'ROLE_USER' and enabled = 1
-
 </select>
 
+<!-- 메인 공지 리스트(최근 글 5개) -->
+<select id="noticeList" resultType="Notice">
+    <![CDATA[
+    SELECT * FROM (
+        SELECT
+            noticenum,
+            memberid,
+            noticetitle,
+            to_char(noticedate, 'YY-MM-DD') noticedate,
+            viewauthority,
+            categories
+        FROM
+            lms_notice
+        ORDER BY
+            noticedate DESC
+        )
+    WHERE ROWNUM <= 12
+    ]]>
+</select>
+
+<!-- 학생 커리큘럼 조회 -->
+<select id="studentCurriculum">
+    select curriculum from lms_student where memberid=#{memberid}
+</select>
+
+<!-- 메인 공지 리스트(학생) -->
+<select id="noticeListStudent" resultType="Notice">
+    <![CDATA[
+    SELECT * FROM (
+        SELECT
+            noticenum,
+            memberid,
+            noticetitle,
+            to_char(noticedate, 'YY-MM-DD') noticedate,
+            viewauthority,
+            categories
+        FROM
+            lms_notice
+        where
+            viewauthority=0
+        and
+            (categories='전체' or categories=#{curriculum})
+        ORDER BY
+            noticedate DESC
+        )
+    WHERE ROWNUM <= 12
+    ]]>
+</select>
 
 </mapper>

@@ -60,4 +60,15 @@ public class ScheduleServiceImpl implements ScheduleService {
     public Schedule select(String eventid) {
         return dao.select(eventid);
     }
+
+    // 일정 목록(학생)
+    @Override
+    public ArrayList<Schedule> listStudent(String curriculum) {
+        return dao.listStudent(curriculum);
+    }
+
+    @Override
+    public String studentCurriculum(String username) {
+        return dao.studentCurriculum(username);
+    }
 }

@@ -27,4 +27,10 @@ public interface ScheduleService {
 
     // 일정 선택
     public Schedule select(String eventid);
+
+    // 일정 목록(학생)
+    public ArrayList<Schedule> listStudent(String curriculum);
+
+    // 학생 커리큘럼
+    String studentCurriculum(String username);
 }
