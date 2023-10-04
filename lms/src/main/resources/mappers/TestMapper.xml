@@ -35,7 +35,16 @@
 <select id="selectCategory" resultType="PrimaryRatio">
     select * from
     primary_ratio_category
+    where divname = '대분류'
 </select>
+
+<!--    대분류선택후 중분류생성-->
+    <select id="secondaryCategory" parameterType="int" resultType="PrimaryRatio">
+        select * from
+        primary_ratio_category
+        where parent_id = #{primaryId}
+    </select>
+
     <!--시험 정보 조회-->
     <select id="selectTest" parameterType="int" resultType="Test">
         SELECT
@@ -186,13 +195,9 @@
             testname,
             totalpoints,
             testdate,
-            (SELECT totalscore FROM lms_testpaper_list l WHERE l.testid = t.testid) totalscore
+            (SELECT totalscore FROM lms_testpaper_list l WHERE l.testid = t.testid and l.memberid = #{memberid}) totalscore
         FROM lms_test t
         WHERE
-            (SELECT testid
-             FROM lms_testpaper_list l
-             WHERE
-                 l.memberid = #{memberid}
-            ) = t.testid
+        t.testid IN (SELECT testid FROM lms_testpaper_list l WHERE l.memberid = #{memberid})
     </select>
 </mapper>

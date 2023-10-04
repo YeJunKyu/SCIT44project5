@@ -117,4 +117,9 @@ public class TestServiceImpl implements TestService{
         return dao.checkDuplicateSubmission(testpaperList);
     }
 
+    @Override
+    public ArrayList<PrimaryRatio> secondaryCategory(int primaryId) {
+        return dao.secondaryCategory(primaryId);
+    }
+
 }

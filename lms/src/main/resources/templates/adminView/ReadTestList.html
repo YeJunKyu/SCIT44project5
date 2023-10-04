@@ -143,6 +143,7 @@
                             </td>
                             <td>
                                 [[${bigtest.ratio}]]<select th:name="'ratio' + ${bigtest.category_id}">
+                                <option th:value="${bigtest.ratio}">[[${bigtest.ratio}]]</option>
                                 <option value="0.00">0%</option>
                                 <option value="0.05">5%</option><option value="0.10">10%</option><option value="0.15">15%</option>
                                 <option value="0.20">20%</option><option value="0.25">25%</option> <option value="0.30">30%</option>
@@ -156,6 +157,7 @@
                             <td>
                                 [[${bigtest.divname}]]
                                 <select th:name="'divname' + ${bigtest.category_id}">
+                                    <option th:value="${bigtest.divname}">[[${bigtest.divname}]]</option>
                                     <option value="대분류">대분류</option>
                                     <option value="중분류">중분류</option>
                                     <option value="소분류">소분류</option>
@@ -209,7 +211,8 @@
                             </td>
                             <td>
                                 [[${midtest.ratio}]]<select th:name="'ratio' + ${midtest.category_id}">
-                                    <option value="0.00">0%</option>
+                                <option th:value="${midtest.ratio}">[[${midtest.ratio}]]</option>
+                                <option value="0.00">0%</option>
                                     <option value="0.05">5%</option><option value="0.10">10%</option><option value="0.15">15%</option>
                                     <option value="0.20">20%</option><option value="0.25">25%</option> <option value="0.30">30%</option>
                                     <option value="0.35">35%</option><option value="0.40">40%</option><option value="0.45">45%</option>
@@ -223,6 +226,7 @@
                             <td>
                                 [[${midtest.divname}]]
                                 <select th:name="'divname' + ${midtest.category_id}">
+                                    <option th:value="${midtest.divname}">[[${midtest.divname}]]</option>
                                     <option value="대분류">대분류</option>
                                     <option value="중분류">중분류</option>
                                     <option value="소분류">소분류</option>
@@ -272,6 +276,7 @@
                             </td>
                             <td>
                                 [[${smtest.ratio}]]<select th:name="'ratio' + ${smtest.category_id}">
+                                <option th:value="${smtest.ratio}">[[${smtest.ratio}]]</option>
                                 <option value="0.00">0%</option>
                                 <option value="0.05">5%</option><option value="0.10">10%</option><option value="0.15">15%</option>
                                 <option value="0.20">20%</option><option value="0.25">25%</option> <option value="0.30">30%</option>
@@ -285,6 +290,7 @@
                             <td>
                                 [[${smtest.divname}]]
                                 <select th:name="'divname' + ${smtest.category_id}">
+                                    <option th:value="${smtest.divname}">[[${smtest.divname}]]</option>
                                     <option value="대분류">대분류</option>
                                     <option value="중분류">중분류</option>
                                     <option value="소분류">소분류</option>

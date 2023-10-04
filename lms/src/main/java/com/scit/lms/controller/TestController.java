@@ -63,6 +63,21 @@ public class TestController {
         return "boardView/test/createTest";
     }
 
+    //대분류선택후 하위카테고리 선택란생성 
+    @ResponseBody
+    @GetMapping("secondaryCategory")
+    public ArrayList<PrimaryRatio> secondaryCategory(@RequestParam int primaryId)
+    {   log.debug("카테고리id:{}",primaryId);
+        return testService.secondaryCategory(primaryId);
+    }
+
+    //중분류선택후 하위카테고리 선택란생성
+    @ResponseBody
+    @GetMapping("lastCategory")
+    public ArrayList<PrimaryRatio> lastCategory(@RequestParam int primaryId)
+    {   log.debug("카테고리id:{}",primaryId);
+        return testService.secondaryCategory(primaryId);
+    }
     // 시험 문제 등록
     @PostMapping("insertTest")
     public String insertTest(@RequestParam("categoryid") int categoryid,

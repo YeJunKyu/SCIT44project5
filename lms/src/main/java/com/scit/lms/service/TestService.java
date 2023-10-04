@@ -55,4 +55,6 @@ public interface TestService {
     ArrayList<AllOfTest> submitTestList(String memberid);
 
     TestpaperList checkDuplicateSubmission(TestpaperList testpaperList);
+
+    ArrayList<PrimaryRatio> secondaryCategory(int primaryId);
 }
