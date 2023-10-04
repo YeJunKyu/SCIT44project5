@@ -82,7 +82,7 @@
                             <td th:text="${studentGrade.curriculum}"></td>
 
                             <th:block th:each="test : ${studentGrade.tests}">
-                                <td th:text="${test.testpaperList.totalscore}"></td>
+                                <td th:text="${test.testpaperList.totalscore}+'점'"></td>
                             </th:block>
                         </tr>
 
