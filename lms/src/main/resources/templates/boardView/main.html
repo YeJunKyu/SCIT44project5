@@ -20,6 +20,57 @@
 
     <script>
         $(document).ready(function(){
+
+
+        //IT 그래프
+
+            var ctx = document.getElementById('itBar').getContext('2d');
+
+            // 바 차트 데이터
+            var data = {
+                labels: ['Java', 'Oracle', '1차역량평가', 'HTML/CSS/JavaScript', '2차역량평가'], // X 축 레이블
+                datasets: [{
+                    label: 'IT 점수', // 차트 레전드
+                    data: [80, 85, 70, 90, 95], // Y 축 데이터
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.8)', // 바 차트 색상
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)', // 바 차트 테두리 색상
+                    ],
+                    borderWidth: 1 // 바 차트 테두리 두께
+                }]
+            };
+
+            // 바 차트 생성
+            var itBar = new Chart(ctx, {
+                type: 'bar', // 바 차트 유형
+                data: data, // 차트 데이터
+                options: {
+                    scales: {
+                        x: {
+                            ticks:{
+                                font:{
+                                    size: 10,
+                                }
+                            }
+                        },
+
+                        y: {
+                            ticks: {
+                                beginAtZero: false,
+                                stepSize : 10,
+                                max: 100,
+                                fontSize : 1
+                            }
+                        }
+                    }
+                }
+            });
+
+
+
+
             var authStr = $('#authorities').val();
 
             console.log(authStr);
@@ -99,7 +150,6 @@
         });
 
         function attendanceChart(){
-            alert("clicked");
             let id = document.getElementById('userid').textContent;
 
             $.ajax({
@@ -111,41 +161,41 @@
                     // 성공적으로 데이터를 가져왔을 때의 처리 로직
                     console.log(chartData);
 
-    // 바 차트를 그릴 Canvas 엘리먼트 선택
-    var ctx = document.getElementById('attendanceBar').getContext('2d');
+                    // 바 차트를 그릴 Canvas 엘리먼트 선택
+                    var ctx = document.getElementById('attendanceBar').getContext('2d');
 
-    // 바 차트 데이터
-    var data = {
-        labels: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'], // X 축 레이블
-        datasets: [{
-            label: '출석 비율', // 차트 레전드
-            data: [chartData.bar01, chartData.bar02, chartData.bar03, chartData.bar04, chartData.bar05, chartData.bar06, chartData.bar07, chartData.bar08, chartData.bar09, chartData.bar10, chartData.bar11, chartData.bar12], // Y 축 데이터
-            backgroundColor: [
-                'rgba(54, 162, 235, 0.8)', // 바 차트 색상
-            ],
-            borderColor: [
-                'rgba(54, 162, 235, 1)', // 바 차트 테두리 색상
-            ],
-            borderWidth: 1 // 바 차트 테두리 두께
-        }]
-    };
+                    // 바 차트 데이터
+                    var data = {
+                        labels: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'], // X 축 레이블
+                        datasets: [{
+                            label: '출석 비율', // 차트 레전드
+                            data: [chartData.bar01, chartData.bar02, chartData.bar03, chartData.bar04, chartData.bar05, chartData.bar06, chartData.bar07, chartData.bar08, chartData.bar09, chartData.bar10, chartData.bar11, chartData.bar12], // Y 축 데이터
+                            backgroundColor: [
+                                'rgba(54, 162, 235, 0.8)', // 바 차트 색상
+                            ],
+                            borderColor: [
+                                'rgba(54, 162, 235, 1)', // 바 차트 테두리 색상
+                            ],
+                            borderWidth: 1 // 바 차트 테두리 두께
+                        }]
+                    };
 
-    // 바 차트 생성
-    var attendanceBar = new Chart(ctx, {
-        type: 'bar', // 바 차트 유형
-        data: data, // 차트 데이터
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true,
-                        stepSize : 10,
-                        max: 100
-                    }
-                }]
-            }
-        }
-    });
+                    // 바 차트 생성
+                    var attendanceBar = new Chart(ctx, {
+                        type: 'bar', // 바 차트 유형
+                        data: data, // 차트 데이터
+                        options: {
+                            scales: {
+                                y: {
+                                    ticks: {
+                                        beginAtZero: true,
+                                        stepSize : 10,
+                                        max: 100
+                                    }
+                                }
+                            }
+                        }
+                    });
 
 
                     console.log('바 차트');
@@ -153,6 +203,46 @@
                 error: function(error) {
                     // Ajax 요청이 실패한 경우의 처리 로직
                     console.log('데이터를 가져오는데 실패했습니다.');
+                }
+            });
+        }
+
+
+        //일본어 차트
+        function japaneseChart(){
+                        // 바 차트를 그릴 Canvas 엘리먼트 선택
+            var ctx = document.getElementById('japaneseBar').getContext('2d');
+
+            // 바 차트 데이터
+            var data = {
+                labels: ['1차 역량평가', '2차 역량평가', '종합평가'], // X 축 레이블
+                datasets: [{
+                    label: '일본어 점수', // 차트 레전드
+                    data: [85, 100, 95], // Y 축 데이터
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.8)', // 바 차트 색상
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)', // 바 차트 테두리 색상
+                    ],
+                    borderWidth: 1 // 바 차트 테두리 두께
+                }]
+            };
+
+            // 바 차트 생성
+            var japaneseBar = new Chart(ctx, {
+                type: 'bar', // 바 차트 유형
+                data: data, // 차트 데이터
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true,
+                                stepSize : 10,
+                                max: 100
+                            }
+                        }]
+                    }
                 }
             });
         }
@@ -233,63 +323,11 @@
                                             <div class="tab-content text-justify">
                                                 <div class="tab-pane fade show active" id="list-sunday" role="tabpanel"
                                                      aria-labelledby="list-sunday-list">
-                                                    <section class="section">
-                                                        <div class="row">
-                                                            <div class="col-6">
-                                                                <div class="card">
-                                                                    <div class="card-header">
-                                                                        <h4 class="card-title">Bar Chart</h4>
-                                                                    </div>
-                                                                    <div class="card-body">
-                                                                        <!--                                                                        <canvas id="bar"></canvas>-->
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                <div class="card">
-                                                                    <div class="card-header">
-                                                                        <h4 class="card-title">Line Chart</h4>
-                                                                    </div>
-                                                                    <div class="card-body">
-                                                                        <!--                                                                        <canvas id="line"></canvas>-->
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </section>
-                                                    Irure enim occaecat labore sit qui aliquip
-                                                    reprehenderit amet
-                                                    velit. Deserunt ullamco ex elit nostrud ut dolore nisi officia magna sit occaecat
-                                                    laboris sunt dolor.
-                                                    Nisi eu minim cillum occaecat aute est cupidatat aliqua labore aute occaecat ea
-                                                    aliquip
-                                                    sunt amet.
-                                                    Aute mollit dolor ut exercitation irure commodo non amet consectetur quis amet
-                                                    culpa.
-                                                    Quis ullamco
-                                                    nisi amet qui aute irure eu. Magna labore dolor quis ex labore id nostrud deserunt
-                                                    dolor
-                                                    eiusmod eu
-                                                    pariatur culpa mollit in irure Lorem, ipsum dolor sit amet consectetur adipisicing
-                                                    elit.
-                                                    Iusto quis
-                                                    porro doloribus est natus doloremque, eos laudantium
-                                                    exercitationem impedit sapiente tenetur soluta reiciendis deserunt!</div>
+                                                    <canvas id="itBar" width="400" height="150"></canvas>
+                                                </div>
                                                 <div class="tab-pane fade" id="list-monday" role="tabpanel"
-                                                     aria-labelledby="list-monday-list">Cupidatat
-                                                    quis ad sint excepteur laborum in esse qui. Et excepteur consectetur ex nisi eu do
-                                                    cillum ad laborum.
-                                                    Mollit et eu officia dolore sunt Lorem culpa qui commodo velit ex amet id ex.
-                                                    Officia
-                                                    anim incididunt
-                                                    laboris deserunt anim aute dolor incididunt veniam aute dolore do exercitation.
-                                                    Dolor
-                                                    nisi culpa ex ad
-                                                    irure in elit eu dolore. Ad laboris ipsum reprehenderit irure non commodo enim culpa
-                                                    commodo veniam
-                                                    incididunt veniam ad. Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                                                    Exercitationem, porro!
-                                                    Amet soluta tempora eveniet blanditiis alias eos, dolor qui consectetur!
+                                                     aria-labelledby="list-monday-list">
+                                                    <canvas id="japaneseBar" width="400" height="150"></canvas>
                                                 </div>
                                                 <div class="tab-pane fade" id="list-tuesday" role="tabpanel"
                                                      aria-labelledby="list-tuesday-list">
@@ -348,7 +386,7 @@
                         </div>
                         <div class="card-body">
                             <canvas id="myPieChart" width="400" height="400"></canvas>
-                            <div id="js-legend" class="chart-legend"></div>
+                            <div id="js-legend" class="chart-legend"></div></div>
                         </div>
                     </div>
 
