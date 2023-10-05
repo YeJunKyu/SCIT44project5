@@ -248,5 +248,50 @@ public class AdminServiceImple implements AdminService {
 		return dao.SelectGrade();
 	}
 
+	@Override
+	public PrimaryRatio getOneprimaryRatio(int i) {
+		return dao.getOneprimaryRatio(i);
+	}
+
+	@Override
+	public void insertGrade(Primary_grade primaryGrade) {
+		dao.insertGrade(primaryGrade);
+	}
+
+	@Override
+	public ArrayList<Primary_grade> selectPrimaryGrade() {
+		return dao.selectPrimaryGrade();
+	}
+
+	@Override
+	public ArrayList<Primary_grade> selectPrimarySecondGrade() {
+		return dao.selectPrimarySecondGrade();
+	}
+
+	@Override
+	public void insertLastGrade(Primary_grade primaryGrade) {
+		dao.insertLastGrade(primaryGrade);
+	}
+
+	@Override
+	public ArrayList<GradeAll> SelectGradeI() {
+		return dao.SelectGradeI();
+	}
+
+	@Override
+	public ArrayList<Primary_grade> selectPrimaryGradeI() {
+		return dao.selectPrimaryGradeI();
+	}
+
+	@Override
+	public ArrayList<Primary_grade> selectPrimarySecondGradeI() {
+		return dao.selectPrimarySecondGradeI();
+	}
+
+	@Override
+	public ArrayList<Primary_grade> selectPrimaryLastGrade() {
+		return dao.selectPrimaryLastGrade();
+	}
+
 
 }

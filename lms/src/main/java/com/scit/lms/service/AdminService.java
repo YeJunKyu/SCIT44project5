@@ -95,4 +95,24 @@ public interface AdminService {
     ArrayList<TestpaperList> getStudentsGrade(String memberid);
 
     ArrayList<GradeAll> SelectGrade();
+
+
+    PrimaryRatio getOneprimaryRatio(int i);
+
+    void insertGrade(Primary_grade primaryGrade);
+
+    ArrayList<Primary_grade> selectPrimaryGrade();
+
+
+    ArrayList<Primary_grade> selectPrimarySecondGrade();
+
+    void insertLastGrade(Primary_grade primaryGrade);
+
+    ArrayList<GradeAll> SelectGradeI();
+
+    ArrayList<Primary_grade> selectPrimaryGradeI();
+
+    ArrayList<Primary_grade> selectPrimarySecondGradeI();
+
+    ArrayList<Primary_grade> selectPrimaryLastGrade();
 }

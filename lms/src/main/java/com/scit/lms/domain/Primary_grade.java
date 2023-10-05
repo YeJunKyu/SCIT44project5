@@ -4,16 +4,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class StudentGrade {
+public class Primary_grade {
+    int gradenum;
     String memberid;
     String membername;
     String curriculum;
-    ArrayList<GradeAll> tests;
-    ArrayList<Primary_grade> grades;
-
-
+    int testid;
+    int categoryid;
+    int parent_id;
+    int totalscore;
+    String categoryname;
+    double ratio;
 }

@@ -497,6 +497,7 @@ select * from lms_student
     t.categoryid "test.categoryid",
     tpl.totalscore "testpaperList.totalscore",
     tpl.checked "testpaperList.checked",
+    prc.parent_id "primaryRatio.parent_id",
     prc.categoryname "primaryRatio.categoryname",
     prc.ratio "primaryRatio.ratio",
     prc.divname "primaryRatio.divname"
@@ -509,5 +510,95 @@ select * from lms_student
     where tpl.checked = 'complete'
     order by categoryname
 </select>
+
+<!--    종합성적등록용 카테고리조회-->
+<select id="getOneprimaryRatio" parameterType="int" resultType="PrimaryRatio">
+    select * from primary_ratio_category
+    where category_id = #{i}
+</select>
+
+<!--    종합성적등록-->
+<insert id="insertGrade" parameterType="Primary_grade">
+    insert into primary_grade(gradenum,memberid, membername, curriculum, categoryid, parent_id, totalscore, categoryname, ratio)
+    values(primary_grade_seq.NEXTVAL,
+    #{memberid},
+    #{membername},
+    #{curriculum},
+    #{categoryid},
+    #{parent_id},
+    #{totalscore},
+    #{categoryname},
+    #{ratio})
+
+</insert>
+
+<!--    최종성적등록-->
+<insert id="insertLastGrade" parameterType="Primary_grade">
+    insert into primary_grade(gradenum,memberid, membername, curriculum, categoryid, parent_id, totalscore, categoryname)
+    values(primary_grade_seq.NEXTVAL,
+    #{memberid},
+    #{membername},
+    #{curriculum},
+    0,
+    0,
+    #{totalscore},
+    #{categoryname})
+</insert>
+
+
+<!--    상위분류 성적조회-->
+<select id="selectPrimaryGrade" resultType="Primary_grade">
+    select * from
+    primary_grade
+    where parent_id != 0
+    order by parent_id
+
+</select>
+
+<!--    상위분류(대분류만) 성적조회-->
+<select id="selectPrimarySecondGrade" resultType="Primary_grade">
+    select * from
+    primary_grade
+    where parent_id = 0 and categoryid !=0
+    order by parent_id
+
+</select>
+
+<!--    최종성적조회-->
+<select id="selectPrimaryLastGrade" resultType="Primary_grade">
+    select * from
+    primary_grade
+    where parent_id = 0 and categoryid = 0
+    order by parent_id
+
+</select>
+
+<!--    중복등록방지 성적조회-->
+    <select id="SelectGradeI" resultType="GradeAll">
+        SELECT
+        m.memberid "member.memberid",
+        m.membername "member.membername",
+        s.curriculum "student.curriculum",
+        t.testid "test.testid",
+        t.categoryid "test.categoryid",
+        tpl.totalscore "testpaperList.totalscore",
+        tpl.checked "testpaperList.checked",
+        prc.parent_id "primaryRatio.parent_id",
+        prc.categoryname "primaryRatio.categoryname",
+        prc.ratio "primaryRatio.ratio",
+        prc.divname "primaryRatio.divname"
+        FROM
+        lms_member m
+        JOIN lms_student s ON m.memberid = s.memberid
+        JOIN lms_testpaper_list tpl ON m.memberid = tpl.memberid
+        JOIN lms_test t ON tpl.testid = t.testid
+        JOIN primary_ratio_category prc ON t.categoryid = prc.category_id
+        where tpl.checked = 'complete'
+        order by categoryname
+    </select>
+
+    <select id="selectPrimaryGradeI">
+
+    </select>
 
 </mapper>

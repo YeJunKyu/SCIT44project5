@@ -1,6 +1,5 @@
 package com.scit.lms.controller;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -8,20 +7,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.scit.lms.domain.*;
 import com.scit.lms.service.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -647,7 +639,7 @@ public class AdminController {
 		return "redirect:/admin/ReadStudentAttendance";
 	}
 	
-	 //성적조회및수정
+	 //소분류성적조회
 	@GetMapping("SelectGrade")
 	public String SelectGrade(Model model){
 		ArrayList<GradeAll> gradeAlls = service.SelectGrade();
@@ -668,14 +660,100 @@ public class AdminController {
 		}
 		log.debug("가공데이터확인:{}",studentGradeMap);
 		model.addAttribute("list", new ArrayList<>(studentGradeMap.values()));
+
+
+
+
 		return "adminView/SelectGrade";
+	}
+
+	//중분류성적조회
+	@GetMapping("SelectSecondGrade")
+	public String SelectSecondGrade(Model model){
+		ArrayList<Primary_grade> gradesAll = service.selectPrimaryGrade();
+		log.debug("성적리스트:{}",gradesAll);
+
+		HashMap<String, StudentGrade> studentGradeMap2 = new HashMap<>();
+		for(Primary_grade grade : gradesAll) {
+			String key = grade.getMemberid(); // 이부분은 GradeAll에 해당하는 학생 이름 가져오는 메서드로 수정 필요
+			if(!studentGradeMap2.containsKey(key)) {
+				StudentGrade studentGrade = new StudentGrade();
+				studentGrade.setMemberid(grade.getMemberid());
+				studentGrade.setMembername(grade.getMembername());
+				studentGrade.setCurriculum(grade.getCurriculum());
+				studentGrade.setGrades(new ArrayList<>());
+				studentGradeMap2.put(key, studentGrade);
+			}
+			studentGradeMap2.get(key).getGrades().add(grade);
+		}
+
+		log.debug("가공데이터확인:{}",studentGradeMap2);
+		model.addAttribute("grade", new ArrayList<>(studentGradeMap2.values()));
+
+		return "adminView/SelectSecondGrade";
+	}
+
+	//대분류성적조회
+	@GetMapping("SelectThirdGrade")
+	public String SelectThirdGrade(Model model){
+		ArrayList<Primary_grade> gradesAll = service.selectPrimarySecondGrade();
+		log.debug("성적리스트:{}",gradesAll);
+
+		HashMap<String, StudentGrade> studentGradeMap2 = new HashMap<>();
+		for(Primary_grade grade : gradesAll) {
+			String key = grade.getMemberid(); // 이부분은 GradeAll에 해당하는 학생 이름 가져오는 메서드로 수정 필요
+			if(!studentGradeMap2.containsKey(key)) {
+				StudentGrade studentGrade = new StudentGrade();
+				studentGrade.setMemberid(grade.getMemberid());
+				studentGrade.setMembername(grade.getMembername());
+				studentGrade.setCurriculum(grade.getCurriculum());
+				studentGrade.setGrades(new ArrayList<>());
+				studentGradeMap2.put(key, studentGrade);
+			}
+			studentGradeMap2.get(key).getGrades().add(grade);
+		}
+
+		log.debug("가공데이터확인:{}",studentGradeMap2);
+		model.addAttribute("grade", new ArrayList<>(studentGradeMap2.values()));
+
+
+		return  "adminView/SelectThirdGrade";
+	}
+
+	//최종성적조회
+	@GetMapping("SelectLastGrade")
+	public String SelectLastGrade(Model model){
+		ArrayList<Primary_grade> gradesAll = service.selectPrimaryLastGrade();
+		log.debug("성적리스트:{}",gradesAll);
+
+		HashMap<String, StudentGrade> studentGradeMap2 = new HashMap<>();
+		for(Primary_grade grade : gradesAll) {
+			String key = grade.getMemberid(); // 이부분은 GradeAll에 해당하는 학생 이름 가져오는 메서드로 수정 필요
+			if(!studentGradeMap2.containsKey(key)) {
+				StudentGrade studentGrade = new StudentGrade();
+				studentGrade.setMemberid(grade.getMemberid());
+				studentGrade.setMembername(grade.getMembername());
+				studentGrade.setCurriculum(grade.getCurriculum());
+				studentGrade.setGrades(new ArrayList<>());
+				studentGradeMap2.put(key, studentGrade);
+			}
+			studentGradeMap2.get(key).getGrades().add(grade);
+		}
+
+		log.debug("가공데이터확인:{}",studentGradeMap2);
+		model.addAttribute("grade", new ArrayList<>(studentGradeMap2.values()));
+
+
+
+
+		return "adminView/SelectLastGrade";
 	}
 
 	//점수등록폼이동
 	//성적조회및수정
 	@GetMapping("InsertGrade")
 	public String InsertGrade(Model model){
-		ArrayList<GradeAll> gradeAlls = service.SelectGrade();
+		ArrayList<GradeAll> gradeAlls = service.SelectGradeI();
 		log.debug("성적리스트:{}",gradeAlls);
 
 		HashMap<String, StudentGrade> studentGradeMap = new HashMap<>();
@@ -691,16 +769,190 @@ public class AdminController {
 			}
 			studentGradeMap.get(key).getTests().add(grade);
 		}
+
 		log.debug("가공데이터확인:{}",studentGradeMap);
 		model.addAttribute("list", new ArrayList<>(studentGradeMap.values()));
+
+
+
+
 		return "adminView/InsertGrade";
 	}
 
-	//상위시험에 점수등록
+	//상위분류(중분류) 성적등록
 	@PostMapping("InsertGrade")
-	public String InsertGrade(){
+	public String InsertGrade(@RequestParam("memberid[]") String memberid[],
+							  @RequestParam("membername[]") String membername[],
+							  @RequestParam("curriculum[]") String curriculum[],
+							  @RequestParam("category_id[]") int category_id[],
+							  @RequestParam("categoryname[]") String categoryname[],
+							  @RequestParam("totalscore[]") int totalscore[],
+							  @RequestParam("parent_id[]") int parent_id[],
+							  @RequestParam("ratio[]") double ratio[]){
+	log.debug("데이터확인:memberid:{},curriculum:{},categoryname:{},totalscore:{},parent_id:{}",memberid,curriculum,categoryname,totalscore,parent_id);
+	log.debug("사이즈확인:{},{},{},{},{},{}",memberid.length,membername.length,curriculum.length,categoryname.length,totalscore.length,parent_id.length);
 
-		return "adminView/InsertGrade";
+		int accumulatedTotalScore = 0;
+
+
+	for(int i = 0; i <memberid.length; i++){
+			Primary_grade primaryGrade = new Primary_grade();
+			primaryGrade.setMemberid(memberid[i]);
+			primaryGrade.setMembername(membername[i]);
+			primaryGrade.setCurriculum(curriculum[i]);
+			primaryGrade.setCategoryid(parent_id[i]);
+			PrimaryRatio primaryRatio = service.getOneprimaryRatio(parent_id[i]);
+			log.debug("조회ratio:{}",primaryRatio);
+			primaryGrade.setParent_id(primaryRatio.getParent_id());
+			primaryGrade.setCategoryname(primaryRatio.getCategoryname());
+
+			accumulatedTotalScore += (int) (totalscore[i]*ratio[i]);
+
+			if(i == parent_id.length - 1 ||parent_id[i] != parent_id[i+1])
+			{
+				primaryGrade.setTotalscore(accumulatedTotalScore);
+				primaryGrade.setRatio(primaryRatio.getRatio());
+				service.insertGrade(primaryGrade);
+				log.debug("primaryGrade:{}",primaryGrade);
+				// 변수 초기화
+				accumulatedTotalScore = 0;
+			}
+	}
+
+
+
+
+		return "redirect:/admin/InsertGrade";
+	}
+
+	//상위분류 성적조회
+	@GetMapping("InsertSecondGrade")
+	public String InsertSecondGrade(Model model){
+		ArrayList<Primary_grade> gradesAll = service.selectPrimaryGrade();
+		log.debug("성적리스트:{}",gradesAll);
+
+		HashMap<String, StudentGrade> studentGradeMap2 = new HashMap<>();
+		for(Primary_grade grade : gradesAll) {
+			String key = grade.getMemberid(); // 이부분은 GradeAll에 해당하는 학생 이름 가져오는 메서드로 수정 필요
+			if(!studentGradeMap2.containsKey(key)) {
+				StudentGrade studentGrade = new StudentGrade();
+				studentGrade.setMemberid(grade.getMemberid());
+				studentGrade.setMembername(grade.getMembername());
+				studentGrade.setCurriculum(grade.getCurriculum());
+				studentGrade.setGrades(new ArrayList<>());
+				studentGradeMap2.put(key, studentGrade);
+			}
+			studentGradeMap2.get(key).getGrades().add(grade);
+		}
+
+		log.debug("가공데이터확인:{}",studentGradeMap2);
+		model.addAttribute("grade", new ArrayList<>(studentGradeMap2.values()));
+
+		return "adminView/InsertSecondGrade";
+	}
+	//상위분류(대분류) 성적등록
+	@PostMapping("InsertSecondGrade")
+	public String InsertSecondGrade(@RequestParam("memberid[]") String memberid[],
+							  @RequestParam("membername[]") String membername[],
+							  @RequestParam("curriculum[]") String curriculum[],
+							  @RequestParam("category_id[]") int category_id[],
+							  @RequestParam("categoryname[]") String categoryname[],
+							  @RequestParam("totalscore[]") int totalscore[],
+							  @RequestParam("parent_id[]") int parent_id[],
+							  @RequestParam("ratio[]") double ratio[]){
+		log.debug("데이터확인:memberid:{},curriculum:{},categoryname:{},totalscore:{},parent_id:{}",memberid,curriculum,categoryname,totalscore,parent_id);
+		log.debug("사이즈확인:{},{},{},{},{},{}",memberid.length,membername.length,curriculum.length,categoryname.length,totalscore.length,parent_id.length);
+
+		int accumulatedTotalScore = 0;
+
+
+		for(int i = 0; i <memberid.length; i++){
+			Primary_grade primaryGrade = new Primary_grade();
+			primaryGrade.setMemberid(memberid[i]);
+			primaryGrade.setMembername(membername[i]);
+			primaryGrade.setCurriculum(curriculum[i]);
+			primaryGrade.setCategoryid(parent_id[i]);
+			PrimaryRatio primaryRatio = service.getOneprimaryRatio(parent_id[i]);
+			log.debug("조회ratio:{}",primaryRatio);
+			primaryGrade.setParent_id(primaryRatio.getParent_id());
+			primaryGrade.setCategoryname(primaryRatio.getCategoryname());
+
+			accumulatedTotalScore += (int) (totalscore[i]*ratio[i]);
+
+			if(i == parent_id.length - 1 ||parent_id[i] != parent_id[i+1])
+			{
+				primaryGrade.setTotalscore(accumulatedTotalScore);
+				primaryGrade.setRatio(primaryRatio.getRatio());
+				service.insertGrade(primaryGrade);
+				log.debug("primaryGrade:{}",primaryGrade);
+				// 변수 초기화
+				accumulatedTotalScore = 0;
+			}
+		}
+
+		return "redirect:/admin/InsertSecondGrade";
+	}
+
+	//상위성적 최종 등록 조회
+	@GetMapping("InsertThirdGrade")
+	public String InsertLastGrade(Model model){
+		ArrayList<Primary_grade> gradesAll = service.selectPrimarySecondGrade();
+		log.debug("성적리스트:{}",gradesAll);
+
+		HashMap<String, StudentGrade> studentGradeMap2 = new HashMap<>();
+		for(Primary_grade grade : gradesAll) {
+			String key = grade.getMemberid(); // 이부분은 GradeAll에 해당하는 학생 이름 가져오는 메서드로 수정 필요
+			if(!studentGradeMap2.containsKey(key)) {
+				StudentGrade studentGrade = new StudentGrade();
+				studentGrade.setMemberid(grade.getMemberid());
+				studentGrade.setMembername(grade.getMembername());
+				studentGrade.setCurriculum(grade.getCurriculum());
+				studentGrade.setGrades(new ArrayList<>());
+				studentGradeMap2.put(key, studentGrade);
+			}
+			studentGradeMap2.get(key).getGrades().add(grade);
+		}
+
+		log.debug("가공데이터확인:{}",studentGradeMap2);
+		model.addAttribute("grade", new ArrayList<>(studentGradeMap2.values()));
+
+
+		return  "adminView/InsertThirdGrade";
+	}
+
+	// 성적 최종등록
+	@PostMapping("InsertLastGrade")
+	public String InsertLastGrade(@RequestParam("memberid[]") String memberid[],
+								  @RequestParam("membername[]") String membername[],
+								  @RequestParam("curriculum[]") String curriculum[],
+								  @RequestParam("totalscore[]") int totalscore[],
+								  @RequestParam("ratio[]") double ratio[])
+	{
+		int accumulatedTotalScore = 0;
+
+
+		for(int i = 0; i <memberid.length; i++){
+			Primary_grade primaryGrade = new Primary_grade();
+			primaryGrade.setMemberid(memberid[i]);
+			primaryGrade.setMembername(membername[i]);
+			primaryGrade.setCurriculum(curriculum[i]);
+			primaryGrade.setCategoryid(0);
+			primaryGrade.setParent_id(0);
+			primaryGrade.setCategoryname("최종성적");
+
+			accumulatedTotalScore += (int) (totalscore[i]*ratio[i]);
+
+			if(i == memberid.length - 1 ||!memberid[i].equals(memberid[i+1])) {
+				primaryGrade.setTotalscore(accumulatedTotalScore);
+				service.insertLastGrade(primaryGrade);
+				log.debug("primaryGrade:{}", primaryGrade);
+				// 변수 초기화
+				accumulatedTotalScore = 0;
+			}
+
+		}
+
+		return "redirect:/admin/InsertThirdGrade";
 	}
 
 }

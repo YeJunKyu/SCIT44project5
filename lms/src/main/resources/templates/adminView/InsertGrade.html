@@ -5,25 +5,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>회원 인증</title>
+    <title>성적등록</title>
     
     <link rel="stylesheet" th:href="@{/assets/css/main/app.css}">
     <link rel="stylesheet" th:href="@{/assets/css/main/app-dark.css}">
     <link rel="stylesheet" th:href="@{/assets/css/main/lms.css}" />
     <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.svg}" type="image/x-icon">
     <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png">
-    
+
 <link rel="stylesheet" th:href="@{/assets/extensions/simple-datatables/style.css}">
 <link rel="stylesheet" th:href="@{/assets/css/pages/simple-datatables.css}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script th:src="@{/privatejs/sidebarLoader.js}"></script>
 <script>
 
-    $(document).ready(function() {
 
-
-
-});
 
 </script>
 
@@ -65,7 +61,7 @@
                 <form th:action="@{InsertGrade}" method="post">
                     <table class="table table-striped" id="table1">
                         <thead>
-
+                        <h2>상위분류(중분류) 성적환산</h2>
                         </thead>
                         <tbody>
                         <tr>
@@ -87,10 +83,32 @@
                             </th:block>
                         </tr>
 
+
                         </tbody>
                     </table>
-                    <input type="submit" value="등록">
+                    <table class="table table-striped" id="table2">
+                        <tr th:each="studentGrade : ${list}">
+                            <th:block th:each="test : ${studentGrade.tests}">
+                                <td><input type="hidden" name="memberid[]" th:value="${test.member.memberid}"></td>
+                                <td><input type="hidden" name="membername[]" th:value="${test.member.membername}"> </td>
+                                <td><input type="hidden" name="curriculum[]" th:value="${test.student.curriculum}"> </td>
+                                <td><input type="hidden" name="category_id[]" th:value="${test.primaryRatio.category_id}"> </td>
+                                <td><input type="hidden" name="categoryname[]" th:value="${test.primaryRatio.categoryname}"> </td>
+                                <td><input type="hidden" name="totalscore[]" th:value="${test.testpaperList.totalscore}"> </td>
+                                <td><input type="hidden" name="parent_id[]" th:value="${test.primaryRatio.parent_id}"> </td>
+                                <td><input type="hidden" name="ratio[]" th:value="${test.primaryRatio.ratio}"> </td>
+                            </th:block>
+                        </tr>
+                        <input type="submit" value="등록">
+
+                    </table>
+
                 </form>
+
+
+                <a class="btn" th:href="@{SelectGrade}">성적조회</a>
+                <a class="btn" th:href="@{InsertSecondGrade}">중분류이동</a>
+                <a class="btn" th:href="@{/main}">Home</a>
 
             </div>
         </div>
@@ -103,7 +121,7 @@
     </div>
     <script th:src="@{/assets/js/bootstrap.js}"></script>
     <script th:src="@{/assets/js/app.js}"></script>
-    
+
 <script th:src="@{/assets/extensions/simple-datatables/umd/simple-datatables-1.js}"></script>
 <script th:src="@{/assets/js/pages/simple-datatables.js}"></script>
 

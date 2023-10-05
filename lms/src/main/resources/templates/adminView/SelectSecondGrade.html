@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원 인증</title>
+
+    <link rel="stylesheet" th:href="@{/assets/css/main/app.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main/app-dark.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main/lms.css}" />
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.svg}" type="image/x-icon">
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png">
+
+    <link rel="stylesheet" th:href="@{/assets/extensions/simple-datatables/style.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/pages/simple-datatables.css}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script th:src="@{/privatejs/sidebarLoader.js}"></script>
+    <script>
+
+        $(document).ready(function() {
+
+
+
+    });
+
+    </script>
+
+</head>
+
+<body>
+<div id="app">
+    <div id="sidebar-placeholder"></div>
+    <div id="main">
+        <header class="mb-3">
+            <a href="#" class="burger-btn d-block d-xl-none">
+                <i class="bi bi-justify fs-3"></i>
+            </a>
+        </header>
+
+        <div class="page-heading">
+            <div class="page-title">
+                <div class="row">
+                    <div class="col-12 col-md-6 order-md-1 order-last">
+                        <h3>성적조회</h3>
+                        <p class="text-subtitle text-muted">학생 종합성적 조회</p>
+                    </div>
+                    <div class="col-12 col-md-6 order-md-2 order-first">
+                        <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                            <ol class="breadcrumb">
+
+
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <section class="section">
+                <div class="card">
+                    <div class="card-header">
+                        회원 목록
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped" id="table3">
+                            <thead>
+                            <h2>상위분류(대분류) 성적환산</h2>
+                            </thead>
+                            <tbody>
+                            <tr th:if="${grade != null and !grade.isEmpty()}">
+                                <th>아이디</th>
+                                <th>이름</th>
+                                <th>기수</th>
+                                <!-- 동적으로 과목명 헤더를 추가 -->
+                                <th:block th:each="grade : ${grade[0].grades}">
+                                    <th th:text="${grade.categoryname}"></th>
+                                </th:block>
+                            </tr>
+                            <tr th:if="${grade != null and !grade.isEmpty()}" th:each="studentGrade : ${grade}">
+                                <td th:text="${studentGrade.memberid}"></td>
+                                <td th:text="${studentGrade.membername}"></td>
+                                <td th:text="${studentGrade.curriculum}"></td>
+
+                                <th:block th:each="grade : ${studentGrade.grades}">
+                                    <td th:text="${grade.totalscore}+'점'"></td>
+                                </th:block>
+                            </tr>
+
+
+                            </tbody>
+                        </table>
+
+
+                        </form>
+                        <a class="btn" th:href="@{SelectLastGrade}">최종성적</a>
+                        <a class="btn" th:href="@{SelectGrade}">소분류조회</a>
+                        <a class="btn" th:href="@{SelectThirdGrade}">대분류조회</a>
+                        <a class="btn" th:href="@{/main}">Home</a>
+
+
+                    </div>
+                </div>
+
+            </section>
+        </div>
+
+
+    </div>
+</div>
+<script th:src="@{/assets/js/bootstrap.js}"></script>
+<script th:src="@{/assets/js/app.js}"></script>
+
+<script th:src="@{/assets/extensions/simple-datatables/umd/simple-datatables-1.js}"></script>
+<script th:src="@{/assets/js/pages/simple-datatables.js}"></script>
+
+</body>
+
+</html>
+
