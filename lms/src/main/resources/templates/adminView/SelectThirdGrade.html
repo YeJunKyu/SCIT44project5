@@ -74,7 +74,6 @@
                                 <!-- 동적으로 과목명 헤더를 추가 -->
                                 <th:block th:each="grade : ${grade[0].grades}">
                                     <th th:text="${grade.categoryname}"></th>
-                                    <th>통합 Level</th>
                                 </th:block>
                             </tr>
                             <tr th:if="${grade != null and !grade.isEmpty()}" th:each="studentGrade : ${grade}">
