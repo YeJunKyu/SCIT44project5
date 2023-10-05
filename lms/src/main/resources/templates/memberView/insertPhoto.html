@@ -12,43 +12,75 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
 
-        function readURL(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
 
-                reader.onload = function(e) {
-                  document.getElementById('preview').src = e.target.result;
-                };
-                reader.readAsDataURL(input.files[0]);
-            } else {
-                document.getElementById('preview').src = "";
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+              document.getElementById('preview').src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            document.getElementById('preview').src = "";
+        }
+    }
+    function refresh(event) {
+        event.preventDefault(); // 폼 제출 기본 동작 방지
+
+        var formData = new FormData(document.getElementById('uploadForm'));
+
+        $.ajax({
+            url: 'updatePhoto', // 실제 서버의 API 엔드포인트 URL로 변경해야 합니다.
+            type: 'POST',
+            data: formData,
+            processData: false, // FormData 객체를 query string으로 변환하지 않도록 설정
+            contentType: false, // 컨텐트 타입을 false로 설정하여 jQuery가 자동으로 설정하지 않도록 함
+            dataType: 'json',
+            success: function(data) {
+
+                //부모 창 새로 고침
+                window.opener.location.reload();
+                // 팝업 창 닫기
+                window.close();
+
+                console.log('데이터는 가져옴');
+            },
+            error: function(error) {
+                // Ajax 요청이 실패한 경우의 처리 로직
+                console.log('데이터를 가져오는데 실패했습니다.');
             }
-        }
-        function refresh() {
-            // 팝업 창에서 이미지 업로드 및 업데이트 로직 수행
-            // (서버에 이미지 업로드 및 데이터베이스 업데이트 코드)
+        });
+        // 팝업 창에서 이미지 업로드 및 업데이트 로직 수행
+        // (서버에 이미지 업로드 및 데이터베이스 업데이트 코드)
+        alert("refresh()");
 
-            // 팝업 창 닫기
-            window.close();
+//        form = document.getElementById('uploadForm');
 
-            // 부모 창 새로 고침
-            window.opener.location.reload();
-        }
+//        form.submit();
+
+        // 부모 창 새로 고침
+        //window.opener.location.reload();
+        // 팝업 창 닫기
+        //window.open("about:blank", "_self").close();
+
+    }
     </script>
 </head>
 <body>
 <div class="main">
     <h1 class="auth-title">이미지업로드</h1>
 
-    <form th:action="@{/member/updatePhoto}" method="post"
-          enctype="multipart/form-data" onsubmit="refresh();">
+    <form id="uploadForm" th:action="@{/member/updatePhoto}" method="post"
+          enctype="multipart/form-data">
 
         <input type="file" id="upload" name="upload" class="image-preview-filepond" accept="image/*" onchange="readURL(this);">
 
         <img id="preview" style="width: 200px; height: 260px;" />
 
 
-        <input type="submit" value="저장">
+        <input type="submit" value="저장" onclick="refresh()">
 
 
 
