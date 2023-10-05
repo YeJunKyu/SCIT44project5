@@ -180,7 +180,7 @@
                             </a>
                         </li>
 
-                        <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')')}">
+                        <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')')}">
                             <a th:href="@{/test}" class="sidebar-link">
                                 <i class="bi bi-file-text-fill"></i>
                                 <span>시험</span>
