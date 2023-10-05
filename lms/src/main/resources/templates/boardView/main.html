@@ -1,260 +1,402 @@
 <!DOCTYPE html>
-<html xmlns:th="http://thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-
+<html
+        xmlns:th="http://thymeleaf.org"
+        xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SCIT LMS</title>
 
-    <link rel="stylesheet" th:href="@{/assets/css/main/app.css}">
-    <link rel="stylesheet" th:href="@{/assets/css/main/app-dark.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main/app.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/main/app-dark.css}" />
     <link rel="stylesheet" th:href="@{/assets/css/main/lms.css}" />
-    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png">
+    <link
+            rel="shortcut icon"
+            th:href="@{/assets/images/logo/favicon.png}"
+            type="image/png"
+    />
 
-    <link rel="stylesheet" th:href="@{/assets/css/shared/iconly.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/shared/iconly.css}" />
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script th:src="@{/assets/calendar/index.global.min.js}"></script>
+    <script th:src="@{/assets/calendar/google-calendar.js}"></script>
 
     <script>
-        $(document).ready(function(){
+        $(document).ready(function () {
+          //IT 그래프
 
+          var ctx = document.getElementById("itBar").getContext("2d");
 
-        //IT 그래프
+          // 바 차트 데이터
+          var data = {
+            labels: [
+              "Java",
+              "Oracle",
+              "1차역량평가",
+              "HTML/CSS/JavaScript",
+              "2차역량평가",
+            ], // X 축 레이블
+            datasets: [
+              {
+                label: "IT 점수", // 차트 레전드
+                data: [80, 85, 70, 90, 95], // Y 축 데이터
+                backgroundColor: [
+                  "rgba(54, 162, 235, 0.8)", // 바 차트 색상
+                ],
+                borderColor: [
+                  "rgba(54, 162, 235, 1)", // 바 차트 테두리 색상
+                ],
+                borderWidth: 1, // 바 차트 테두리 두께
+              },
+            ],
+          };
 
-            var ctx = document.getElementById('itBar').getContext('2d');
-
-            // 바 차트 데이터
-            var data = {
-                labels: ['Java', 'Oracle', '1차역량평가', 'HTML/CSS/JavaScript', '2차역량평가'], // X 축 레이블
-                datasets: [{
-                    label: 'IT 점수', // 차트 레전드
-                    data: [80, 85, 70, 90, 95], // Y 축 데이터
-                    backgroundColor: [
-                        'rgba(54, 162, 235, 0.8)', // 바 차트 색상
-                    ],
-                    borderColor: [
-                        'rgba(54, 162, 235, 1)', // 바 차트 테두리 색상
-                    ],
-                    borderWidth: 1 // 바 차트 테두리 두께
-
-                }]
-            };
-
-            // 바 차트 생성
-            var itBar = new Chart(ctx, {
-                type: 'bar', // 바 차트 유형
-                data: data, // 차트 데이터
-                options: {
-                    scales: {
-                        x: {
-                            ticks:{
-                                font:{
-                                    size: 10,
-                                }
-                            }
-                        },
-
-                        y: {
-                            ticks: {
-                                beginAtZero: false,
-                                stepSize : 10,
-                                max: 100,
-                                fontSize : 1
-                            }
-                        }
-                    }
-                }
-            });
-
-
-
-
-            var authStr = $('#authorities').val();
-
-            console.log(authStr);
-
-            if(authStr === '[ROLE_admin]'){
-                console.log(true);
-                $('#roleName').text('관리자');
-                $('#attendanceRatio').hide();
-            }else if(authStr === '[ROLE_student]'){
-                $('#roleName').text('학생');
-                $('#attendanceRatio').show();
-            }else if(authStr === '[ROLE_teacher]'){
-                $('#roleName').text('선생님');
-                $('#attendanceRatio').hide();
-            }else{
-                $('#roleName').text('권한이 없습니다.');
-                $('#attendanceRatio').hide();
-            }
-
-
-            let id = document.getElementById('userid').textContent;
-
-            console.log(id);
-//출석률 도넛차트
-            $.ajax({
-                url: '/lms/data/attendance', // 실제 서버의 API 엔드포인트 URL로 변경해야 합니다.
-                type: 'GET',
-                data: { memberid: id },
-                dataType: 'json',
-                success: function(data) {
-                    // 성공적으로 데이터를 가져왔을 때의 처리 로직
-                    console.log(data);
-
-                    // 파이 차트의 데이터 설정
-                    var data = {
-                        labels: ['출석', '결석'],
-                        datasets: [{
-                            data: [data.attendance, data.absence], // 각 데이터의 값 설정
-                            backgroundColor: ['#36a2eb', '#ff6384'] // 각 데이터의 색상 설정
-
-
-                        }]
-                    };
-                    // 파이 차트의 옵션
-                    var options = {
-                        plugins: {
-                            legend: {
-                                display: true, // 범례 표시 여부
-                                position: 'top' // 범례 위치 (top, bottom, left, right 중 선택)
-                            }
-
-                        },
-                        tooltips: {
-                            enabled: true // 툴팁 표시 여부
-                        }
-                    };
-                    // 파이 차트 생성
-                    var myPieChart = new Chart(ctx, {
-                        type: 'doughnut', // 차트 유형 설정
-                        data: data, // 데이터 설정
-                        options: options
-                    });
-
-
-
-
-                    console.log('데이터는 가져옴');
+          // 바 차트 생성
+          var itBar = new Chart(ctx, {
+            type: "bar", // 바 차트 유형
+            data: data, // 차트 데이터
+            options: {
+              scales: {
+                x: {
+                  ticks: {
+                    font: {
+                      size: 10,
+                    },
+                  },
                 },
-                error: function(error) {
-                    // Ajax 요청이 실패한 경우의 처리 로직
-                    console.log('데이터를 가져오는데 실패했습니다.');
-                }
-            });
 
+                y: {
+                  ticks: {
+                    beginAtZero: false,
+                    stepSize: 10,
+                    max: 100,
+                    fontSize: 1,
+                  },
+                },
+              },
+            },
+          });
 
+          var authStr = $("#authorities").val();
 
-        // HTML의 canvas 요소 가져오기
-            var ctx = document.getElementById('myPieChart').getContext('2d');
+          console.log(authStr);
 
+          if (authStr === "[ROLE_admin]") {
+            console.log(true);
+            $("#roleName").text("관리자");
+            $("#attendanceRatio").hide();
+          } else if (authStr === "[ROLE_student]") {
+            $("#roleName").text("학생");
+            $("#attendanceRatio").show();
+          } else if (authStr === "[ROLE_teacher]") {
+            $("#roleName").text("선생님");
+            $("#attendanceRatio").hide();
+          } else {
+            $("#roleName").text("권한이 없습니다.");
+            $("#attendanceRatio").hide();
+          }
 
-//출석조회 바 차트
+          let id = document.getElementById("userid").textContent;
 
+          console.log(id);
+          //출석률 도넛차트
+          $.ajax({
+            url: "/lms/data/attendance", // 실제 서버의 API 엔드포인트 URL로 변경해야 합니다.
+            type: "GET",
+            data: { memberid: id },
+            dataType: "json",
+            success: function (data) {
+              // 성공적으로 데이터를 가져왔을 때의 처리 로직
+              console.log(data);
 
+              // 파이 차트의 데이터 설정
+              var data = {
+                labels: ["출석", "결석"],
+                datasets: [
+                  {
+                    data: [data.attendance, data.absence], // 각 데이터의 값 설정
+                    backgroundColor: ["#36a2eb", "#ff6384"], // 각 데이터의 색상 설정
+                  },
+                ],
+              };
+              // 파이 차트의 옵션
+              var options = {
+                plugins: {
+                  legend: {
+                    display: true, // 범례 표시 여부
+                    position: "top", // 범례 위치 (top, bottom, left, right 중 선택)
+                  },
+                },
+                tooltips: {
+                  enabled: true, // 툴팁 표시 여부
+                },
+              };
+              // 파이 차트 생성
+              var myPieChart = new Chart(ctx, {
+                type: "doughnut", // 차트 유형 설정
+                data: data, // 데이터 설정
+                options: options,
+              });
+
+              console.log("데이터는 가져옴");
+            },
+            error: function (error) {
+              // Ajax 요청이 실패한 경우의 처리 로직
+              console.log("데이터를 가져오는데 실패했습니다.");
+            },
+          });
+
+          // HTML의 canvas 요소 가져오기
+          var ctx = document.getElementById("myPieChart").getContext("2d");
+
+          //출석조회 바 차트
         });
 
-        function attendanceChart(){
-            let id = document.getElementById('userid').textContent;
+        function attendanceChart() {
+          let id = document.getElementById("userid").textContent;
 
-            $.ajax({
-                url: '/lms/data/attendanceBar', // 실제 서버의 API 엔드포인트 URL로 변경해야 합니다.
-                type: 'GET',
-                data: { memberid: id },
-                dataType: 'json',
-                success: function(chartData) {
-                    // 성공적으로 데이터를 가져왔을 때의 처리 로직
-                    console.log(chartData);
+          $.ajax({
+            url: "/lms/data/attendanceBar", // 실제 서버의 API 엔드포인트 URL로 변경해야 합니다.
+            type: "GET",
+            data: { memberid: id },
+            dataType: "json",
+            success: function (chartData) {
+              // 성공적으로 데이터를 가져왔을 때의 처리 로직
+              console.log(chartData);
 
-                    // 바 차트를 그릴 Canvas 엘리먼트 선택
-                    var ctx = document.getElementById('attendanceBar').getContext('2d');
+              // 바 차트를 그릴 Canvas 엘리먼트 선택
+              var ctx = document.getElementById("attendanceBar").getContext("2d");
 
-                    // 바 차트 데이터
-                    var data = {
-                        labels: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'], // X 축 레이블
-                        datasets: [{
-                            label: '출석 비율', // 차트 레전드
-                            data: [chartData.bar01, chartData.bar02, chartData.bar03, chartData.bar04, chartData.bar05, chartData.bar06, chartData.bar07, chartData.bar08, chartData.bar09, chartData.bar10, chartData.bar11, chartData.bar12], // Y 축 데이터
-                            backgroundColor: [
-                                'rgba(54, 162, 235, 0.8)', // 바 차트 색상
-                            ],
-                            borderColor: [
-                                'rgba(54, 162, 235, 1)', // 바 차트 테두리 색상
-                            ],
-                            borderWidth: 1 // 바 차트 테두리 두께
-                        }]
-                    };
-
-                    // 바 차트 생성
-                    var attendanceBar = new Chart(ctx, {
-                        type: 'bar', // 바 차트 유형
-                        data: data, // 차트 데이터
-                        options: {
-                            scales: {
-                                y: {
-                                    ticks: {
-                                        beginAtZero: true,
-                                        stepSize : 10,
-                                        max: 100
-                                    }
-                                }
-                            }
-                        }
-                    });
-
-
-                    console.log('바 차트');
-                },
-                error: function(error) {
-                    // Ajax 요청이 실패한 경우의 처리 로직
-                    console.log('데이터를 가져오는데 실패했습니다.');
-                }
-            });
-        }
-
-
-        //일본어 차트
-        function japaneseChart(){
-                        // 바 차트를 그릴 Canvas 엘리먼트 선택
-            var ctx = document.getElementById('japaneseBar').getContext('2d');
-
-            // 바 차트 데이터
-            var data = {
-                labels: ['1차 역량평가', '2차 역량평가', '종합평가'], // X 축 레이블
-                datasets: [{
-                    label: '일본어 점수', // 차트 레전드
-                    data: [85, 100, 95], // Y 축 데이터
+              // 바 차트 데이터
+              var data = {
+                labels: [
+                  "1월",
+                  "2월",
+                  "3월",
+                  "4월",
+                  "5월",
+                  "6월",
+                  "7월",
+                  "8월",
+                  "9월",
+                  "10월",
+                  "11월",
+                  "12월",
+                ], // X 축 레이블
+                datasets: [
+                  {
+                    label: "출석 비율", // 차트 레전드
+                    data: [
+                      chartData.bar01,
+                      chartData.bar02,
+                      chartData.bar03,
+                      chartData.bar04,
+                      chartData.bar05,
+                      chartData.bar06,
+                      chartData.bar07,
+                      chartData.bar08,
+                      chartData.bar09,
+                      chartData.bar10,
+                      chartData.bar11,
+                      chartData.bar12,
+                    ], // Y 축 데이터
                     backgroundColor: [
-                        'rgba(54, 162, 235, 0.8)', // 바 차트 색상
+                      "rgba(54, 162, 235, 0.8)", // 바 차트 색상
                     ],
                     borderColor: [
-                        'rgba(54, 162, 235, 1)', // 바 차트 테두리 색상
+                      "rgba(54, 162, 235, 1)", // 바 차트 테두리 색상
                     ],
-                    borderWidth: 1 // 바 차트 테두리 두께
-                }]
-            };
+                    borderWidth: 1, // 바 차트 테두리 두께
+                  },
+                ],
+              };
 
-            // 바 차트 생성
-            var japaneseBar = new Chart(ctx, {
-                type: 'bar', // 바 차트 유형
+              // 바 차트 생성
+              var attendanceBar = new Chart(ctx, {
+                type: "bar", // 바 차트 유형
                 data: data, // 차트 데이터
                 options: {
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true,
-                                stepSize : 10,
-                                max: 100
-                            }
-                        }]
-                    }
-                }
-            });
+                  scales: {
+                    y: {
+                      ticks: {
+                        beginAtZero: true,
+                        stepSize: 10,
+                        max: 100,
+                      },
+                    },
+                  },
+                },
+              });
+
+              console.log("바 차트");
+            },
+            error: function (error) {
+              // Ajax 요청이 실패한 경우의 처리 로직
+              console.log("데이터를 가져오는데 실패했습니다.");
+            },
+          });
         }
+
+        //일본어 차트
+        function japaneseChart() {
+          // 바 차트를 그릴 Canvas 엘리먼트 선택
+          var ctx = document.getElementById("japaneseBar").getContext("2d");
+
+          // 바 차트 데이터
+          var data = {
+            labels: ["1차 역량평가", "2차 역량평가", "종합평가"], // X 축 레이블
+            datasets: [
+              {
+                label: "일본어 점수", // 차트 레전드
+                data: [85, 100, 95], // Y 축 데이터
+                backgroundColor: [
+                  "rgba(54, 162, 235, 0.8)", // 바 차트 색상
+                ],
+                borderColor: [
+                  "rgba(54, 162, 235, 1)", // 바 차트 테두리 색상
+                ],
+                borderWidth: 1, // 바 차트 테두리 두께
+              },
+            ],
+          };
+
+          // 바 차트 생성
+          var japaneseBar = new Chart(ctx, {
+            type: "bar", // 바 차트 유형
+            data: data, // 차트 데이터
+            options: {
+              scales: {
+                yAxes: [
+                  {
+                    ticks: {
+                      beginAtZero: true,
+                      stepSize: 10,
+                      max: 100,
+                    },
+                  },
+                ],
+              },
+            },
+          });
+        }
+
+        // 캘린더
+        let calendar;
+        let selectedEvent;
+
+        document.addEventListener("DOMContentLoaded", function () {
+        let calendarEl = document.getElementById("calendar");
+
+        // new FullCalendar.Calendar(대상 DOM객체, {속성:속성값, 속성2:속성값2..})
+        calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: "dayGridMonth",
+        timeZone: "UTC",
+        editable: false,
+        dayMaxEvents: 1,
+        selectable: true,
+        height: 500,
+
+        eventClick: function (arg) {
+            arg.jsEvent.stopPropagation();
+            arg.jsEvent.preventDefault();
+        },
+
+        googleCalendarApiKey: "AIzaSyAWA097hmFr-7ZGaw5vJatSfmkNY9L0n04",
+
+        // DB에 있는 일정 불러오기
+        eventSources: [
+          function (info, successCallback, failureCallback) {
+            $.ajax({
+              url: "schedule/list",
+              type: "get",
+              dataType: "json",
+              success: function (data) {
+                console.log(data);
+
+                let startOfMonth = info.start;
+                let endOfMonth = info.end;
+
+                let transformedData = data.map(function (event) {
+                  return {
+                    id: event.eventid,
+                    title: event.title,
+                    start: event.startdate,
+                    end: event.enddate,
+                    allDay: event.allday,
+                    color: event.color,
+                    textColor: event.textcolor,
+                    description: event.note,
+                    memberID: event.memberid,
+                    category: event.categories,
+                  };
+                });
+
+                successCallback(transformedData);
+              },
+              error: function (e) {
+                alert(JSON.stringify(e));
+              },
+            });
+          },
+          {
+            // 공휴일 불러오기
+            googleCalendarId:
+              "ko.south_korea#holiday@group.v.calendar.google.com",
+            color: "#20c997",
+          },
+        ],
+        });
+        calendar.render();
+        });
+        // 캘린더 끝
     </script>
+
+    <style>
+        #calendar {
+            font-size: 10px;
+        }
+        .fc-toolbar {
+            font-size: .9em;
+        }
+        .fc-toolbar h2 {
+            font-size: 12px;
+            white-space: normal !important;
+        }
+        /* click +2 more for popup */
+        .fc-more-cell a {
+            display: block;
+            width: 85%;
+            margin: 1px auto 0 auto;
+            border-radius: 3px;
+            background: grey;
+            color: transparent;
+            overflow: hidden;
+            height: 4px;
+        }
+        .fc-more-popover {
+            width: 100px;
+        }
+        .fc-view-month .fc-event, .fc-view-agendaWeek .fc-event, .fc-content {
+            font-size: 0;
+            overflow: hidden;
+            height: 2px;
+        }
+        .fc-view-agendaWeek .fc-event-vert {
+            font-size: 0;
+            overflow: hidden;
+            width: 2px !important;
+        }
+        .fc-agenda-axis {
+            width: 20px !important;
+            font-size: .7em;
+        }
+        .fc-button-content {
+            padding: 0;
+        }
+    </style>
 </head>
 
 <body>
@@ -269,174 +411,204 @@
         </header>
 
         <div class="page-heading">
-            <h3>Profile Statistics</h3>
+            <h3>메인</h3>
         </div>
         <div class="page-content">
             <section class="row">
+                <!-- 왼쪽 -->
                 <div class="col-12 col-lg-9">
                     <div class="row">
-                        <div class="col-6 col-lg-6">
+                        <div class="col-6 col-lg-6 col-md-6">
                             <div class="card">
                                 <div class="card-body px-4 py-4-5">
-                                    <p>공지사항--------------------------------------------------------------
-                                        ---------------------------------------------------------------------
-                                        ----------------------------------------------------------------
-                                        ----------------------------------------------------------------------
-                                        -----------------------------------------------------------------</p>
-
+                                    <!-- 공지사항 -->
+                                    <div class="row">
+                                        <div class="card-head">
+                                            <h5>공지사항</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table mb-0">
+                                                    <tbody>
+                                                    <tr th:each="list: ${noticeList}">
+                                                        <td><i class="bi bi-dot"></i></td>
+                                                        <td>
+                                                            <a
+                                                                    th:href="@{/notice/read(noticenum=${list.noticenum})}"
+                                                                    th:text="${list.noticetitle}"
+                                                            ></a>
+                                                        </td>
+                                                        <td th:text="${list.noticedate}"></td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 공지사항 끝 -->
                                 </div>
                             </div>
                         </div>
-                        <div class="col-6 col-lg-6">
+                        <div class="col-6 col-lg-6 col-md-6">
                             <div class="card">
                                 <div class="card-body px-4 py-4-5">
                                     <div class="row">
-                                        <p>캘린더----------------------------------------------------
-                                            ---------------------------------------------------------------------
-                                            ----------------------------------------------------------------
-                                            ----------------------------------------------------------------------
-                                            ----------------------------------------------------------------</p>
+                                        <!-- 캘린더 -->
+                                        <div class="card-head">
+                                            <h5>일정</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="calendar"></div>
+                                        </div>
+                                        <!-- 캘린더 끝 -->
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <!-- list group with contextual & horizontal start -->
-                    <section id="list-group-contextual">
-                        <div class="row match-height">
-
-                            <div class="col-12 col-lg-12">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h4 class="card-title">성적조회</h4>
-                                    </div>
-                                    <div class="card-content">
-                                        <div class="card-body">
-                                            <p>
-                                                Add <code>.list-group-horizontal</code> to change the layout of list group items from
-                                                vertical to
-                                                horizontal across all breakpoints.choose a responsive variantcode <code>
-                                                .list-group-horizontal-{sm|md|lg|xl}</code> to make a list group horizontal starting at that
-                                                breakpoint’s min-width.
-                                            </p>
-                                            <div class="list-group list-group-horizontal-sm mb-1 text-center" role="tablist">
-                                                <a class="list-group-item list-group-item-action active" id="list-sunday-list"
-                                                   data-bs-toggle="list" href="#list-sunday" role="tab" onclick="itChart()">IT</a>
-                                                <a class="list-group-item list-group-item-action" id="list-monday-list"
-                                                   data-bs-toggle="list" href="#list-monday" role="tab" onclick="japaneseChart()">일본어</a>
-                                                <a class="list-group-item list-group-item-action" id="list-tuesday-list"
-                                                   data-bs-toggle="list" href="#list-tuesday" role="tab" onclick="attendanceChart()">출석</a>
-                                            </div>
-                                            <div class="tab-content text-justify">
-                                                <div class="tab-pane fade show active" id="list-sunday" role="tabpanel"
-                                                     aria-labelledby="list-sunday-list">
-                                                    <canvas id="itBar" width="400" height="150"></canvas>
-                                                </div>
-                                                <div class="tab-pane fade" id="list-monday" role="tabpanel"
-                                                     aria-labelledby="list-monday-list">
-                                                    <canvas id="japaneseBar" width="400" height="150"></canvas>
-                                                </div>
-                                                <div class="tab-pane fade" id="list-tuesday" role="tabpanel"
-                                                     aria-labelledby="list-tuesday-list">
-                                                    <p>출석 그래프</p>
-                                                    <canvas id="attendanceBar" width="400" height="150"></canvas>
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
                 </div>
+                <!-- 왼쪽 -->
+
+                <!-- 오른쪽 -->
                 <div class="col-12 col-lg-3">
                     <div class="card">
                         <div class="card-body py-4 px-4">
                             <div class="d-flex align-items-center">
                                 <div class="avatar avatar-xl">
-                                    <a th:href="@{/member/information}">
-                                        <img src="assets/images/faces/1.jpg" alt="Face 1">
-                                    </a>
-
+                                    <a th:href="@{/member/information}"
+                                    ><img src="assets/images/faces/1.jpg" alt="Face 1"
+                                    /></a>
                                 </div>
                                 <div class="ms-3 name" sec:authorize="isAuthenticated()">
-                                    <a th:href="@{/member/information}"><h5 id="userid" class="font-bold" th:text="${#authentication.name}"></h5></a>
+                                    <a th:href="@{/member/information}"
+                                    ><h5
+                                            id="userid"
+                                            class="font-bold"
+                                            th:text="${#authentication.name}"
+                                    ></h5
+                                    ></a>
+                                    <input
+                                            type="hidden"
+                                            id="authorities"
+                                            th:value="${#authentication.authorities}"
+                                    />
+                                    <h6 class="text-muted mb-0"><a id="roleName"></a></h6>
                                     <h6 class="text-muted mb-0">
-                                        <a id="roleName"></a>
-                                        <!--                                        &lt;!&ndash; 'ROLE_admin' 권한이 있는 경우 &ndash;&gt;-->
-                                        <!--                                        <span th:if="${#authentication.authorities.contains('ROLE_admin') or #authentication.authorities.contains('admin')}" th:text="'관리자'"> @johnducky</span>-->
-
-                                        <!--                                        &lt;!&ndash; 'ROLE_student' 권한이 있는 경우 &ndash;&gt;-->
-                                        <!--                                        <span th:if="${#authentication.authorities.contains('ROLE_student') or #authentication.authorities.contains('student')}" th:text="'학생'"> @johnducky</span>-->
-
-                                        <!--                                        &lt;!&ndash; 'ROLE_teacher' 권한이 있는 경우 &ndash;&gt;-->
-                                        <!--                                        <span th:if="${#authentication.authorities.contains('ROLE_teacher') or #authentication.authorities.contains('teacher')}" th:text="'선생님'"> @johnducky</span>-->
-
-                                        <!--                                        &lt;!&ndash; 다른 권한에 속할 경우 &ndash;&gt;-->
-                                        <!--                                        <span th:unless="${#authentication.authorities.contains('ROLE_admin') or #authentication.authorities.contains('admin')-->
-                                        <!--                                            or #authentication.authorities.contains('ROLE_teacher') or #authentication.authorities.contains('teacher')-->
-                                        <!--                                            or #authentication.authorities.contains('ROLE_student') or #authentication.authorities.contains('student')}" th:text="'권한이 없습니다.'"> @johnducky</span>-->
+                                        <a th:href="@{/member/logout}">로그아웃</a>
                                     </h6>
-
-                                    <input type="hidden" id="authorities" th:value="${#authentication.authorities}">
-
-                                    <h6 class="text-muted mb-0"><a th:href="@{/member/logout}">로그아웃</a></h6>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div id="attendanceRatio" class="card">
+                    <div id="attendanceRatio" class="card" sec:authorize="hasAnyRole('ROLE_student')">
                         <div class="card-header">
                             <h4>출석률</h4>
                         </div>
                         <div class="card-body">
-                            <canvas id="myPieChart" width="400" height="400"><span class="chart-title">80%</span></canvas>
+                            <canvas id="myPieChart" width="400" height="400"
+                            ><span class="chart-title">80%</span></canvas
+                            >
                             <div id="js-legend" class="chart-legend"></div>
                         </div>
                     </div>
 
                 </div>
-
-                </div>
-
+                <!-- 오른쪽 -->
             </section>
 
-            <footer>
-                <div class="footer clearfix mb-0 text-muted">
-                    <div class="float-start">
-                        <p>2021 &copy; Mazer</p>
-                    </div>
-                    <div class="float-end">
-                        <p>Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by <a
-                                href="https://saugi.me">Saugi</a></p>
+            <!-- list group with contextual & horizontal start -->
+            <section id="list-group-contextual" sec:authorize="hasAnyRole('ROLE_student')">
+                <div class="row match-height">
+                    <div class="col-12 col-lg-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">성적조회</h4>
+                            </div>
+                            <div class="card-content">
+                                <div class="card-body">
+                                    <div
+                                            class="list-group list-group-horizontal-sm mb-1 text-center"
+                                            role="tablist"
+                                    >
+                                        <a
+                                                class="list-group-item list-group-item-action active"
+                                                id="list-sunday-list"
+                                                data-bs-toggle="list"
+                                                href="#list-sunday"
+                                                role="tab"
+                                                onclick="itChart()"
+                                        >IT</a
+                                        >
+                                        <a
+                                                class="list-group-item list-group-item-action"
+                                                id="list-monday-list"
+                                                data-bs-toggle="list"
+                                                href="#list-monday"
+                                                role="tab"
+                                                onclick="japaneseChart()"
+                                        >일본어</a
+                                        >
+                                        <a
+                                                class="list-group-item list-group-item-action"
+                                                id="list-tuesday-list"
+                                                data-bs-toggle="list"
+                                                href="#list-tuesday"
+                                                role="tab"
+                                                onclick="attendanceChart()"
+                                        >출석</a
+                                        >
+                                    </div>
+                                    <div class="tab-content text-justify">
+                                        <div
+                                                class="tab-pane fade show active"
+                                                id="list-sunday"
+                                                role="tabpanel"
+                                                aria-labelledby="list-sunday-list"
+                                        >
+                                            <canvas id="itBar" width="400" height="150"></canvas>
+                                        </div>
+                                        <div
+                                                class="tab-pane fade"
+                                                id="list-monday"
+                                                role="tabpanel"
+                                                aria-labelledby="list-monday-list"
+                                        >
+                                            <canvas
+                                                    id="japaneseBar"
+                                                    width="400"
+                                                    height="150"
+                                            ></canvas>
+                                        </div>
+                                        <div
+                                                class="tab-pane fade"
+                                                id="list-tuesday"
+                                                role="tabpanel"
+                                                aria-labelledby="list-tuesday-list"
+                                        >
+                                            <canvas
+                                                    id="attendanceBar"
+                                                    width="400"
+                                                    height="150"
+                                            ></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </footer>
+            </section>
         </div>
     </div>
-    <script th:src="@{assets/js/bootstrap.js}"></script>
-    <script th:src="@{assets/js/app.js}"></script>
-    <script th:src="@{/privatejs/sidebarLoader.js}"></script>
+</div>
 
+<script th:src="@{assets/js/bootstrap.js}"></script>
+<script th:src="@{assets/js/app.js}"></script>
+<script th:src="@{/privatejs/sidebarLoader.js}"></script>
 
-
-
-    <!-- Need: Apexcharts -->
-    <script th:src="@{assets/extensions/apexcharts/apexcharts.amd.js}"></script>
-    <script th:src="@{assets/js/pages/dashboard.js}"></script>
-
-
-
+<!-- Need: Apexcharts -->
+<script th:src="@{assets/extensions/apexcharts/apexcharts.amd.js}"></script>
+<script th:src="@{assets/js/pages/dashboard.js}"></script>
 </body>
 </html>
-
-window.onload = function(){
-var r = document.getElementById('toggle-dark');
-
-r.addEventListener('input', function(e){
-a(e.target.checked ? "theme-dark" : "theme-light")
-})
-}

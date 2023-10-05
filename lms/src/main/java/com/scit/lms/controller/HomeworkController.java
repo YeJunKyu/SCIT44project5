@@ -548,6 +548,7 @@ public class HomeworkController {
             @RequestParam("hw_sub_comment") String hw_sub_comment) {
 
         log.debug("hwSubNums: {}", hwSubNums);
+        log.debug("hw_sub_score: {}", hwSubNums);
 
         for (String hwSubNum : hwSubNums) {
             int hw_sub_num = Integer.parseInt(hwSubNum);
@@ -557,7 +558,7 @@ public class HomeworkController {
 
             service.updateScore(hw_sub);
         }
-        
+
     }
 
 }
