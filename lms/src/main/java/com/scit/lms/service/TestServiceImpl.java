@@ -128,4 +128,12 @@ public class TestServiceImpl implements TestService{
         return dao.getTestpaperListByCategoryId(map);
     }
 
+    // 키워드로 시험 찾기
+    @Override
+    public ArrayList<TestpaperList> searchByKeyword(Map<String, String> map) {
+        ArrayList<TestpaperList> t = dao.searchByKeyword(map);
+        log.debug("서비스단 리스트:{}", t);
+        return t;
+    }
+
 }

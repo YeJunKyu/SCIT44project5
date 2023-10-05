@@ -228,45 +228,46 @@
                 <div class="card">
                     <div class="d-flex align-items-center justify-content-between">
                         <h1 class="h1_margin">성적</h1>
-                        <div class="form-group input-group-lg col-4">
-                            <select class="form-control-sm" id="primaryCategory" onchange="updateSecondaryCategory(); updateFirst();">
-                                <option>선택</option>
-                                <option th:each="category : ${category}" th:value="${category.category_id}" th:text="${category.categoryname}"></option>
-                            </select>
-                            <select class="form-control-sm" id="secondaryCategory" onchange="updatecategoryid(); updateSecond();">
-                                <!-- 중분류 항목을 여기에 로드 -->
-                            </select>
-                            <select class="form-control-sm" id="categoryid" name="category_id" onchange="updateThird();">
-                                <!-- 소분류 항목을 여기에 로드 -->
-                            </select>
+                        <div class="form-group input-group-lg col-3">
+<!--                            <select class="form-control-sm" id="primaryCategory" onchange="updateSecondaryCategory(); updateFirst();">-->
+<!--                                <option>선택</option>-->
+<!--                                <option th:each="category : ${category}" th:value="${category.category_id}" th:text="${category.categoryname}"></option>-->
+<!--                            </select>-->
+<!--                            <select class="form-control-sm" id="secondaryCategory" onchange="updatecategoryid(); updateSecond();">-->
+<!--                                &lt;!&ndash; 중분류 항목을 여기에 로드 &ndash;&gt;-->
+<!--                            </select>-->
+<!--                            <select class="form-control-sm" id="categoryid" name="category_id" onchange="updateThird();">-->
+<!--                                &lt;!&ndash; 소분류 항목을 여기에 로드 &ndash;&gt;-->
+<!--                            </select>-->
+                            <input type="text" class="form-control-sm" id="keyword" onkeyup="search();">
                         </div>
                     </div>
-                    <div class="card-content d-flex justify-content-center align-items-center">
-                        <table style="width: 80%">
-                            <tr>
-                                <th class="col-6">시험명</th>
-                                <th class="col-2">점수</th>
-                                <th class="col-2">시험일자</th>
-                                <th class="col-2">합/불</th>
-                            </tr>
-                            <tr th:each="grade : ${grade}">
-                                <td>
-                                    <a th:href="@{/test/submittedAnswer(asnum=${grade.asnum})}">
-                                        <span th:text="${grade.testname}"></span>
-                                    </a>
-                                </td>
-                                <td>
-                                    <span th:text="${grade.totalscore}"></span>
-                                </td>
-                                <td>
-                                    <span th:text="${grade.testdate}"></span>
-                                </td>
-                                <td>
-                                    <span th:if="${grade.totalscore >= 70}">합격</span>
-                                    <span th:if="${grade.totalscore < 70}">불합격</span>
-                                </td>
-                            </tr>
-                        </table>
+                    <div class="card-content d-flex justify-content-center align-items-center" id="tableplace">
+<!--                        <table style="width: 80%">-->
+<!--                            <tr>-->
+<!--                                <th class="col-6">시험명</th>-->
+<!--                                <th class="col-2">점수</th>-->
+<!--                                <th class="col-2">시험일자</th>-->
+<!--                                <th class="col-2">합/불</th>-->
+<!--                            </tr>-->
+<!--                            <tr th:each="grade : ${grade}">-->
+<!--                                <td>-->
+<!--                                    <a th:href="@{/test/submittedAnswer(asnum=${grade.asnum})}">-->
+<!--                                        <span th:text="${grade.testname}"></span>-->
+<!--                                    </a>-->
+<!--                                </td>-->
+<!--                                <td>-->
+<!--                                    <span th:text="${grade.totalscore}"></span>-->
+<!--                                </td>-->
+<!--                                <td>-->
+<!--                                    <span th:text="${grade.testdate}"></span>-->
+<!--                                </td>-->
+<!--                                <td>-->
+<!--                                    <span th:if="${grade.totalscore >= 70}">합격</span>-->
+<!--                                    <span th:if="${grade.totalscore < 70}">불합격</span>-->
+<!--                                </td>-->
+<!--                            </tr>-->
+<!--                        </table>-->
                     </div>
                 </div>
             </div>
@@ -283,195 +284,258 @@
 <script th:src="@{/assets/js/bootstrap.js}"></script>
 <script th:src="@{/assets/js/app.js}"></script>
 <script th:inline="javascript">
-    function updateSecondaryCategory() {
-        const primaryId = document.getElementById('primaryCategory').value;
-        console.log(primaryId);
-        const secondarySelect = document.getElementById('secondaryCategory');
+    $(document).ready(function () {
+        search();
+    });
+    function search() {
+        let member = [[${student}]];
+        let memberid = member.member.memberid;
+        let keyword = document.getElementById('keyword').value;
+        console.log(keyword);
 
-        // 기존의 선택박스 항목들을 모두 제거합니다.
-        while (secondarySelect.firstChild) {
-            secondarySelect.removeChild(secondarySelect.firstChild);
-        }
-        // "선택" 옵션을 추가합니다.
-        let defaultOption = document.createElement('option');
-        defaultOption.text = "선택";
-        defaultOption.value = "";  // 값이 없는 상태로 설정
-        secondarySelect.appendChild(defaultOption);
-
-        // AJAX 호출을 사용하여 서버에서 중분류 항목을 불러오기
-        fetch(`/lms/test/secondaryCategory?primaryId=${primaryId}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                // 데이터를 사용하여 secondaryCategory 드롭다운에 항목을 추가합니다.
-                data.forEach(category => {
-                    let option = document.createElement('option');
-                    option.value = category.category_id; // category_id는 예시입니다. 실제 데이터의 필드 이름을 사용해야 합니다.
-                    option.text = category.categoryname; // categoryname은 예시입니다. 실제 데이터의 필드 이름을 사용해야 합니다.
-                    secondarySelect.appendChild(option);
+        $.ajax({
+            url: '/lms/test/searchByKeyword',
+            type: 'GET',
+            data: {
+                keyword: keyword,
+                memberid: memberid
+            },
+            dataType: 'json',
+            success: function (list) {
+                console.log(list);
+                let s = `
+                    <table style="width: 80%">
+                        <tr>
+                            <th class="col-6">시험명</th>
+                            <th class="col-2">점수</th>
+                            <th class="col-2">시험일자</th>
+                            <th class="col-2">합/불</th>
+                        </tr>
+                `;
+                $(list).each(function (index, item) {
+                    let passFail = item.totalscore >= 70 ? '합격' : '불합격';
+                    s += `
+                        <tr>
+                            <td>
+                                <a href="/lms/test/submittedAnswer?asnum=${item.asnum}">
+                                    <span>${item.testname}</span>
+                                </a>
+                            </td>
+                            <td>
+                                <span>${item.totalscore}</span>
+                            </td>
+                            <td>
+                                <span>${item.testdate}</span>
+                            </td>
+                            <td>
+                                <span>
+                                    ${passFail}
+                                </span>
+                            </td>
+                    </tr>
+                    `;
                 });
-            })
-            .catch(error => {
-                console.log('Fetch error: ', error);
-            });
-    }
 
-    function updatecategoryid() {
-        const primaryId = document.getElementById('secondaryCategory').value;
-        console.log(primaryId);
-        const lastSelect = document.getElementById('categoryid');
+                s+=`
+                    </table>
+                `;
+                $("#tableplace").html(s);
 
-        // 기존의 선택박스 항목들을 모두 제거합니다.
-        while (lastSelect.firstChild) {
-            lastSelect.removeChild(lastSelect.firstChild);
-        }
-
-        // "선택" 옵션을 추가합니다.
-        let defaultOption = document.createElement('option');
-        defaultOption.text = "선택";
-        defaultOption.value = "";  // 값이 없는 상태로 설정
-        lastSelect.appendChild(defaultOption);
-
-        // AJAX 호출을 사용하여 서버에서 중분류 항목을 불러오기
-        fetch(`/lms/test/lastCategory?primaryId=${primaryId}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                // 데이터를 사용하여 secondaryCategory 드롭다운에 항목을 추가합니다.
-                data.forEach(category => {
-                    let option = document.createElement('option');
-                    option.value = category.category_id; // category_id는 예시입니다. 실제 데이터의 필드 이름을 사용해야 합니다.
-                    option.text = category.categoryname; // categoryname은 예시입니다. 실제 데이터의 필드 이름을 사용해야 합니다.
-                    lastSelect.appendChild(option);
-                });
-            })
-            .catch(error => {
-                console.log('Fetch error: ', error);
-            });
-    }
-
-    function updateFirst() {
-        let member = [[${student}]];
-        let memberid = member.member.memberid;
-        let categoryValue = document.getElementById('primaryCategory').value;
-
-        $.ajax({
-            url: '/lms/test/getDataByCategory',
-            type: 'GET',
-            data: {
-                category_id: categoryValue,
-                memberid: memberid
-            },
-            dataType: 'json',
-            success: function (data) {
-                console.log(data);
             },
             error: function (e) {
                 console.log(JSON.stringify(e));
             },
         })
     }
-
-    function updateSecond() {
-        let member = [[${student}]];
-        let memberid = member.member.memberid;
-        let categoryValue = document.getElementById('secondaryCategory').value;
-
-        $.ajax({
-            url: '/lms/test/getDataByCategory',
-            type: 'GET',
-            data: {
-                category_id: categoryValue,
-                memberid: memberid
-            },
-            dataType: 'json',
-            success: function (data) {
-                console.log(data);
-            },
-            error: function (e) {
-                console.log(JSON.stringify(e));
-            },
-        })
-    }
-
-    function updateThird() {
-        let member = [[${student}]];
-        let memberid = member.member.memberid;
-        let categoryValue = document.getElementById('categoryid').value;
-
-        $.ajax({
-            url: '/lms/test/getDataByCategory',
-            type: 'GET',
-            data: {
-                category_id: categoryValue,
-                memberid: memberid
-            },
-            dataType: 'json',
-            success: function (data) {
-                console.log(data);
-            },
-            error: function (e) {
-                console.log(JSON.stringify(e));
-            },
-        })
-    }
-    function updateInput(categoryType) {
-        let member = [[${student}]];
-        let memberid = member.member.memberid;
-        let categoryValue;
-        switch (categoryType) {
-            case 'primary':
-                categoryValue = document.getElementById('primaryCategory').value;
-                break;
-            case 'secondary':
-                categoryValue = document.getElementById('secondaryCategory').value;
-                break;
-            case 'final':
-                categoryValue = document.getElementById('categoryid').value;
-                break;
-        }
-        console.log(categoryValue);
-
-        $.ajax({
-            url: '/lms/test/getDataByCategory',
-            type: 'GET',
-            data: {
-                category_id: categoryValue,
-                memberid: memberid
-            },
-            dataType: 'json',
-            success: function (data) {
-                console.log(data);
-            },
-            error: function (e) {
-                console.log(JSON.stringify(e));
-            },
-        })
-        // // AJAX 호출을 사용하여 서버에서 해당 categoryId의 데이터를 불러오기
-        // fetch(`/lms/test/getDataByCategory?category_id=${categoryValue}&memberid=${memberid}`)
-        //     .then(response => {
-        //         if (!response.ok) {
-        //             throw new Error('Network response was not ok');
-        //         }
-        //         return response.json();
-        //     })
-        //     .then(data => {
-        //         // 여기서 data는 선택된 카테고리에 해당하는 데이터입니다.
-        //         // 이 data를 사용해서 원하는 작업을 수행하세요.
-        //         // 예: 테이블 업데이트, 차트 그리기 등등...
-        //     })
-        //     .catch(error => {
-        //         console.log('Fetch error: ', error);
-        //     });
-    }
+    // function updateSecondaryCategory() {
+    //     const primaryId = document.getElementById('primaryCategory').value;
+    //     console.log(primaryId);
+    //     const secondarySelect = document.getElementById('secondaryCategory');
+    //
+    //     // 기존의 선택박스 항목들을 모두 제거합니다.
+    //     while (secondarySelect.firstChild) {
+    //         secondarySelect.removeChild(secondarySelect.firstChild);
+    //     }
+    //     // "선택" 옵션을 추가합니다.
+    //     let defaultOption = document.createElement('option');
+    //     defaultOption.text = "선택";
+    //     defaultOption.value = "";  // 값이 없는 상태로 설정
+    //     secondarySelect.appendChild(defaultOption);
+    //
+    //     // AJAX 호출을 사용하여 서버에서 중분류 항목을 불러오기
+    //     fetch(`/lms/test/secondaryCategory?primaryId=${primaryId}`)
+    //         .then(response => {
+    //             if (!response.ok) {
+    //                 throw new Error('Network response was not ok');
+    //             }
+    //             return response.json();
+    //         })
+    //         .then(data => {
+    //             // 데이터를 사용하여 secondaryCategory 드롭다운에 항목을 추가합니다.
+    //             data.forEach(category => {
+    //                 let option = document.createElement('option');
+    //                 option.value = category.category_id; // category_id는 예시입니다. 실제 데이터의 필드 이름을 사용해야 합니다.
+    //                 option.text = category.categoryname; // categoryname은 예시입니다. 실제 데이터의 필드 이름을 사용해야 합니다.
+    //                 secondarySelect.appendChild(option);
+    //             });
+    //         })
+    //         .catch(error => {
+    //             console.log('Fetch error: ', error);
+    //         });
+    // }
+    //
+    // function updatecategoryid() {
+    //     const primaryId = document.getElementById('secondaryCategory').value;
+    //     console.log(primaryId);
+    //     const lastSelect = document.getElementById('categoryid');
+    //
+    //     // 기존의 선택박스 항목들을 모두 제거합니다.
+    //     while (lastSelect.firstChild) {
+    //         lastSelect.removeChild(lastSelect.firstChild);
+    //     }
+    //
+    //     // "선택" 옵션을 추가합니다.
+    //     let defaultOption = document.createElement('option');
+    //     defaultOption.text = "선택";
+    //     defaultOption.value = "";  // 값이 없는 상태로 설정
+    //     lastSelect.appendChild(defaultOption);
+    //
+    //     // AJAX 호출을 사용하여 서버에서 중분류 항목을 불러오기
+    //     fetch(`/lms/test/lastCategory?primaryId=${primaryId}`)
+    //         .then(response => {
+    //             if (!response.ok) {
+    //                 throw new Error('Network response was not ok');
+    //             }
+    //             return response.json();
+    //         })
+    //         .then(data => {
+    //             // 데이터를 사용하여 secondaryCategory 드롭다운에 항목을 추가합니다.
+    //             data.forEach(category => {
+    //                 let option = document.createElement('option');
+    //                 option.value = category.category_id; // category_id는 예시입니다. 실제 데이터의 필드 이름을 사용해야 합니다.
+    //                 option.text = category.categoryname; // categoryname은 예시입니다. 실제 데이터의 필드 이름을 사용해야 합니다.
+    //                 lastSelect.appendChild(option);
+    //             });
+    //         })
+    //         .catch(error => {
+    //             console.log('Fetch error: ', error);
+    //         });
+    // }
+    //
+    // function updateFirst() {
+    //     let member = [[${student}]];
+    //     let memberid = member.member.memberid;
+    //     let categoryValue = document.getElementById('primaryCategory').value;
+    //
+    //     $.ajax({
+    //         url: '/lms/test/getDataByCategory',
+    //         type: 'GET',
+    //         data: {
+    //             category_id: categoryValue,
+    //             memberid: memberid
+    //         },
+    //         dataType: 'json',
+    //         success: function (data) {
+    //             console.log(data);
+    //         },
+    //         error: function (e) {
+    //             console.log(JSON.stringify(e));
+    //         },
+    //     })
+    // }
+    //
+    // function updateSecond() {
+    //     let member = [[${student}]];
+    //     let memberid = member.member.memberid;
+    //     let categoryValue = document.getElementById('secondaryCategory').value;
+    //
+    //     $.ajax({
+    //         url: '/lms/test/getDataByCategory',
+    //         type: 'GET',
+    //         data: {
+    //             category_id: categoryValue,
+    //             memberid: memberid
+    //         },
+    //         dataType: 'json',
+    //         success: function (data) {
+    //             console.log(data);
+    //         },
+    //         error: function (e) {
+    //             console.log(JSON.stringify(e));
+    //         },
+    //     })
+    // }
+    //
+    // function updateThird() {
+    //     let member = [[${student}]];
+    //     let memberid = member.member.memberid;
+    //     let categoryValue = document.getElementById('categoryid').value;
+    //
+    //     $.ajax({
+    //         url: '/lms/test/getDataByCategory',
+    //         type: 'GET',
+    //         data: {
+    //             category_id: categoryValue,
+    //             memberid: memberid
+    //         },
+    //         dataType: 'json',
+    //         success: function (data) {
+    //             console.log(data);
+    //         },
+    //         error: function (e) {
+    //             console.log(JSON.stringify(e));
+    //         },
+    //     })
+    // }
+    // function updateInput(categoryType) {
+    //     let member = [[${student}]];
+    //     let memberid = member.member.memberid;
+    //     let categoryValue;
+    //     switch (categoryType) {
+    //         case 'primary':
+    //             categoryValue = document.getElementById('primaryCategory').value;
+    //             break;
+    //         case 'secondary':
+    //             categoryValue = document.getElementById('secondaryCategory').value;
+    //             break;
+    //         case 'final':
+    //             categoryValue = document.getElementById('categoryid').value;
+    //             break;
+    //     }
+    //     console.log(categoryValue);
+    //
+    //     $.ajax({
+    //         url: '/lms/test/getDataByCategory',
+    //         type: 'GET',
+    //         data: {
+    //             category_id: categoryValue,
+    //             memberid: memberid
+    //         },
+    //         dataType: 'json',
+    //         success: function (data) {
+    //             console.log(data);
+    //         },
+    //         error: function (e) {
+    //             console.log(JSON.stringify(e));
+    //         },
+    //     })
+    //     // AJAX 호출을 사용하여 서버에서 해당 categoryId의 데이터를 불러오기
+    //     fetch(`/lms/test/getDataByCategory?category_id=${categoryValue}&memberid=${memberid}`)
+    //         .then(response => {
+    //             if (!response.ok) {
+    //                 throw new Error('Network response was not ok');
+    //             }
+    //             return response.json();
+    //         })
+    //         .then(data => {
+    //             // 여기서 data는 선택된 카테고리에 해당하는 데이터입니다.
+    //             // 이 data를 사용해서 원하는 작업을 수행하세요.
+    //             // 예: 테이블 업데이트, 차트 그리기 등등...
+    //         })
+    //         .catch(error => {
+    //             console.log('Fetch error: ', error);
+    //         });
+    // }
 
 </script>
 

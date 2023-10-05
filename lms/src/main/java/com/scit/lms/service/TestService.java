@@ -62,4 +62,6 @@ public interface TestService {
     // 테스트 카테고리에 따라 보여줄 요소 변함
     ArrayList<TestpaperList> getTestpaperListByCategoryId(Map<String, String> map);
 
+    // 키워드로 시험 찾기
+    ArrayList<TestpaperList> searchByKeyword(Map<String, String> map);
 }

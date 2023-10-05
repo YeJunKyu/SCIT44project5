@@ -222,4 +222,21 @@
             )
         )
     </select>
+
+    <select id="searchByKeyword" parameterType="hashmap" resultType="TestpaperList">
+        SELECT
+            l.asnum,
+            l.testid,
+            (SELECT testname FROM lms_test WHERE testid = l.testid) AS testname,
+            totalscore,
+            TO_CHAR((SELECT testdate FROM lms_test WHERE testid = l.testid), 'YYYY.MM.DD') AS testdate
+        FROM
+            lms_testpaper_list l
+                JOIN
+            lms_test t ON t.testid = l.testid
+        WHERE
+            memberid = #{memberid}
+            AND t.testname LIKE UPPER('%' || #{keyword} || '%')
+            AND checked LIKE 'complete'
+    </select>
 </mapper>
