@@ -44,17 +44,31 @@
 
         // 점수 등록 모달 표시
         function openSelectedScoreModal() {
-            const selectedIds = Array.from(document.querySelectorAll("input[type=checkbox]:checked"))
-                                    .map(checkbox => checkbox.value);
+            const checkboxes = Array.from(document.querySelectorAll("input[type=checkbox]:checked"));
+            const selectedIds = checkboxes.map(checkbox => checkbox.value);
+            const notSubmitted = checkboxes.some(checkbox => {
+                // Checkbox의 부모 <tr> 요소를 찾은 다음, hw_sub_done 셀의 텍스트를 가져옵니다.
+                const parentRow = checkbox.closest("tr");
+                const hwSubDoneCell = parentRow && parentRow.querySelector("td:nth-child(7)"); // hw_sub_done이 7번째 셀에 있는 경우
+                return hwSubDoneCell && hwSubDoneCell.textContent === '미제출'; // '미제출' 텍스트를 확인한 후 조정합니다.
+            });
 
-            // 체크박스 선택 확인
             if (selectedIds.length === 0) {
-              Swal.fire({
-                icon: "error",
-                title: "체크박스를 선택해주세요",
-                text: "점수를 등록할 학생을 선택해주세요",
-              });
-              return false;
+                Swal.fire({
+                    icon: "error",
+                    title: "체크박스를 선택해주세요",
+                    text: "점수를 등록할 학생을 선택해주세요",
+                });
+                return false;
+            }
+
+            if (notSubmitted) {
+                Swal.fire({
+                    icon: "error",
+                    title: "제출하지 않은 과제가 선택됐습니다",
+                    text: "제출한 과제의 점수만 등록할 수 있습니다",
+                });
+                return false;
             }
 
             $("#selectedScore").modal("show");
@@ -67,6 +81,10 @@
                 const formData = new FormData(this);
                 formData.append("selectedHwSubNums", Array.from(document.querySelectorAll("input[type=checkbox]:checked:not(.selectAll)"))
                                                       .map(checkbox => checkbox.value));
+
+                for (let pair of formData.entries()) {
+                    console.log(pair[0]+ ', ' + pair[1]);
+                }
 
                 $.ajax({
                     url: "updateSelectedScore",

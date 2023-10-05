@@ -24,7 +24,7 @@
 
 
     <script>
-<!--        $(document).ready(function(){-->
+        $(document).ready(function(){
 <!--            let birth = $("#birthday").val();                               // 50번째 줄 히든에 user.birthday 를 밸류로 가져옴-->
 
 
@@ -58,27 +58,28 @@
 
 <!--        }-->
 
-<!--        function updatePhoto(){-->
-<!--            console.log("asdsadsasdadsdaadsasd");-->
+        function updatePhoto(){
+            console.log("asdsadsasdadsdaadsasd");
 
-<!--            const formData = new FormData();-->
-<!--            formData.append("img", $("#memberphoto")[0].files[0]);-->
-<!--            $.ajax({-->
-<!--                url: 'updatePhoto',-->
-<!--                type: 'post',-->
-<!--                data : formData,-->
-<!--                dataType : 'json',-->
-<!--                enctype : 'multipart/form-data',-->
-<!--                processData : false,-->
-<!--                contentType: false,-->
-<!--                success: function(result){-->
-<!--                    alert(result);-->
-<!--                },-->
-<!--        		error:function(){-->
-<!--        		    alert("실패");-->
-<!--	        	}-->
-<!--        	});-->
-<!--        }-->
+            const formData = new FormData();
+            formData.append("img", $("#memberphoto")[0].files[0]);
+            $.ajax({
+                url: 'updatePhoto',
+                type: 'post',
+                data : formData,
+                dataType : 'json',
+                enctype : 'multipart/form-data',
+                processData : false,
+                contentType: false,
+                success: function(result){
+                    alert(result);
+                },
+        		error:function(){
+        		    alert("실패");
+	        	}
+        	});
+        }
+    })
 
 function nameCheck() {
     var name = document.getElementById('membername').value;
@@ -207,6 +208,7 @@ function execDaumPostcode() {
         <div class="page-heading">
             <h1>회원정보 수정</h1>
         </div>
+<section class="row">
 
 
         <div class="col-md-6 col-12">
@@ -221,7 +223,7 @@ function execDaumPostcode() {
 
                             <div class="form-body">
                                 <div class="row">
-                                    <div class="col-12">
+                                    <div class="col-12 col-lg-9">
                                         <div class="form-group has-icon-left">
                                             <a th:href="@{/member/changePassword}"
                                                class="btn btn-info me-1 mb-1">비밀번호 변경</a>
@@ -352,7 +354,7 @@ function execDaumPostcode() {
                                                 <input class="btn btn-primary" type="button" onclick="execDaumPostcode()" value="검색"><br>
                                             </div>
                                             <input style="padding-left: 1px;" class="form-control" type="text" id="inputAddress" name="inputAddress" placeholder="주소" required>
-                                            <input style="padding-left: 1px;" class="form-control" type="text" id="detailAddress" name="detailAddress" placeholder="상세주소" required>
+                                            <input style="padding-left: 1px;" class="form-control" type="text" id="detailAddress" name="detailAddress" placeholder="상세주소">
                                             <input style="padding-left: 1px;" class="form-control" type="text" id="extraAddress" name="extraAddress" placeholder="참고항목" >
 
                                         </div>
@@ -369,8 +371,6 @@ function execDaumPostcode() {
                                 </div>
                             </div>
 
-<!--                            <a th:href="@{/member/insertPhoto}"> 사진올리기 </a>-->
-<!--                            <input type="file" id="upload" name="upload" class="image-preview-filepond">-->
 
 <!--                            <input type="button" onclick="photoForm()" value="적용">-->
                         </form>
@@ -379,6 +379,19 @@ function execDaumPostcode() {
                 </div>
             </div>
         </div>
+    <div class="col-3 col-lg-3">
+
+
+        <div style="" th:if="${photoName != null}">
+            <img th:src="@{|/memberUpload/${photoName}|}"  style="width: 206px; height: 260px;" alt="User Photo"/>
+        </div>
+
+        <a th:href="@{/member/insertPhoto}"> 사진변경 </a>
+        <!--                            <input type="file" id="upload" name="upload" class="image-preview-filepond">-->
+    </div>
+</section>
+
+
 
 
 

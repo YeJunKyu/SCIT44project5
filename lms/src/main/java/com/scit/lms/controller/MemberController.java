@@ -129,6 +129,7 @@ public class MemberController {
 
         //검색결과 모델에 저장
         model.addAttribute("user", member);
+        model.addAttribute("photoName", member.getMemberphoto());
         log.debug("** param :{}", member);
         return "memberView/updateForm";
     }
@@ -142,10 +143,13 @@ public class MemberController {
             , @RequestParam("postcode") String postcode
             , @RequestParam("inputAddress") String inputAddress
             , @RequestParam("detailAddress") String detailAddress){
+        log.debug("변경주소:{}", postcode);
+        if (postcode != "") {
+            String fullAddress = "(" + postcode + ") " + inputAddress + " " + detailAddress;
+            log.debug("주소:{}", fullAddress);
+            member.setAddress(fullAddress);
+        }
 
-        String fullAddress = "(" + postcode + ") " + inputAddress + " " + detailAddress;
-        log.debug("주소:{}", fullAddress);
-        member.setAddress(fullAddress);
 
         int n = service.memberUpdate(member);
         log.debug("11111111{}", member);
@@ -153,6 +157,7 @@ public class MemberController {
 
         //검색결과 모델에 저장
         model.addAttribute("user", m);
+        model.addAttribute("photoName", member.getMemberphoto());
 
 
 
@@ -165,17 +170,17 @@ public class MemberController {
         log.debug("멤버:{}", member);
         log.debug("이름이름이름{}", member.getMembername());
 
-        if(member.getMemberphoto() != null && !member.getMemberphoto().isEmpty() && upload != null && !upload.isEmpty()) {
-            String fullPath = uploadPath + "/" + member.getMemberphoto();
-            FileService.deleteFile(fullPath);
-        }
-
-        if (upload != null && !upload.isEmpty()) {
-            String savedfile=FileService.saveFile(upload, uploadPath);
-            member.setMemberphoto(upload.getOriginalFilename());
-            member.setMemberphoto(savedfile);
-
-        }
+//        if(member.getMemberphoto() != null && !member.getMemberphoto().isEmpty() && upload != null && !upload.isEmpty()) {
+//            String fullPath = uploadPath + "/" + member.getMemberphoto();
+//            FileService.deleteFile(fullPath);
+//        }
+//
+//        if (upload != null && !upload.isEmpty()) {
+//            String savedfile=FileService.saveFile(upload, uploadPath);
+//            member.setMemberphoto(upload.getOriginalFilename());
+//            member.setMemberphoto(savedfile);
+//
+//        }
 
         log.debug("업로드", upload);
         log.debug("업로드패스", uploadPath);
@@ -184,9 +189,10 @@ public class MemberController {
 
         service.memberphoto(member);
         model.addAttribute("user", member);
+        model.addAttribute("photoName", member.getMemberphoto());
 
 
-        return "memberView/memberInfo";
+        return "redirect:/member/information";
     }
 
     //비밀번호 확인

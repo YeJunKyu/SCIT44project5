@@ -5,14 +5,18 @@
 <mapper namespace="com.scit.lms.dao.TestDAO">
     <!--시험 목록 조회-->
     <select id="testListAll" resultType="Test">
-        select
-            testid
-            , testname
-            , to_char(testdate, 'YYYY-MM-DD HH24:MI') as testdate
-            , to_char(testlimit, 'YYYY-MM-DD HH24:MI') as testlimit
-            , totalpoints
-        from lms_test
-        ORDER BY testid desc
+        SELECT
+            t.testid,
+            testname,
+            TO_CHAR(testdate, 'YYYY-MM-DD HH24:MI') AS testdate,
+            TO_CHAR(testlimit, 'YYYY-MM-DD HH24:MI') AS testlimit,
+            totalpoints,
+            (SELECT COUNT(*) FROM lms_testpaper_list l WHERE l.testid = t.testid) AS submittedstudents ,
+            (SELECT COUNT(*) FROM lms_student) AS allstudents
+        FROM
+            lms_test t
+        ORDER BY
+            t.testid DESC
     </select>
 
     <insert id="insertTest" parameterType="Test">

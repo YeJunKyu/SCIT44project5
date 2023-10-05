@@ -19,16 +19,10 @@ public class BoardController {
 
     @Autowired
     BoardService service;
+
     // 메인 화면
     @GetMapping("main")
-    public String main() {
-
-        return "boardView/main";
-    }
-
-    // 메인 테스트
-    @GetMapping("maintest")
-    public String mainTest(Model model, @AuthenticationPrincipal UserDetails user) {
+    public String main(Model model, @AuthenticationPrincipal UserDetails user) {
         ArrayList<Notice> noticeList;
         noticeList = service.noticeList();
 
@@ -40,7 +34,7 @@ public class BoardController {
 
         log.debug("공지 리스트: {}", noticeList);
         model.addAttribute("noticeList", noticeList);
-        return "main/main";
+        return "boardView/main";
     }
 
     @GetMapping("sidebar")

@@ -238,7 +238,6 @@ create table lms_homework (
 	originalfile	varchar2(4000),			            --원본 파일
 	savedfile	    varchar2(4000),			            --저장된 파일
 	memberid	    varchar2(100)	not null,	        --교사 아이디
-    hw_students     varchar2(200)   not null
 );
 
 --과제 테이블 시퀀스

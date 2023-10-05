@@ -12,6 +12,11 @@
         <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png" />
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script th:src="@{/privatejs/sidebarLoader.js}"></script>
+        <style>
+            .center {
+                text-align: center;
+            }
+        </style>
 
     </head>
 
@@ -58,18 +63,16 @@
                                                 <thead>
                                                     <tr>
                                                         <th class="col-5">시험명</th>
-                                                        <th>시험일</th>
-                                                        <th>마감일</th>
-                                                        <th>제출인원/전체인원</th>
+                                                        <th class="center">시험일</th>
+                                                        <th class="center">마감일</th>
+                                                        <th class="center" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')') || #authorization.expression('hasRole(''ROLE_admin'')')}">제출인원/전체인원</th>
                                                         <th></th>
                                                         <th></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="table-hover-row1" th:each="test : ${test}">
                                                 <!-- JavaScript 코드를 각 시험에 대해 실행 -->
-
                                                 <tr>
-
                                                     <td class="text-bold-500">
                                                         <a th:if="${#authorization.expression('hasRole(''ROLE_teacher'')') || #authorization.expression('hasRole(''ROLE_admin'')')}" th:href="@{/test/testList(testid=${test.testid})}">
                                                             <p th:text="${test.testname}"></p>
@@ -78,10 +81,12 @@
                                                             <p th:text="${test.testname}"></p>
                                                         </a>
                                                     </td>
-                                                    <td class="text-bold-500" th:text="${test.testdate}"></td>
-                                                    <td class="text-bold-500" th:text="${test.testlimit}"></td>
+                                                    <td class="text-bold-500 center" th:text="${test.testdate}"></td>
+                                                    <td class="text-bold-500 center" th:text="${test.testlimit}"></td>
                                                     <td>
-                                                        <a href="#"><i class="badge-circle badge-circle-light-secondary font-medium-1" data-feather="mail"></i></a>
+                                                        <div class="center" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')') || #authorization.expression('hasRole(''ROLE_admin'')')}">
+                                                            <span th:text="${test.submittedstudents}"></span>/<span th:text="${test.allstudents}"></span>
+                                                        </div>
                                                     </td>
                                                     <td th:if="${#authorization.expression('hasRole(''ROLE_teacher'')') || #authorization.expression('hasRole(''ROLE_admin'')')}">
                                                         <a th:href="@{/test/updateTest(testid=${test.testid})}" onclick="return confirm('수정하시겠습니까?');">수정</a>
