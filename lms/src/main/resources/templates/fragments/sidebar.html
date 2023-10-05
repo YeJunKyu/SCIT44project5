@@ -52,7 +52,7 @@
                         <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
                             <a th:href="@{/main}" class="sidebar-link">
                                 <i class="bi bi-house-fill"></i>
-                                <span>메인 화면</span>
+                                <span>메인화면</span>
                             </a>
                         </li>
 
@@ -162,7 +162,7 @@
                         <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')')}">
                             <a th:href="@{/main}" class="sidebar-link">
                                 <i class="bi bi-house-fill"></i>
-                                <span>메인 화면</span>
+                                <span>메인화면</span>
                             </a>
                         </li>
 
@@ -199,7 +199,7 @@
                         <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_student'')')}">
                             <a th:href="@{/main}" class="sidebar-link">
                                 <i class="bi bi-house-fill"></i>
-                                <span>메인 화면</span>
+                                <span>메인화면</span>
                             </a>
                         </li>
 
@@ -227,7 +227,7 @@
                                     <a th:href="@{/test}">시험</a>
                                 </li>
                                 <li class="submenu-item">
-                                    <a th:href="@{/test/submitTestList}">제출한 시험</a>
+                                    <a th:href="@{/test/submitTestList}">시험 조회</a>
                                 </li>
                                 <li class="submenu-item">
                                     <a th:href="@{/test/testGrade}">시험 결과</a>
