@@ -24,7 +24,7 @@
         ORDER BY
             noticedate DESC
         )
-    WHERE ROWNUM <= 12
+    WHERE ROWNUM <= 10
     ]]>
 </select>
 
@@ -53,7 +53,7 @@
         ORDER BY
             noticedate DESC
         )
-    WHERE ROWNUM <= 12
+    WHERE ROWNUM <= 10
     ]]>
 </select>
 

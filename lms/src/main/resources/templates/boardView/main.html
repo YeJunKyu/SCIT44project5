@@ -297,7 +297,7 @@
         editable: false,
         dayMaxEvents: 1,
         selectable: true,
-        height: 500,
+        height: 400,
 
         eventClick: function (arg) {
             arg.jsEvent.stopPropagation();
@@ -492,7 +492,12 @@
                                             id="authorities"
                                             th:value="${#authentication.authorities}"
                                     />
-                                    <h6 class="text-muted mb-0"><a id="roleName"></a></h6>
+                                    <h6 class="text-muted mb-0">
+                                        <!-- <a id="roleName"></a> -->
+                                        <span sec:authorize="hasRole('ROLE_admin')">관리자</span>
+                                        <span sec:authorize="hasRole('ROLE_teacher')">선생님</span>
+                                        <span sec:authorize="hasRole('ROLE_student')">학생</span>
+                                    </h6>
                                     <h6 class="text-muted mb-0">
                                         <a th:href="@{/member/logout}">로그아웃</a>
                                     </h6>
