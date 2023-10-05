@@ -15,6 +15,7 @@ public class Test {
     int totalscore;
     String testdate;
     String testlimit;
-
+    int submittedstudents;
+    int allstudents;
 
 }
