@@ -48,11 +48,11 @@
                 </div>
                 <div class="sidebar-menu">
                     <ul class="menu">
-                        <li class="sidebar-title" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">관리자</li>
+                        <!-- 관리자(ROLE_admin) -->
                         <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
                             <a th:href="@{/main}" class="sidebar-link">
-                                <i class="bi bi-grid-fill"></i>
-                                <span>메인화면</span>
+                                <i class="bi bi-house-fill"></i>
+                                <span>메인 화면</span>
                             </a>
                         </li>
 
@@ -72,103 +72,97 @@
 
                         <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
                             <a th:href="@{/admin/authentication}" class="sidebar-link">
-                                <i class="bi bi-collection-fill"></i>
+                                <i class="bi bi-person-check-fill"></i>
                                 <span>회원 인증</span>
-                                <i class="bi bi-bell"></i>
-                                <span th:text="${countUser}"></span>
+                                <div class="badge bg-light-primary" style="border-radius: 10px; margin-left: 5px;">
+                                    <i class="bi bi-bell"></i>
+                                    <span th:text="${countUser}" style="margin-left: 5px;"></span>
+                                </div>
                             </a>
                         </li>
 
                         <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
                             <a href="" class="sidebar-link">
-                                <i class="bi bi-stack"></i>
-                                <span>학생관리</span>
+                                <i class="bi bi-people-fill"></i>
+                                <span>학생 관리</span>
                             </a>
                             <ul class="submenu">
                                 <li class="submenu-item">
-                                    <a th:href="@{/admin/studentManager}">전체정보</a>
+                                    <a th:href="@{/admin/studentManager}">전체 정보</a>
                                 </li>
                                 <li class="submenu-item">
-                                    <a th:href="@{/admin/insertCurriculum}">과정등록</a>
+                                    <a th:href="@{/admin/insertCurriculum}">과정 등록</a>
                                 </li>
                                 <li class="submenu-item">
-                                    <a th:href="@{/admin/insertClass}">분반등록</a>
+                                    <a th:href="@{/admin/insertClass}">분반 등록</a>
                                 </li>
                                 <li class="submenu-item">
-                                    <a th:href="@{/admin/insertInformation}">기타정보등록</a>
+                                    <a th:href="@{/admin/insertInformation}">기타 정보 등록</a>
                                 </li>
                             </ul>
                         </li>
 
                         <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
                             <a href="" class="sidebar-link">
-                                <i class="bi bi-stack"></i>
-                                <span>출결관리</span>
+                                <i class="bi bi-clipboard-check-fill"></i>
+                                <span>출결 관리</span>
                             </a>
                             <ul class="submenu">
                                 <li class="submenu-item">
-                                    <a th:href="@{/admin/ReadStudentAttendance}">출결조회 및 수정</a>
+                                    <a th:href="@{/admin/ReadStudentAttendance}">출결 조회 및 수정</a>
                                 </li>
                                 <li class="submenu-item">
-                                    <a th:href="@{'/admin/InsertStudentAttendance?att_date=' + ${today}}">출결등록</a>
+                                    <a th:href="@{'/admin/InsertStudentAttendance?att_date=' + ${today}}">출결 등록</a>
                                 </li>
                             </ul>
                         </li>
 
                         <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
                             <a href="#" class="sidebar-link">
-                                <i class="bi bi-stack"></i>
-                                <span>성적관리</span>
-                            </a>
-                            <ul class="submenu">
-                                <li class="submenu-item">
-                                    <a th:href="@{/admin/SelectGrade}">성적</a>
-                                </li>
-                                <li class="submenu-item">
-                                    <a th:href="@{/admin/InsertGrade}">점수등록</a>
-                                </li>
-                            </ul>
-                        </li>
-
-                        <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
-                            <a href="#" class="sidebar-link">
-                                <i class="bi bi-stack"></i>
+                                <i class="bi bi-file-text-fill"></i>
                                 <span>시험</span>
                             </a>
                             <ul class="submenu">
                                 <li class="submenu-item">
-                                    <a th:href="@{/admin/InsertBigRatio}">종목,비중등록</a>
+                                    <a th:href="@{/admin/InsertBigRatio}">과목 비율 등록</a>
                                 </li>
                                 <li class="submenu-item">
-                                    <a th:href="@{/admin/ReadTestList}">시험조회</a>
+                                    <a th:href="@{/admin/ReadTestList}">시험 조회</a>
                                 </li>
-                            </ul>
-                        </li>
-
-                        <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
-                            <a href="#" class="sidebar-link">
-                                <i class="bi bi-collection-fill"></i>
-                                <span>(교사)시험</span>
-                            </a>
-                            <ul class="submenu">
                                 <li class="submenu-item">
                                     <a th:href="@{/test}">시험</a>
                                 </li>
                             </ul>
                         </li>
 
-                        <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
-                            <a th:href="@{/homework}" class="sidebar-link">
-                                <i class="bi bi-clipboard-check-fill"></i>
-                                <span>(교사)과제</span>
+                        <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
+                            <a href="#" class="sidebar-link">
+                                <i class="bi bi-clipboard-data-fill"></i>
+                                <span>성적 관리</span>
                             </a>
+                            <ul class="submenu">
+                                <li class="submenu-item">
+                                    <a th:href="@{/admin/SelectGrade}">성적</a>
+                                </li>
+                                <li class="submenu-item">
+                                    <a th:href="@{/admin/InsertGrade}">점수 등록</a>
+                                </li>
+                            </ul>
                         </li>
 
-                        <li class="sidebar-title" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')')}">교사</li>
+                        <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_admin'')')}">
+                            <a th:href="@{/homework}" class="sidebar-link">
+                                <i class="bi bi-pencil-fill"></i>
+                                <span>과제</span>
+                            </a>
+                        </li>
+                        <!-- 관리자(ROLE_admin) -->
+
+                        <!-- 선생님(ROLE_teacher) -->
                         <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')')}">
                             <a th:href="@{/main}" class="sidebar-link">
-                                <i class="bi bi-grid-fill"></i>
-                                <span>메인화면</span>
+                                <i class="bi bi-house-fill"></i>
+                                <span>메인 화면</span>
                             </a>
                         </li>
 
@@ -187,15 +181,10 @@
                         </li>
 
                         <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')')}">
-                            <a href="#" class="sidebar-link">
-                                <i class="bi bi-collection-fill"></i>
+                            <a th:href="@{/test}" class="sidebar-link">
+                                <i class="bi bi-file-text-fill"></i>
                                 <span>시험</span>
                             </a>
-                            <ul class="submenu">
-                                <li class="submenu-item">
-                                    <a th:href="@{/test}">시험</a>
-                                </li>
-                            </ul>
                         </li>
 
                         <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')')}">
@@ -204,12 +193,13 @@
                                 <span>과제</span>
                             </a>
                         </li>
+                        <!-- 선생님(ROLE_teacher) -->
 
-                        <li class="sidebar-title" th:if="${#authorization.expression('hasRole(''ROLE_student'')')}">학생</li>
+                        <!-- 학생(ROLE_student) -->
                         <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_student'')')}">
                             <a th:href="@{/main}" class="sidebar-link">
-                                <i class="bi bi-grid-fill"></i>
-                                <span>메인화면</span>
+                                <i class="bi bi-house-fill"></i>
+                                <span>메인 화면</span>
                             </a>
                         </li>
 
@@ -229,7 +219,7 @@
 
                         <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_student'')')}">
                             <a href="#" class="sidebar-link">
-                                <i class="bi bi-collection-fill"></i>
+                                <i class="bi bi-file-text-fill"></i>
                                 <span>시험</span>
                             </a>
                             <ul class="submenu">
@@ -237,7 +227,7 @@
                                     <a th:href="@{/test}">시험</a>
                                 </li>
                                 <li class="submenu-item">
-                                    <a th:href="@{/test/submitTestList}">제출한시험</a>
+                                    <a th:href="@{/test/submitTestList}">제출한 시험</a>
                                 </li>
                                 <li class="submenu-item">
                                     <a th:href="@{/test/testGrade}">시험 결과</a>
@@ -247,16 +237,17 @@
 
                         <li class="sidebar-item" th:if="${#authorization.expression('hasRole(''ROLE_student'')')}">
                             <a th:href="@{/homework}" class="sidebar-link">
-                                <i class="bi bi-clipboard-check-fill"></i>
+                                <i class="bi bi-pencil-fill"></i>
                                 <span>과제</span>
                             </a>
                         </li>
+                        <!-- 학생(ROLE_student) -->
 
                         <hr />
                         <li class="sidebar-item">
                             <a th:href="@{/member/information}" class="sidebar-link">
                                 <i class="icon-mid bi bi-person me-2"></i>
-                                <span>회원정보</span>
+                                <span>회원 정보</span>
                             </a>
                         </li>
                         <li class="sidebar-item">
@@ -265,6 +256,7 @@
                                 <span>로그아웃</span>
                             </a>
                         </li>
+
                     </ul>
                 </div>
             </div>
