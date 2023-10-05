@@ -260,3 +260,20 @@ create table lms_homework_submission (
 
 --과제 제출 테이블 시퀀스
 create sequence lms_hw_sub_seq;
+
+--종합성적테이블
+create table primary_grade (
+gradenum    number  primary key,
+memberid    varchar2(500) references lms_member(memberid) on delete cascade,
+membername  varchar2(500),
+curriculum  varchar2(500),
+testid      number      references lms_test(testid) on delete cascade,
+categoryid  number,
+parent_id   number,
+totalscore  number,
+categoryname    varchar2(50),
+	ratio	decimal(5,2)
+);
+
+--종합성적시퀀스
+create sequence primary_grade_seq;
