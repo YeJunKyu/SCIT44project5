@@ -568,8 +568,8 @@ public class TestController {
                 log.debug("현파일 없음");
             }
 
-            log.debug("앤서 : {}", testAnswer);
-            questionService.updateSubmittedQuestion(testAnswer);
+            log.debug("앤서 : {}", testAnswer.getQid());
+            questionService.updateSubmittedQuestion(testAnswer.getQid());
             log.debug("답안수정확인:{}",testAnswer);
             //수정답안 가져오기
             TestAnswer updatedTestAnswer = questionService.selectUpdatedTestAnswer(testAnswer);

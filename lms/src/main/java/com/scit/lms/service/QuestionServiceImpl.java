@@ -131,8 +131,8 @@ public class QuestionServiceImpl implements QuestionService{
     }
 
     @Override
-    public void updateSubmittedQuestion(TestAnswer testAnswer) {
-        dao.updateSubmittedQuestion(testAnswer);
+    public void updateSubmittedQuestion(int qid) {
+        dao.updateSubmittedQuestion(qid);
     }
 
     @Override
