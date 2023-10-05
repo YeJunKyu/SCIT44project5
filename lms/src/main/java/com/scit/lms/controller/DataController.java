@@ -183,6 +183,7 @@ public class DataController {
         log.debug("totototototo:{}",chartData);
 
         return chartData;
+        
     }
 
 }
