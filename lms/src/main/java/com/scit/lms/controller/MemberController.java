@@ -133,6 +133,7 @@ public class MemberController {
         return "memberView/updateForm";
     }
 
+
     //회원정보 수정
     @PostMapping("memberUpdate")
     public String memberUpdate(@AuthenticationPrincipal UserDetails user, Model model, Member member

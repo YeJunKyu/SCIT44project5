@@ -109,8 +109,16 @@ var chartEurope = new ApexCharts(document.querySelector("#chart-europe"), option
 var chartAmerica = new ApexCharts(document.querySelector("#chart-america"), optionsAmerica);
 var chartIndonesia = new ApexCharts(document.querySelector("#chart-indonesia"), optionsIndonesia);
 
+<<<<<<< HEAD
 chartIndonesia.render();
 chartAmerica.render();
 chartEurope.render();
 chartProfileVisit.render();
 chartVisitorsProfile.render()
+=======
+//chartIndonesia.render();
+//chartAmerica.render();
+//chartEurope.render();
+//chartProfileVisit.render();
+//chartVisitorsProfile.render()
+>>>>>>> submaster

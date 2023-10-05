@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCIT LMS</title>
+
+    <link rel="stylesheet" th:href="@{/assets/css/main/app.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main/app-dark.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main/lms.css}" />
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.svg}" type="image/x-icon">
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png">
+
+    <link rel="stylesheet" th:href="@{/assets/css/shared/iconly.css}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script th:src="@{/privatejs/sidebarLoader.js}"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        $(document).ready(function(){
+            var authStr = $('#authorities').val();
+
+            console.log(authStr);
+
+            if(authStr === '[ROLE_admin]'){
+                console.log(true);
+                $('#roleName').text('관리자');
+            }else if(authStr === '[ROLE_student]'){
+                $('#roleName').text('학생');
+            }else if(authStr === '[ROLE_teacher]'){
+                $('#roleName').text('선생님');
+            }else{
+                $('#roleName').text('권한이 없습니다.');
+            }
+
+<!--            var donutData = /*[[${donutChartData}]]*/ {}; // Thymeleaf에서 모델에 추가한 도넛 그래프 데이터를 가져옵니다.-->
+
+<!--            var labels = Object.keys(donutData);-->
+<!--            var values = Object.values(donutData);-->
+<!--            var backgroundColors = ['#ff6384', '#36a2eb', '#ffce56']; // 각 데이터의 색상 설정-->
+
+<!--            var ctx = document.getElementById('myDonutChart').getContext('2d');-->
+<!--            var myDonutChart = new Chart(ctx, {-->
+<!--                type: 'doughnut',-->
+<!--                data: {-->
+<!--                    labels: labels,-->
+<!--                    datasets: [{-->
+<!--                        data: values,-->
+<!--                        backgroundColor: backgroundColors-->
+<!--                    }]-->
+<!--                },-->
+<!--                options: {-->
+<!--                    // 추가적인 차트 옵션 설정 가능-->
+<!--                }-->
+<!--            });-->
+
+            // HTML의 canvas 요소 가져오기
+            var ctx = document.getElementById('myPieChart').getContext('2d');
+
+            // 파이 차트의 데이터 설정
+            var data = {
+                labels: ['출석', '결석', '기타', '기타'],
+                datasets: [{
+                    data: [30, 50, 20, 10], // 각 데이터의 값 설정
+                    backgroundColor: ['#ff6384', '#36a2eb', '#cc65fe', '#ffce56'] // 각 데이터의 색상 설정
+                }]
+            };
+
+            // 파이 차트 생성
+            var myPieChart = new Chart(ctx, {
+                type: 'doughnut', // 차트 유형 설정
+                data: data, // 데이터 설정
+                options: {
+                    // 추가적인 차트 옵션 설정 가능
+                }
+            });
+        });
+
+<!--            // 백엔드 엔드포인트에서 데이터를 가져오는 함수-->
+<!--        function fetchData() {-->
+<!--            fetch('/data/attendance') // '/data/attendance'를 실제 백엔드 엔드포인트 URL로 대체하세요-->
+<!--            .then(response => response.json())-->
+<!--            .then(data => {-->
+<!--                // 받은 데이터로 HTML 요소의 콘텐츠를 업데이트합니다-->
+<!--                document.getElementById('content-container').innerText = data.message;-->
+<!--            })-->
+<!--            .catch(error => {-->
+<!--                console.error('에러:', error);-->
+<!--            });-->
+<!--        }-->
+
+<!--        // 페이지가 로드될 때 fetchData 함수 호출-->
+<!--        document.addEventListener('DOMContentLoaded', function() {-->
+<!--            fetchData();-->
+<!--        });-->
+
+
+    </script>
+</head>
+
+<body>
+<div id="app">
+<!--    <div th:replace="~{/fragments/sidebar.html :: sidebarFrag}"></div>-->
+    <div id="sidebar-placeholder"></div>
+    <div id="main">
+        <header class="mb-3">
+            <a href="#" class="burger-btn d-block d-xl-none">
+                <i class="bi bi-justify fs-3"></i>
+            </a>
+        </header>
+<div class="col-12 col-lg-6">
+
+</div>
+<div class="col-12 col-lg-6">
+
+</div>
+        <div class="page-heading">
+            <h3>Profile Statistics</h3>
+        </div>
+        <div class="page-content">
+            <section class="row">
+                <div class="col-12 col-lg-9">
+                    <div class="row">
+                        <div class="col-6 col-lg-6">
+                            <div class="card">
+                                <div class="card-body px-4 py-4-5">
+                                    <p>공지사항--------------------------------------------------------------
+                                    ---------------------------------------------------------------------
+                                    ----------------------------------------------------------------
+                                    ----------------------------------------------------------------------
+                                    -----------------------------------------------------------------</p>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-lg-6">
+                            <div class="card">
+                                <div class="card-body px-4 py-4-5">
+                                    <div class="row">
+                                        <p>캘린더----------------------------------------------------
+                                            ---------------------------------------------------------------------
+                                            ----------------------------------------------------------------
+                                            ----------------------------------------------------------------------
+                                            ----------------------------------------------------------------</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- list group with contextual & horizontal start -->
+                    <section id="list-group-contextual">
+                        <div class="row match-height">
+
+                            <div class="col-12 col-lg-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4 class="card-title">성적조회</h4>
+                                    </div>
+                                    <div class="card-content">
+                                        <div class="card-body">
+                                            <p>
+                                                Add <code>.list-group-horizontal</code> to change the layout of list group items from
+                                                vertical to
+                                                horizontal across all breakpoints.choose a responsive variantcode <code>
+                                                .list-group-horizontal-{sm|md|lg|xl}</code> to make a list group horizontal starting at that
+                                                breakpoint’s min-width.
+                                            </p>
+                                            <div class="list-group list-group-horizontal-sm mb-1 text-center" role="tablist">
+                                                <a class="list-group-item list-group-item-action active" id="list-sunday-list"
+                                                   data-bs-toggle="list" href="#list-sunday" role="tab">IT</a>
+                                                <a class="list-group-item list-group-item-action" id="list-monday-list"
+                                                   data-bs-toggle="list" href="#list-monday" role="tab">일본어</a>
+                                                <a class="list-group-item list-group-item-action" id="list-tuesday-list"
+                                                   data-bs-toggle="list" href="#list-tuesday" role="tab">출석</a>
+                                            </div>
+                                            <div class="tab-content text-justify">
+                                                <div class="tab-pane fade show active" id="list-sunday" role="tabpanel"
+                                                     aria-labelledby="list-sunday-list">
+                                                    <section class="section">
+                                                        <div class="row">
+                                                            <div class="col-6">
+                                                                <div class="card">
+                                                                    <div class="card-header">
+                                                                        <h4 class="card-title">Bar Chart</h4>
+                                                                    </div>
+                                                                    <div class="card-body">
+                                                                        <canvas id="bar"></canvas>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="card">
+                                                                    <div class="card-header">
+                                                                        <h4 class="card-title">Line Chart</h4>
+                                                                    </div>
+                                                                    <div class="card-body">
+                                                                        <canvas id="line"></canvas>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </section>
+                                                    Irure enim occaecat labore sit qui aliquip
+                                                    reprehenderit amet
+                                                    velit. Deserunt ullamco ex elit nostrud ut dolore nisi officia magna sit occaecat
+                                                    laboris sunt dolor.
+                                                    Nisi eu minim cillum occaecat aute est cupidatat aliqua labore aute occaecat ea
+                                                    aliquip
+                                                    sunt amet.
+                                                    Aute mollit dolor ut exercitation irure commodo non amet consectetur quis amet
+                                                    culpa.
+                                                    Quis ullamco
+                                                    nisi amet qui aute irure eu. Magna labore dolor quis ex labore id nostrud deserunt
+                                                    dolor
+                                                    eiusmod eu
+                                                    pariatur culpa mollit in irure Lorem, ipsum dolor sit amet consectetur adipisicing
+                                                    elit.
+                                                    Iusto quis
+                                                    porro doloribus est natus doloremque, eos laudantium
+                                                    exercitationem impedit sapiente tenetur soluta reiciendis deserunt!</div>
+                                                <div class="tab-pane fade" id="list-monday" role="tabpanel"
+                                                     aria-labelledby="list-monday-list">Cupidatat
+                                                    quis ad sint excepteur laborum in esse qui. Et excepteur consectetur ex nisi eu do
+                                                    cillum ad laborum.
+                                                    Mollit et eu officia dolore sunt Lorem culpa qui commodo velit ex amet id ex.
+                                                    Officia
+                                                    anim incididunt
+                                                    laboris deserunt anim aute dolor incididunt veniam aute dolore do exercitation.
+                                                    Dolor
+                                                    nisi culpa ex ad
+                                                    irure in elit eu dolore. Ad laboris ipsum reprehenderit irure non commodo enim culpa
+                                                    commodo veniam
+                                                    incididunt veniam ad. Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                                                    Exercitationem, porro!
+                                                    Amet soluta tempora eveniet blanditiis alias eos, dolor qui consectetur!
+                                                </div>
+                                                <div class="tab-pane fade" id="list-tuesday" role="tabpanel"
+                                                     aria-labelledby="list-tuesday-list">Ut ut
+                                                    do pariatur aliquip aliqua aliquip exercitation do nostrud commodo reprehenderit
+                                                    aute
+                                                    ipsum voluptate.
+                                                    Irure Lorem et laboris nostrud amet cupidatat cupidatat anim do ut velit mollit
+                                                    consequat enim tempor.
+                                                    Consectetur est minim nostrud nostrud consectetur irure labore voluptate irure.
+                                                    Ipsum id
+                                                    Lorem sit
+                                                    sint voluptate est pariatur eu ad cupidatat et deserunt culpa sit eiusmod deserunt.
+                                                    Consectetur et
+                                                    fugiat anim do eiusmod aliquip nulla laborum elit adipisicing pariatur cillum. Lorem
+                                                    ipsum dolor sit
+                                                    amet consectetur adipisicing elit. Molestias, inventore!
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <!-- list group with contextual & horizontal ends -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4>Profile Visit</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div id="chart-profile-visit"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-xl-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4>Profile Visit</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="d-flex align-items-center">
+                                                <svg class="bi text-primary" width="32" height="32" fill="blue"
+                                                     style="width:10px">
+                                                    <use
+                                                            xlink:href="assets/images/bootstrap-icons.svg#circle-fill" />
+                                                </svg>
+                                                <h5 class="mb-0 ms-3">Europe</h5>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <h5 class="mb-0">862</h5>
+                                        </div>
+                                        <div class="col-12">
+                                            <div id="chart-europe"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="d-flex align-items-center">
+                                                <svg class="bi text-success" width="32" height="32" fill="blue"
+                                                     style="width:10px">
+                                                    <use
+                                                            xlink:href="assets/images/bootstrap-icons.svg#circle-fill" />
+                                                </svg>
+                                                <h5 class="mb-0 ms-3">America</h5>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <h5 class="mb-0">375</h5>
+                                        </div>
+                                        <div class="col-12">
+                                            <div id="chart-america"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="d-flex align-items-center">
+                                                <svg class="bi text-danger" width="32" height="32" fill="blue"
+                                                     style="width:10px">
+                                                    <use
+                                                            xlink:href="assets/images/bootstrap-icons.svg#circle-fill" />
+                                                </svg>
+                                                <h5 class="mb-0 ms-3">Indonesia</h5>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <h5 class="mb-0">1025</h5>
+                                        </div>
+                                        <div class="col-12">
+                                            <div id="chart-indonesia"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-xl-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4>Latest Comments</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-lg">
+                                            <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Comment</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td class="col-3">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="avatar avatar-md">
+                                                            <img th:src="@{assets/images/faces/5.jpg}">
+                                                        </div>
+                                                        <p class="font-bold ms-3 mb-0">Si Cantik</p>
+                                                    </div>
+                                                </td>
+                                                <td class="col-auto">
+                                                    <p class=" mb-0">Congratulations on your graduation!</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="col-3">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="avatar avatar-md">
+                                                            <img th:src="@{assets/images/faces/2.jpg}">
+                                                        </div>
+                                                        <p class="font-bold ms-3 mb-0">Si Ganteng</p>
+                                                    </div>
+                                                </td>
+                                                <td class="col-auto">
+                                                    <p class=" mb-0">Wow amazing design! Can you make another tutorial for
+                                                        this design?</p>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-3">
+                    <div class="card">
+                        <div class="card-body py-4 px-4">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar avatar-xl">
+                                    <a th:href="@{/member/information}">
+                                        <img th:src="@{assets/images/faces/1.jpg}" alt="Face 1">
+                                    </a>
+
+                                </div>
+                                <div class="ms-3 name" sec:authorize="isAuthenticated()">
+                                    <a th:href="@{/member/information}"><h5 class="font-bold" th:text="${#authentication.name}"></h5></a>
+                                    <h6 class="text-muted mb-0">
+                                        <a id="roleName"></a>
+<!--                                        &lt;!&ndash; 'ROLE_admin' 권한이 있는 경우 &ndash;&gt;-->
+<!--                                        <span th:if="${#authentication.authorities.contains('ROLE_admin') or #authentication.authorities.contains('admin')}" th:text="'관리자'"> @johnducky</span>-->
+
+<!--                                        &lt;!&ndash; 'ROLE_student' 권한이 있는 경우 &ndash;&gt;-->
+<!--                                        <span th:if="${#authentication.authorities.contains('ROLE_student') or #authentication.authorities.contains('student')}" th:text="'학생'"> @johnducky</span>-->
+
+<!--                                        &lt;!&ndash; 'ROLE_teacher' 권한이 있는 경우 &ndash;&gt;-->
+<!--                                        <span th:if="${#authentication.authorities.contains('ROLE_teacher') or #authentication.authorities.contains('teacher')}" th:text="'선생님'"> @johnducky</span>-->
+
+<!--                                        &lt;!&ndash; 다른 권한에 속할 경우 &ndash;&gt;-->
+<!--                                        <span th:unless="${#authentication.authorities.contains('ROLE_admin') or #authentication.authorities.contains('admin')-->
+<!--                                            or #authentication.authorities.contains('ROLE_teacher') or #authentication.authorities.contains('teacher')-->
+<!--                                            or #authentication.authorities.contains('ROLE_student') or #authentication.authorities.contains('student')}" th:text="'권한이 없습니다.'"> @johnducky</span>-->
+                                    </h6>
+
+                                    <input type="hidden" id="authorities" th:value="${#authentication.authorities}">
+
+                                    <h6 class="text-muted mb-0"><a th:href="@{/member/logout}">로그아웃</a></h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>출석률</h4>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="myPieChart" width="400" height="400"></canvas>
+                            <div id="content-container"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <footer>
+            <div class="footer clearfix mb-0 text-muted">
+                <div class="float-start">
+                    <p>2021 &copy; Mazer</p>
+                </div>
+                <div class="float-end">
+                    <p>Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by <a
+                            href="https://saugi.me">Saugi</a></p>
+                </div>
+            </div>
+        </footer>
+    </div>
+</div>
+<script src="assets/js/bootstrap.js"></script>
+<script src="assets/js/app.js"></script>
+
+<!-- Need: Apexcharts -->
+<script src="assets/extensions/apexcharts/apexcharts.min.js"></script>
+<script src="assets/js/pages/dashboard.js"></script>
+
+</body>
+
+</html>
