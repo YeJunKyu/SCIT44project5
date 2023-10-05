@@ -112,7 +112,7 @@
                                 <select th:name="'rolename' + ${member.memberid}" class="role-selection" style="display:none">
                                     <option value="ROLE_USER">일반사용자</option>
                                     <option value="ROLE_student">학생</option>
-                                    <option value="ROLE_teacher">선생</option>
+                                    <option value="ROLE_teacher">교사</option>
                                     <option value="ROLE_admin">관리자</option>
                                 </select>
                             </td>
@@ -124,7 +124,7 @@
                                 관리자
                             </td>
                             <td th:if="${member.rolename == 'ROLE_teacher'}">
-                                선생
+                                교사
                             </td>
                             <td th:if="${member.rolename == 'ROLE_student'}">
                                 학생

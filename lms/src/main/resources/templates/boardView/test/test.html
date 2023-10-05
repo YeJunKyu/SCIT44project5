@@ -65,7 +65,7 @@
                                                         <th class="col-5">시험명</th>
                                                         <th class="center">시험일</th>
                                                         <th class="center">마감일</th>
-                                                        <th class="center">제출인원/전체인원</th>
+                                                        <th class="center" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')') || #authorization.expression('hasRole(''ROLE_admin'')')}">제출인원/전체인원</th>
                                                         <th></th>
                                                         <th></th>
                                                     </tr>
@@ -84,7 +84,7 @@
                                                     <td class="text-bold-500 center" th:text="${test.testdate}"></td>
                                                     <td class="text-bold-500 center" th:text="${test.testlimit}"></td>
                                                     <td>
-                                                        <div class="center">
+                                                        <div class="center" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')') || #authorization.expression('hasRole(''ROLE_admin'')')}">
                                                             <span th:text="${test.submittedstudents}"></span>/<span th:text="${test.allstudents}"></span>
                                                         </div>
                                                     </td>
