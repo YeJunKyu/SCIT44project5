@@ -101,9 +101,10 @@
                                                     <!-- 중분류 항목을 여기에 로드 -->
                                                 </select>
 
-                                                <select id="categoryid" name="category_id" onchange="updateInput()">
+                                                <select id="categoryid" name="category_id" th:value="${test.categoryid}" onchange="updateInput()">
                                                     <!-- 소분류 항목을 여기에 로드 -->
                                                 </select>
+
                                                 <input type="text" name="testname" th:value="${test.testname}"  class="testname" />
                                             </div>
                                         </div>

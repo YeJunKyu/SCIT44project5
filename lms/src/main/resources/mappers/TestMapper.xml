@@ -54,6 +54,7 @@
             , to_char(testdate, 'YYYY-MM-DD HH24:MI') as testdate
             , to_char(testlimit, 'YYYY-MM-DD HH24:MI') as testlimit
             , totalpoints
+            , categoryid
         FROM lms_test
         WHERE testid = #{testid}
     </select>
