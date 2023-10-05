@@ -9,7 +9,6 @@ import java.util.List;
 public interface DataService {
 
 
-
     int countAttendance(Attendance attendance);
 
     int countAbsence(Attendance attendance);

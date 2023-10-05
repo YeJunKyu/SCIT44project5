@@ -109,5 +109,4 @@
     <select id="absence12" parameterType="Attendance">
         select count(*) from attendance where memberid = #{memberid} and att_date LIKE '%'||'/12/'||'%' and att_type = '결석'
     </select>
-
 </mapper>

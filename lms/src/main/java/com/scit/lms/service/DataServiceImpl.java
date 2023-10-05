@@ -29,7 +29,6 @@ public class DataServiceImpl implements DataService{
 
         return n;
     }
-
     @Override
     public String attendanceDate(Attendance attendance){
         String attendanceDate = dao.attendanceDate(attendance);
