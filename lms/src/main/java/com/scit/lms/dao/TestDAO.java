@@ -63,4 +63,7 @@ public interface TestDAO {
 
     // 카테고리별 시험 조회
     ArrayList<TestpaperList> getTestpaperListByCategoryId(Map<String, String> map);
+
+    // 키워드로 시험 찾기
+    ArrayList<TestpaperList> searchByKeyword(Map<String, String> map);
 }

@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCIT LMS</title>
+
+    <link rel="stylesheet" th:href="@{/assets/css/main/app.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main/app-dark.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/main/lms.css}" />
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.svg}" type="image/x-icon">
+    <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png">
+
+    <link rel="stylesheet" th:href="@{/assets/css/shared/iconly.css}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script th:src="@{/privatejs/sidebarLoader.js}"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/assets/calendar/index.global.min.js}"></script>
+    <script th:src="@{/assets/calendar/google-calendar.js}"></script>
+
+    <script>
+        $(document).ready(function () {
+          var authStr = $("#authorities").val();
+
+          console.log(authStr);
+
+          if (authStr === "[ROLE_admin]") {
+            console.log(true);
+            $("#roleName").text("관리자");
+          } else if (authStr === "[ROLE_student]") {
+            $("#roleName").text("학생");
+          } else if (authStr === "[ROLE_teacher]") {
+            $("#roleName").text("선생님");
+          } else {
+            $("#roleName").text("권한이 없습니다.");
+          }
+
+          let id = document.getElementById("userid").textContent;
+          console.log(id);
+          $.ajax({
+            url: "/lms/data/attendance", // 실제 서버의 API 엔드포인트 URL로 변경해야 합니다.
+            type: "GET",
+            data: { memberid: id },
+            dataType: "json",
+            success: function (data) {
+              // 성공적으로 데이터를 가져왔을 때의 처리 로직
+              console.log(data);
+              console.log("데이터는 가져옴");
+              <!--                    updateChart(data);-->
+            },
+            error: function (error) {
+              // Ajax 요청이 실패한 경우의 처리 로직
+              console.log("데이터를 가져오는데 실패했습니다.");
+            },
+          });
+
+          // HTML의 canvas 요소 가져오기
+          var ctx = document.getElementById("myPieChart").getContext("2d");
+
+          // 파이 차트의 데이터 설정
+          var data = {
+            labels: ["출석", "결석"],
+            datasets: [
+              {
+                data: [100, 50], // 각 데이터의 값 설정
+                backgroundColor: ["#ff6384", "#36a2eb"], // 각 데이터의 색상 설정
+              },
+            ],
+          };
+
+          // 파이 차트 생성
+          var myPieChart = new Chart(ctx, {
+            type: "doughnut", // 차트 유형 설정
+            data: data, // 데이터 설정
+            options: {
+              // 추가적인 차트 옵션 설정 가능
+            },
+          });
+        });
+
+
+        // 캘린더
+        let calendar;
+        let selectedEvent;
+
+        document.addEventListener("DOMContentLoaded", function () {
+        let calendarEl = document.getElementById("calendar");
+
+        // new FullCalendar.Calendar(대상 DOM객체, {속성:속성값, 속성2:속성값2..})
+        calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: "dayGridMonth",
+        timeZone: "UTC",
+        editable: false,
+        dayMaxEvents: 1,
+        selectable: true,
+        height: 500,
+
+        eventClick: function (arg) {
+            arg.jsEvent.stopPropagation();
+            arg.jsEvent.preventDefault();
+        },
+
+        googleCalendarApiKey: "AIzaSyAWA097hmFr-7ZGaw5vJatSfmkNY9L0n04",
+
+        // DB에 있는 일정 불러오기
+        eventSources: [
+          function (info, successCallback, failureCallback) {
+            $.ajax({
+              url: "schedule/list",
+              type: "get",
+              dataType: "json",
+              success: function (data) {
+                console.log(data);
+
+                let startOfMonth = info.start;
+                let endOfMonth = info.end;
+
+                let transformedData = data.map(function (event) {
+                  return {
+                    id: event.eventid,
+                    title: event.title,
+                    start: event.startdate,
+                    end: event.enddate,
+                    allDay: event.allday,
+                    color: event.color,
+                    textColor: event.textcolor,
+                    description: event.note,
+                    memberID: event.memberid,
+                    category: event.categories,
+                  };
+                });
+
+                successCallback(transformedData);
+              },
+              error: function (e) {
+                alert(JSON.stringify(e));
+              },
+            });
+          },
+          {
+            // 공휴일 불러오기
+            googleCalendarId:
+              "ko.south_korea#holiday@group.v.calendar.google.com",
+            color: "#20c997",
+          },
+        ],
+        });
+        calendar.render();
+        });
+        // 캘린더 끝
+
+    </script>
+
+    <style>
+        <!-- 캘린더 CSS -->
+        #calendar {
+            font-size: 10px;
+        }
+        .fc-toolbar {
+            font-size: .9em;
+        }
+        .fc-toolbar h2 {
+            font-size: 12px;
+            white-space: normal !important;
+        }
+        /* click +2 more for popup */
+        .fc-more-cell a {
+            display: block;
+            width: 85%;
+            margin: 1px auto 0 auto;
+            border-radius: 3px;
+            background: grey;
+            color: transparent;
+            overflow: hidden;
+            height: 4px;
+        }
+        .fc-more-popover {
+            width: 100px;
+        }
+        .fc-view-month .fc-event, .fc-view-agendaWeek .fc-event, .fc-content {
+            font-size: 0;
+            overflow: hidden;
+            height: 2px;
+        }
+        .fc-view-agendaWeek .fc-event-vert {
+            font-size: 0;
+            overflow: hidden;
+            width: 2px !important;
+        }
+        .fc-agenda-axis {
+            width: 20px !important;
+            font-size: .7em;
+        }
+        .fc-button-content {
+            padding: 0;
+        }
+        <!-- 캘린더 CSS -->
+    </style>
+</head>
+
+<body>
+<div id="app">
+<!--    <div th:replace="~{/fragments/sidebar.html :: sidebarFrag}"></div>-->
+    <div id="sidebar-placeholder"></div>
+    <div id="main">
+        <header class="mb-3">
+            <a href="#" class="burger-btn d-block d-xl-none">
+                <i class="bi bi-justify fs-3"></i>
+            </a>
+        </header>
+
+        <div class="page-heading">
+            <h3>메인</h3>
+        </div>
+        <div class="page-content">
+            <section class="row">
+                <div class="col-12 col-lg-9">
+                    <div class="row">
+                        <div class="col-6 col-lg-6 col-md-6">
+                            <div class="card">
+                                <div class="card-body px-4 py-4-5">
+                                    <div class="row">
+                                        <!-- 공지사항 -->
+                                        <div class="card-head">
+                                            <h5>공지사항</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table mb-0">
+                                                    <tbody>
+                                                    <tr th:each="list: ${noticeList}">
+                                                        <td><i class="bi bi-dot"></i></td>
+                                                        <td><a th:href="@{/notice/read(noticenum=${list.noticenum})}" th:text="${list.noticetitle}"></a></td>
+                                                        <td th:text="${list.noticedate}"></td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <!-- 공지사항 끝 -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-lg-6 col-md-6">
+                            <div class="card">
+                                <div class="card-body px-4 py-4-5">
+                                    <div class="row">
+                                        <!-- 캘린더 -->
+                                        <div class="card-head">
+                                            <h5>일정</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="calendar"></div>
+                                        </div>
+                                        <!-- 캘린더 끝 -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4>Profile Visit</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div id="chart-profile-visit"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-xl-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4>Profile Visit</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="d-flex align-items-center">
+                                                <svg class="bi text-primary" width="32" height="32" fill="blue"
+                                                     style="width:10px">
+                                                    <use
+                                                            xlink:href="assets/images/bootstrap-icons.svg#circle-fill" />
+                                                </svg>
+                                                <h5 class="mb-0 ms-3">Europe</h5>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <h5 class="mb-0">862</h5>
+                                        </div>
+                                        <div class="col-12">
+                                            <div id="chart-europe"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="d-flex align-items-center">
+                                                <svg class="bi text-success" width="32" height="32" fill="blue"
+                                                     style="width:10px">
+                                                    <use
+                                                            xlink:href="assets/images/bootstrap-icons.svg#circle-fill" />
+                                                </svg>
+                                                <h5 class="mb-0 ms-3">America</h5>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <h5 class="mb-0">375</h5>
+                                        </div>
+                                        <div class="col-12">
+                                            <div id="chart-america"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="d-flex align-items-center">
+                                                <svg class="bi text-danger" width="32" height="32" fill="blue"
+                                                     style="width:10px">
+                                                    <use
+                                                            xlink:href="assets/images/bootstrap-icons.svg#circle-fill" />
+                                                </svg>
+                                                <h5 class="mb-0 ms-3">Indonesia</h5>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <h5 class="mb-0">1025</h5>
+                                        </div>
+                                        <div class="col-12">
+                                            <div id="chart-indonesia"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-xl-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4>Latest Comments</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-lg">
+                                            <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Comment</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td class="col-3">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="avatar avatar-md">
+                                                            <img src="assets/images/faces/5.jpg">
+                                                        </div>
+                                                        <p class="font-bold ms-3 mb-0">Si Cantik</p>
+                                                    </div>
+                                                </td>
+                                                <td class="col-auto">
+                                                    <p class=" mb-0">Congratulations on your graduation!</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="col-3">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="avatar avatar-md">
+                                                            <img src="assets/images/faces/2.jpg">
+                                                        </div>
+                                                        <p class="font-bold ms-3 mb-0">Si Ganteng</p>
+                                                    </div>
+                                                </td>
+                                                <td class="col-auto">
+                                                    <p class=" mb-0">Wow amazing design! Can you make another tutorial for
+                                                        this design?</p>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-3">
+                    <div class="card">
+                        <div class="card-body py-4 px-4">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar avatar-xl">
+                                    <a th:href="@{/member/information}">
+                                        <img src="assets/images/faces/1.jpg" alt="Face 1">
+                                    </a>
+
+                                </div>
+                                <div class="ms-3 name" sec:authorize="isAuthenticated()">
+                                    <a th:href="@{/member/information}"><h5 class="font-bold" th:text="${#authentication.name}"></h5></a>
+                                    <h6 class="text-muted mb-0">
+                                        <a id="roleName"></a>
+<!--                                        &lt;!&ndash; 'ROLE_admin' 권한이 있는 경우 &ndash;&gt;-->
+<!--                                        <span th:if="${#authentication.authorities.contains('ROLE_admin') or #authentication.authorities.contains('admin')}" th:text="'관리자'"> @johnducky</span>-->
+
+<!--                                        &lt;!&ndash; 'ROLE_student' 권한이 있는 경우 &ndash;&gt;-->
+<!--                                        <span th:if="${#authentication.authorities.contains('ROLE_student') or #authentication.authorities.contains('student')}" th:text="'학생'"> @johnducky</span>-->
+
+<!--                                        &lt;!&ndash; 'ROLE_teacher' 권한이 있는 경우 &ndash;&gt;-->
+<!--                                        <span th:if="${#authentication.authorities.contains('ROLE_teacher') or #authentication.authorities.contains('teacher')}" th:text="'선생님'"> @johnducky</span>-->
+
+<!--                                        &lt;!&ndash; 다른 권한에 속할 경우 &ndash;&gt;-->
+<!--                                        <span th:unless="${#authentication.authorities.contains('ROLE_admin') or #authentication.authorities.contains('admin')-->
+<!--                                            or #authentication.authorities.contains('ROLE_teacher') or #authentication.authorities.contains('teacher')-->
+<!--                                            or #authentication.authorities.contains('ROLE_student') or #authentication.authorities.contains('student')}" th:text="'권한이 없습니다.'"> @johnducky</span>-->
+                                    </h6>
+
+                                    <input type="hidden" id="authorities" th:value="${#authentication.authorities}">
+
+                                    <h6 class="text-muted mb-0"><a th:href="@{/member/logout}">로그아웃</a></h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Visitors Profile</h4>
+                        </div>
+                        <div class="card-body">
+                            <div id="chart-visitors-profile"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </div>
+</div>
+<script src="assets/js/bootstrap.js"></script>
+<script src="assets/js/app.js"></script>
+
+<!-- Need: Apexcharts -->
+<script src="assets/extensions/apexcharts/apexcharts.min.js"></script>
+<script src="assets/js/pages/dashboard.js"></script>
+
+</body>
+
+</html>

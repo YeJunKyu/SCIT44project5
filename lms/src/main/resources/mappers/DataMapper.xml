@@ -1,0 +1,112 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.scit.lms.dao.DataDAO">
+    <select id="countAttendance" parameterType="Attendance" resultType="int">
+        select
+            count(*)
+        from
+            attendance
+        where
+            memberid = #{memberid}
+            and ATT_TYPE = '출석'
+    </select>
+
+    <select id="countAbsence" parameterType="Attendance" resultType="int">
+        select
+            count(*)
+        from
+            attendance
+        where
+            memberid = #{memberid}
+            and ATT_TYPE = '결석'
+    </select>
+
+
+    <select id="attendanceDate" parameterType="Attendance" resultType="String">
+        select
+            ATT_DATE
+        from
+            attendance
+        where
+            memberid = #{memberid}
+    </select>
+
+
+<!--    월별 출석조회-->
+    <select id="attendance01" parameterType="Attendance">
+        select count(*) from attendance where memberid = #{memberid} and att_date LIKE '%'||'/01/'||'%' and att_type = '출석'
+    </select>
+    <select id="attendance02" parameterType="Attendance">
+        select count(*) from attendance where memberid = #{memberid} and att_date LIKE '%'||'/02/'||'%' and att_type = '출석'
+    </select>
+    <select id="attendance03" parameterType="Attendance">
+        select count(*) from attendance where memberid = #{memberid} and att_date LIKE '%'||'/03/'||'%' and att_type = '출석'
+    </select>
+    <select id="attendance04" parameterType="Attendance">
+        select count(*) from attendance where memberid = #{memberid} and att_date LIKE '%'||'/04/'||'%' and att_type = '출석'
+    </select>
+    <select id="attendance05" parameterType="Attendance">
+        select count(*) from attendance where memberid = #{memberid} and att_date LIKE '%'||'/05/'||'%' and att_type = '출석'
+    </select>
+    <select id="attendance06" parameterType="Attendance">
+        select count(*) from attendance where memberid = #{memberid} and att_date LIKE '%'||'/06/'||'%' and att_type = '출석'
+    </select>
+    <select id="attendance07" parameterType="Attendance">
+        select count(*) from attendance where memberid = #{memberid} and att_date LIKE '%'||'/07/'||'%' and att_type = '출석'
+    </select>
+    <select id="attendance08" parameterType="Attendance">
+        select count(*) from attendance where memberid = #{memberid} and att_date LIKE '%'||'/08/'||'%' and att_type = '출석'
+    </select>
+    <select id="attendance09" parameterType="Attendance">
+        select count(*) from attendance where memberid = #{memberid} and att_date LIKE '%'||'/09/'||'%' and att_type = '출석'
+    </select>
+    <select id="attendance10" parameterType="Attendance">
+        select count(*) from attendance where memberid = #{memberid} and att_date LIKE '%'||'/10/'||'%' and att_type = '출석'
+    </select>
+    <select id="attendance11" parameterType="Attendance">
+        select count(*) from attendance where memberid = #{memberid} and att_date LIKE '%'||'/11/'||'%' and att_type = '출석'
+    </select>
+    <select id="attendance12" parameterType="Attendance">
+        select count(*) from attendance where memberid = #{memberid} and att_date LIKE '%'||'/12/'||'%' and att_type = '출석'
+    </select>
+
+<!--    월별 결석조회-->
+    <select id="absence01" parameterType="Attendance">
+        select count(*) from attendance where memberid = #{memberid} and att_date LIKE '%'||'/01/'||'%' and att_type = '결석'
+    </select>
+    <select id="absence02" parameterType="Attendance">
+        select count(*) from attendance where memberid = #{memberid} and att_date LIKE '%'||'/02/'||'%' and att_type = '결석'
+    </select>
+    <select id="absence03" parameterType="Attendance">
+        select count(*) from attendance where memberid = #{memberid} and att_date LIKE '%'||'/03/'||'%' and att_type = '결석'
+    </select>
+    <select id="absence04" parameterType="Attendance">
+        select count(*) from attendance where memberid = #{memberid} and att_date LIKE '%'||'/04/'||'%' and att_type = '결석'
+    </select>
+    <select id="absence05" parameterType="Attendance">
+        select count(*) from attendance where memberid = #{memberid} and att_date LIKE '%'||'/05/'||'%' and att_type = '결석'
+    </select>
+    <select id="absence06" parameterType="Attendance">
+        select count(*) from attendance where memberid = #{memberid} and att_date LIKE '%'||'/06/'||'%' and att_type = '결석'
+    </select>
+    <select id="absence07" parameterType="Attendance">
+        select count(*) from attendance where memberid = #{memberid} and att_date LIKE '%'||'/07/'||'%' and att_type = '결석'
+    </select>
+    <select id="absence08" parameterType="Attendance">
+        select count(*) from attendance where memberid = #{memberid} and att_date LIKE '%'||'/08/'||'%' and att_type = '결석'
+    </select>
+    <select id="absence09" parameterType="Attendance">
+        select count(*) from attendance where memberid = #{memberid} and att_date LIKE '%'||'/09/'||'%' and att_type = '결석'
+    </select>
+    <select id="absence10" parameterType="Attendance">
+        select count(*) from attendance where memberid = #{memberid} and att_date LIKE '%'||'/10/'||'%' and att_type = '결석'
+    </select>
+    <select id="absence11" parameterType="Attendance">
+        select count(*) from attendance where memberid = #{memberid} and att_date LIKE '%'||'/11/'||'%' and att_type = '결석'
+    </select>
+    <select id="absence12" parameterType="Attendance">
+        select count(*) from attendance where memberid = #{memberid} and att_date LIKE '%'||'/12/'||'%' and att_type = '결석'
+    </select>
+</mapper>

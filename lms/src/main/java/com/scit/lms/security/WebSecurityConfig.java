@@ -73,6 +73,7 @@ public class WebSecurityConfig {
                 "where memberid = ?");
     }
 
+
     // 단방향 비밀번호 암호화
     @Bean
     public PasswordEncoder passwordEncoder() {

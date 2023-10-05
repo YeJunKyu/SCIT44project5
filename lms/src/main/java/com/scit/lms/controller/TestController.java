@@ -92,6 +92,19 @@ public class TestController {
         return testService.getTestpaperListByCategoryId(map);
     }
 
+    // 검색으로 시험명 찾기
+    @ResponseBody
+    @GetMapping("searchByKeyword")
+    public ArrayList<TestpaperList> searchByKeyword(@RequestParam String keyword, @RequestParam String memberid) {
+        log.debug("키워드:{}", keyword);
+        Map<String, String> map = new HashMap<>();
+        map.put("keyword", keyword);
+        map.put("memberid", memberid);
+        ArrayList<TestpaperList> t = testService.searchByKeyword(map);
+        log.debug("리스트:{}", t);
+        return t;
+    }
+
 
     // 시험 문제 등록
     @PostMapping("insertTest")
