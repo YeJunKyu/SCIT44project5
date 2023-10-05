@@ -370,16 +370,7 @@ function execDaumPostcode() {
                                     </div>
                                 </div>
                             </div>
-                    <div class="col-md-6 col-3">
 
-
-                            <div style="" th:if="${photoName != null}">
-                                <img th:src="@{|/memberUpload/${photoName}|}"  style="width: 206px; height: 260px;" alt="User Photo"/>
-                            </div>
-
-                            <a th:href="@{/member/insertPhoto}"> 사진변경 </a>
-<!--                            <input type="file" id="upload" name="upload" class="image-preview-filepond">-->
-                    </div>
 
 <!--                            <input type="button" onclick="photoForm()" value="적용">-->
                         </form>
@@ -388,7 +379,18 @@ function execDaumPostcode() {
                 </div>
             </div>
         </div>
+    <div class="col-3 col-lg-3">
+
+
+        <div style="" th:if="${photoName != null}">
+            <img th:src="@{|/memberUpload/${photoName}|}"  style="width: 206px; height: 260px;" alt="User Photo"/>
+        </div>
+
+        <a th:href="@{/member/insertPhoto}"> 사진변경 </a>
+        <!--                            <input type="file" id="upload" name="upload" class="image-preview-filepond">-->
+    </div>
 </section>
+
 
 
 
