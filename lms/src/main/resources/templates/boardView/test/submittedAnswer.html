@@ -129,13 +129,19 @@
                                         <div th:each="ta : ${testAnswers}" th:if="${q.qid == ta.qid}">
                                             <div>
                                                 <div th:if="${ta.rwc == 'right'}">
-                                                    <i class="bi bi-circle"></i>
+                                                    <a class="btn icon btn-success">
+                                                        <i class="bi bi-circle"></i>
+                                                    </a>
                                                 </div>
                                                 <div th:if="${ta.rwc == 'wrong'}">
-                                                    <i class="bi bi-x-lg"></i>
+                                                    <a class="btn icon btn-danger">
+                                                        <i class="bi bi-x-lg"></i>
+                                                    </a>
                                                 </div>
                                                 <div th:if="${ta.rwc == 'check'}">
-                                                    <i class="bi bi-check"></i>
+                                                    <a class="btn icon btn-warning">
+                                                        <i class="bi bi-check"></i>
+                                                    </a>
                                                 </div>
                                             </div>
                                         </div>
