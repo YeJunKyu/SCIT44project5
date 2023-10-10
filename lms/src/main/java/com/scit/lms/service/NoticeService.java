@@ -8,12 +8,6 @@ import java.util.ArrayList;
 
 public interface NoticeService {
 
-    //과정 불러오기
-    public ArrayList<Student> categoryList();
-
-    //공지 글 작성
-    public void insert(Notice notice);
-
     //공지 글 목록
     public ArrayList<Notice> list(PageNavigator navi, String type, String searchWord);
 
@@ -25,6 +19,12 @@ public interface NoticeService {
 
     //페이지네이션(학생용)
     public PageNavigator getPageNavigatorStudent(int pagePerGroup, int countPerPage, int page, String type, String searchWord);
+
+    //과정 불러오기
+    public ArrayList<Student> categoryList();
+
+    //공지 글 작성
+    public void insert(Notice notice);
 
     //공지 글 조회
     public Notice read(int noticenum);

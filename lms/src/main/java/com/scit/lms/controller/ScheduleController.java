@@ -49,6 +49,8 @@ public class ScheduleController {
     @ResponseBody
     @GetMapping("recentList")
     public ArrayList<Schedule> recentList(@AuthenticationPrincipal UserDetails user) {
+
+        // 오늘부터 한 달 이내 일정
         HashMap<String, String> map = new HashMap<>();
 
         // 현재 날짜 및 시간 얻기

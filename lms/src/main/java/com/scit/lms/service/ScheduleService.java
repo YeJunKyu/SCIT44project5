@@ -32,5 +32,5 @@ public interface ScheduleService {
     public ArrayList<Schedule> listStudent(String curriculum);
 
     // 학생 커리큘럼
-    String studentCurriculum(String username);
+    public String studentCurriculum(String username);
 }
