@@ -22,7 +22,7 @@
         FROM
             lms_notice
         ORDER BY
-            noticedate DESC
+            noticenum DESC
         )
     WHERE ROWNUM <= 10
     ]]>
@@ -51,7 +51,7 @@
         and
             (categories='전체' or categories=#{curriculum})
         ORDER BY
-            noticedate DESC
+            noticenum DESC
         )
     WHERE ROWNUM <= 10
     ]]>

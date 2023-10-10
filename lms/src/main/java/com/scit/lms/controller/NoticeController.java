@@ -202,7 +202,6 @@ public class NoticeController {
         }
     }
 
-
     //공지 글 수정 폼
     @GetMapping("update")
     public String update(@RequestParam(name="noticenum", defaultValue="0") int noticenum

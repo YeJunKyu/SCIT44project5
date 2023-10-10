@@ -265,7 +265,7 @@
         delete from lms_homework where hw_num=#{hw_num} and memberid=#{memberid}
     </delete>
 
-    <!-- 과제 등록 -->
+    <!-- 제출 등록 -->
     <insert id="insertSub" parameterType="HomeworkSub">
         insert into lms_homework_submission
         (
