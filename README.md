@@ -2,10 +2,10 @@
 SCIT LMS
   
 # 👥team member
-이지윤
-예준규
-장성현
-이희원
+* 이지윤  
+* 예준규  
+* 장성현  
+* 이희원  
   
 # 💁project introduce
 ![4](https://github.com/zzzyunyun/SCIT44-teamproject5/assets/139854197/2d31b073-13b2-46bf-a859-b95c158a6166)
