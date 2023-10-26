@@ -193,6 +193,21 @@
                                 <span>과제</span>
                             </a>
                         </li>
+
+                        <li class="sidebar-item has-sub" th:if="${#authorization.expression('hasRole(''ROLE_teacher'')')}">
+                            <a href="#" class="sidebar-link">
+                                <i class="bi bi-clipboard-data-fill"></i>
+                                <span>성적 관리</span>
+                            </a>
+                            <ul class="submenu">
+                                <li class="submenu-item">
+                                    <a th:href="@{/admin/SelectGrade}">성적</a>
+                                </li>
+                                <li class="submenu-item">
+                                    <a th:href="@{/admin/InsertGrade}">점수 등록</a>
+                                </li>
+                            </ul>
+                        </li>
                         <!-- 선생님(ROLE_teacher) -->
 
                         <!-- 학생(ROLE_student) -->

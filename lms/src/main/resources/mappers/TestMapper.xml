@@ -204,7 +204,7 @@
         FROM lms_test t
         WHERE
         t.testid IN (SELECT testid FROM lms_testpaper_list l WHERE l.memberid = #{memberid} AND l.checked = 'complete')
-
+        order by testdate desc
     </select>
 
     <!--카테고리별 시험 확인-->

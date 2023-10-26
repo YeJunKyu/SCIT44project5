@@ -84,7 +84,7 @@ create table lms_schedule (
 	eventid         number          primary key,
 	title           varchar2(200)   not null,
 	note            varchar2(1000),
-	startdate       date            default sysdate,
+        startdate       date            default sysdate,
 	enddate         date,
     allday          number(1),
     color           varchar2(100),
@@ -254,7 +254,7 @@ create table lms_homework_submission (
 	hw_sub_score	    number,								                                    --점수
 	originalfile	    varchar2(4000),							                                --원본 파일
 	savedfile	        varchar2(4000),							                                --저장된 파일
-	memberid	        varchar2(100)	    not null					                        --학생 아이디
+    memberid	        varchar2(100)	    not null					                        --학생 아이디
 );
 
 --과제 제출 테이블 시퀀스
