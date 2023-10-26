@@ -21,18 +21,6 @@ public class NoticeServiceImpl implements NoticeService {
     @Autowired
     NoticeDAO dao;
 
-
-    @Override
-    public ArrayList<Student> categoryList() {
-        return dao.categoryList();
-    }
-
-    //공지 글 작성
-    @Override
-    public void insert(Notice notice) {
-        dao.insert(notice);
-    }
-
     //공지 글 목록
     @Override
     public ArrayList<Notice> list(PageNavigator navi, String type, String searchWord) {
@@ -89,6 +77,18 @@ public class NoticeServiceImpl implements NoticeService {
         return navi;
     }
 
+    //과정 불러오기
+    @Override
+    public ArrayList<Student> categoryList() {
+        return dao.categoryList();
+    }
+
+    //공지 글 작성
+    @Override
+    public void insert(Notice notice) {
+        dao.insert(notice);
+    }
+
     //공지 글 조회
     @Override
     public Notice read(int noticenum) {
@@ -105,6 +105,7 @@ public class NoticeServiceImpl implements NoticeService {
         return notice;
     }
 
+    //공지 글 수정
     @Override
     public void update(Notice notice) {
         dao.update(notice);

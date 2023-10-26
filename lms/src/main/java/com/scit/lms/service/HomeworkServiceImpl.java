@@ -135,12 +135,13 @@ public class HomeworkServiceImpl implements HomeworkService {
         return dao.subCount(memberid, hw_num);
     }
 
+    //제출 조회
     @Override
     public HomeworkSub selectSub(int hw_sub_num) {
         return dao.selectSub(hw_sub_num);
     }
 
-    //제출 삭제
+    //제출 수정
     @Override
     public void updateSub(HomeworkSub hw_sub) {
         dao.updateSub(hw_sub);
